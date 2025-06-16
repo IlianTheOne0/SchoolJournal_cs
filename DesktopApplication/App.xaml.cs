@@ -1,11 +1,14 @@
 ﻿namespace DesktopApplication;
 
+using DesktopApplication.Interfaces.Auth;
+using DesktopApplication.Interfaces.Supabase;
+
 using DesktopApplication.Services.Auth;
 using DesktopApplication.Services.Supabase;
+using DesktopApplication.Services.Navigation;
 
-using DesktopApplication.ViewModels.Home;
-using DesktopApplication.ViewModels.Interface;
 using DesktopApplication.ViewModels.Login;
+using DesktopApplication.ViewModels.Home;
 
 using DesktopApplication.Views;
 
@@ -31,15 +34,13 @@ public partial class App : Application
     {
         services.AddLogging();
 
+        services.AddSingleton<ServicesNavigation>();
         services.AddSingleton<IServicesSupabase, ServicesSupabase>();
         services.AddSingleton<IServicesAuth, ServicesAuth>();
 
-        services.AddSingleton<IViewModels, ViewModelsLogin>();
-        services.AddSingleton<IViewModels, ViewModelsHome>();
-
+        services.AddSingleton<LoginUserControl>();
+        //services.AddSingleton<HomeUserControl>();
         services.AddSingleton<MainWindow>();
-        services.AddSingleton<Login>();
-        services.AddSingleton<Home>();
     }
 
     private void OnExit(object sender, ExitEventArgs e)

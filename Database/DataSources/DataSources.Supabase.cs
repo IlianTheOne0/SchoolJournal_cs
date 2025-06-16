@@ -7,9 +7,9 @@ public class DataSourcesSupabase : IDataSources
 {
     public Client SupabaseClient { get; private set; } = null!;
 
-    public void Execute(string url, string key)
+    public void Execute(string Url, string Key)
     {
         SupabaseOptions options = new SupabaseOptions { AutoConnectRealtime = true };
-        SupabaseClient = new Client(url, key, options);
+        SupabaseClient = new Client(Url, Key, options);
     }
 }
