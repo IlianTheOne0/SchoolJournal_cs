@@ -1,18 +1,19 @@
 ﻿namespace Database.Repositories.Supabase;
 
-using Database.DataSources;
-using Database.Repositories.Interfaces;
+using Database.DataSources.Supabase;
+using Database.Repositories.DatabaseInterface;
 using Database.Repositories.Json;
-using Database.Models;
-using System.Text.Json.Nodes;
+using Database.Models.SupabaseConfig;
 
-public class RepositoriesSupabase
+public partial class RepositoriesSupabase : IDatabaseRepositories
 {
     private DataSourcesSupabase? SupabaseConnection { get; set; } = null;
-    private JsonRepository? JsonRepo { get; set; } = null;
+    private RepositoriesJson? _repositoryJson { get; set; } = null;
 
-    public RepositoriesSupabase(string FilePath)
+    public RepositoriesSupabase()
     {
+        const string FilePath = @"../.env/supabase_keys.json";
+
         try
         {
             if (string.IsNullOrEmpty(FilePath)) { throw new ArgumentException("File path cannot be null or empty!"); }
@@ -21,13 +22,16 @@ public class RepositoriesSupabase
         catch (Exception e) { throw new Exception("Error initializing DatabaseRepository!", e); }
     }
 
-    private async void InitDatabase(string FilePath)
+    public async void InitDatabase(string FilePath)
     {
         try
         {
-            ModelsSupabaseConfig supbaseConfig = await JsonRepository.ReadJsonAsync<ModelsSupabaseConfig>(FilePath);
+            _repositoryJson = new RepositoriesJson(FilePath);
+            ModelsSupabaseConfig? supbaseConfig = await _repositoryJson.ReadJsonAsync();
             if (supbaseConfig == null || supbaseConfig.Url == null || supbaseConfig.Key == null) { throw new Exception("Supabase configs are null!"); }
-            SupabaseConnection = new DataSourcesSupabase(supbaseConfig.Url, supbaseConfig.Key);
+
+            SupabaseConnection = new DataSourcesSupabase();
+            SupabaseConnection.Execute(supbaseConfig.Url, supbaseConfig.Key);
         }
         catch (Exception e) { throw new Exception("Error initializing Supabase client!", e); }
     }

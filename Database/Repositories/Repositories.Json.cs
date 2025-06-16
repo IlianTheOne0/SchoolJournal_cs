@@ -1,5 +1,8 @@
 ﻿namespace Database.Repositories.Json;
 
+using Database.Models.SupabaseConfig;
+using Newtonsoft.Json;
+
 public class RepositoriesJson(string FilePath)
 {
     private string FilePath { get; set; } = FilePath;
@@ -9,10 +12,10 @@ public class RepositoriesJson(string FilePath)
         try
         {
             if (!File.Exists(FilePath)) { throw new FileNotFoundException("File not found!", FilePath); }
-        
-            string json = await reader.ReadToEndAsync();
+
+            string json = await File.ReadAllTextAsync(FilePath);
             var model = JsonConvert.DeserializeObject<ModelsSupabaseConfig>(json);
-            
+
             return model;
         }
         catch (Exception e) { throw new Exception("Error reading JSON file!", e); }

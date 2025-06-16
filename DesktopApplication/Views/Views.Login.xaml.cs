@@ -1,27 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace DesktopApplication.Views;
+
+using DesktopApplication.ViewModels.Interface;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
-namespace DesktopApplication.Views
+public partial class Login : UserControl
 {
-    /// <summary>
-    /// Interaction logic for Login.xaml
-    /// </summary>
-    public partial class Login : UserControl
+    public Login(IViewModels? ViewModel)
     {
-        public Login()
+        InitializeComponent();
+        this.DataContext = ViewModel;
+    }
+
+    private void OnLogInNavigationClick(object sender, RoutedEventArgs e)
+    {
+        Home homePage = new Home((IViewModels)Application.Current.Resources["ViewModelsHome"]);
+        MainWindow mainWindow = (Window.GetWindow(this) as DesktopApplication.MainWindow);
+        
+        if (mainWindow != null)
         {
-            InitializeComponent();
+            UserControl currentPage = mainWindow.Content as UserControl;
+        
+            if (currentPage != null) { currentPage.Content = null; }
+            mainWindow.Content = homePage;
         }
     }
 }

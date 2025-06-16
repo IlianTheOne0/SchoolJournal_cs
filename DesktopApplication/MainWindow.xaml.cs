@@ -1,26 +1,14 @@
-﻿using Microsoft.Xaml.Behaviors.Core;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿namespace DesktopApplication;
 
-namespace DesktopApplication
+using DesktopApplication.ViewModels.Interface;
+using DesktopApplication.Views;
+using System.Windows;
+
+public partial class MainWindow : Window
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
+    public MainWindow()
     {
-        public MainWindow()
-        {
-            InitializeComponent();
-            this.Content = new DesktopApplication.Views.Login();
-        }
+        InitializeComponent();
+        this.Content = new Login((IViewModels)Application.Current.Resources["ViewModelsLogin"]);
     }
 }

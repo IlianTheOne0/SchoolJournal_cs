@@ -2,5 +2,5 @@
 
 public interface IDataSources
 {
-	Execute(string Url, string Key);
+    void Execute(string Url, string Key);
 }

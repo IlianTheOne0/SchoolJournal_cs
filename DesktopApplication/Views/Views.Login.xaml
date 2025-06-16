@@ -55,9 +55,9 @@
                         Margin="0,0,0,20"/>
 
                     <Button 
+                        x:Name="LoginButton"
                         Content="Log In"
-                        Command="{Binding LoginCommand}"
-                        CommandParameter="{Binding ElementName=PasswordBox}"
+                        Click="OnLogInNavigationClick"
                         Style="{StaticResource MaterialDesignRaisedButton}"
                         HorizontalAlignment="Center"
                         Padding="30,5"

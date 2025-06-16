@@ -7,24 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="DataSources\DataSource.SupabaseClient.cs" />
-    <Compile Remove="DataSources\DataSources.DatabaseInterface.cs" />
-    <Compile Remove="Models\Models.SupabaseConfig.cs" />
-    <Compile Remove="Repositories\Repositories.Json.cs" />
-    <Compile Remove="Repositories\Repositories.RepositoryInterface.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Include=".env\supabase_keys.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="DataSources\DataSource.SupabaseClient.cs" />
-    <None Include="DataSources\DataSources.DatabaseInterface.cs" />
-    <None Include="Models\Models.SupabaseConfig.cs" />
-    <None Include="Repositories\Repositories.Json.cs" />
-    <None Include="Repositories\Repositories.RepositoryInterface.cs" />
-    <None Include="Repositories\Repositories.Supabase.cs" />
   </ItemGroup>
 
   <ItemGroup>
