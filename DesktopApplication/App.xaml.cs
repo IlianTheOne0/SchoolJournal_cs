@@ -35,11 +35,16 @@ public partial class App : Application
         services.AddLogging();
 
         services.AddSingleton<ServicesNavigation>();
-        services.AddSingleton<IServicesSupabase, ServicesSupabase>();
-        services.AddSingleton<IServicesAuth, ServicesAuth>();
+
+        services.AddSingleton<ViewModelsLogin>();
+        services.AddSingleton<ViewModelsHome>();
+
+        //services.AddSingleton<ServicesSupabase>();
+        //services.AddSingleton<ServicesAuth>();
 
         services.AddSingleton<LoginUserControl>();
-        //services.AddSingleton<HomeUserControl>();
+        services.AddSingleton<HomeUserControl>();
+
         services.AddSingleton<MainWindow>();
     }
 

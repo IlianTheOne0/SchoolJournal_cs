@@ -58,6 +58,7 @@
                         x:Name="LoginButton"
                         Content="Log In"
                         Command="{Binding CommandLognIn}"
+                        Click="OnLogInNavigationClick"
                         Style="{StaticResource MaterialDesignRaisedButton}"
                         HorizontalAlignment="Center"
                         Padding="30,5"
