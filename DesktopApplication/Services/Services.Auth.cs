@@ -1,31 +1,16 @@
 ﻿namespace DesktopApplication.Services.Auth;
 
-using DesktopApplication.Interfaces.Auth;
-using DesktopApplication.Interfaces.Supabase;
-using Microsoft.Extensions.Logging;
+using Database.Repositories.Supabase;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
-public class ServicesAuth : IServicesAuth
+public class ServicesAuth(RepositoriesSupabase RepositorySupabase) : INotifyPropertyChanged
 {
-    private readonly ILogger<ServicesAuth> _logger;
-    private readonly IServicesSupabase _serviceSupabase;
+    private bool _isLoggedIn = RepositorySupabase.IsLoggedIn; public bool IsLoggedIn { get => _isLoggedIn; private set { if (_isLoggedIn != value) { _isLoggedIn = value; OnPropertyChanged("IsLoggedIn"); } } }
 
-    public ServicesAuth(ILogger<ServicesAuth> Logger, IServicesSupabase ServicesSupabase)
-    {
-        _logger = Logger;
-        _logger.LogInformation("ServicesAuth initialized!");
+    public event PropertyChangedEventHandler? PropertyChanged;
+    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null!) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-        _serviceSupabase = ServicesSupabase;
-    }
-
-    public bool Login(string Username, string Password)
-    {
-        _logger.LogInformation($"Login in user: {Username}", Username);
-        return _serviceSupabase.RepositorySupabase.Login(Username, Password);
-    }
-
-    public bool Logout()
-    {
-        _logger.LogInformation($"Logging out {DateTime.Now.ToLocalTime()}");
-        return _serviceSupabase.RepositorySupabase.Logout();
-    }
+    public async Task Login(string Username, string Password) { await RepositorySupabase.Login(Username, Password); IsLoggedIn = RepositorySupabase.IsLoggedIn; }
+    public async Task Logout() { await RepositorySupabase.Logout(); IsLoggedIn = RepositorySupabase.IsLoggedIn; }
 }

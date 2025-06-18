@@ -1,4 +1,4 @@
-﻿namespace Database.Repositories.DatabaseInterface;
+﻿namespace Database.Interfaces.Repositories.Database;
 
 public interface IDatabaseRepositories
 {

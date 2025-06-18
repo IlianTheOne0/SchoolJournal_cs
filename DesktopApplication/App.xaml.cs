@@ -1,19 +1,15 @@
 ﻿namespace DesktopApplication;
 
-using DesktopApplication.Interfaces.Auth;
-using DesktopApplication.Interfaces.Supabase;
-
 using DesktopApplication.Services.Auth;
-using DesktopApplication.Services.Supabase;
 using DesktopApplication.Services.Navigation;
-
-using DesktopApplication.ViewModels.Login;
+using DesktopApplication.Services.Supabase;
 using DesktopApplication.ViewModels.Home;
-
+using DesktopApplication.ViewModels.Login;
 using DesktopApplication.Views;
-
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System.Windows;
+using System.Windows.Navigation;
 
 public partial class App : Application
 {
@@ -34,18 +30,52 @@ public partial class App : Application
     {
         services.AddLogging();
 
+        // Navigation service
         services.AddSingleton<ServicesNavigation>();
 
-        services.AddSingleton<ViewModelsLogin>();
-        services.AddSingleton<ViewModelsHome>();
+        // ViewModels
+        services.AddSingleton<ViewModelsLogin>(
+            provider => new ViewModelsLogin(
+                ServiceAuth: provider.GetRequiredService<ServicesAuth>()
+            )
+        );
+        services.AddSingleton<ViewModelsHome>(
+            provider => new ViewModelsHome(
+                ServiceAuth: provider.GetRequiredService<ServicesAuth>()
+            )
+        );
 
-        //services.AddSingleton<ServicesSupabase>();
-        //services.AddSingleton<ServicesAuth>();
+        // Services
+        services.AddSingleton<ServicesSupabase>();
+        services.AddSingleton<ServicesAuth>(
+            provider =>
+            {
+                ServicesSupabase serviceSupabase = provider.GetRequiredService<ServicesSupabase>();
+                return new ServicesAuth(serviceSupabase.RepositorySupabase);
+            }
+        );
 
-        services.AddSingleton<LoginUserControl>();
-        services.AddSingleton<HomeUserControl>();
+        // User Controls
+        services.AddSingleton<LoginUserControl>(
+            provider => new LoginUserControl(
+                ViewModel: provider.GetRequiredService<ViewModelsLogin>()
+            )
+        );
+        services.AddSingleton<HomeUserControl>(
+            provider => new HomeUserControl(
+                ViewModel: provider.GetRequiredService<ViewModelsHome>()
+            )
+        );
 
-        services.AddSingleton<MainWindow>();
+        // Main Window
+        services.AddSingleton<MainWindow>(
+            provider =>
+            {
+                ServicesNavigation serviceNavigation = provider.GetRequiredService<ServicesNavigation>();
+                ServicesAuth serviceAuth = provider.GetRequiredService<ServicesAuth>();
+                return new MainWindow(serviceNavigation, serviceAuth);
+            }
+        );
     }
 
     private void OnExit(object sender, ExitEventArgs e)

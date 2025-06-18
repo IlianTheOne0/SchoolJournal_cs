@@ -5,15 +5,15 @@ using Newtonsoft.Json;
 
 public class RepositoriesJson(string FilePath)
 {
-    private string FilePath { get; set; } = FilePath;
+    private string _filePath { get; set; } = FilePath;
 
     public async Task<ModelsSupabaseConfig?> ReadJsonAsync()
     {
         try
         {
-            if (!File.Exists(FilePath)) { throw new FileNotFoundException("File not found!", FilePath); }
+            if (!File.Exists(_filePath)) { throw new FileNotFoundException("File not found!", _filePath); }
 
-            string json = await File.ReadAllTextAsync(FilePath);
+            string json = await File.ReadAllTextAsync(_filePath);
             var model = JsonConvert.DeserializeObject<ModelsSupabaseConfig>(json);
 
             return model;

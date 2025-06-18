@@ -2,7 +2,8 @@
 
 public partial class RepositoriesSupabase
 {
-    public bool Login(String Username, string Password) => false;
+    public bool IsLoggedIn { get => SupabaseConnection?.SupabaseClient.Auth.CurrentSession != null; }
 
-    public bool Logout() => false;
+    public async Task Login(string Username, string Password) => await SupabaseConnection?.SupabaseClient.Auth.SignIn(Username, Password)!;
+    public async Task Logout() => await SupabaseConnection?.SupabaseClient.Auth.SignOut()!;
 }

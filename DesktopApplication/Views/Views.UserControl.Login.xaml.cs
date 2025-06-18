@@ -8,14 +8,10 @@ using System.Windows.Controls;
 
 public partial class LoginUserControl : UserControl
 {
-    private readonly ServicesNavigation _servicesNavigation;
-
-    public LoginUserControl(ViewModelsLogin ViewModel, ServicesNavigation ServiceNavigation)
+    public LoginUserControl(ViewModelsLogin ViewModel)
     {
         InitializeComponent();
-        try { DataContext = ViewModel; _servicesNavigation = ServiceNavigation; }
+        try { DataContext = ViewModel; }
         catch (Exception e) { MessageBox.Show($"Error initializing Login: {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
-
-    private void OnLogInNavigationClick(object sender, RoutedEventArgs e) => _servicesNavigation.NavigateTo<HomeUserControl, ViewModelsHome>();
 }

@@ -1,9 +1,8 @@
 ﻿namespace DesktopApplication.Services.Supabase;
 
-using DesktopApplication.Interfaces.Supabase;
 using Database.Repositories.Supabase;
 
-public class ServicesSupabase : IServicesSupabase
+public class ServicesSupabase
 {
     public RepositoriesSupabase RepositorySupabase { get; set; }
 
