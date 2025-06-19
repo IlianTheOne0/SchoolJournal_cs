@@ -11,6 +11,6 @@ public partial class HomeUserControl : UserControl
     {
         InitializeComponent();
         try { DataContext = ViewModel; }
-        catch (Exception e) { MessageBox.Show($"Error initializing Login: {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+        catch (Exception e) { MessageBox.Show($"Error initializing Home: {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
 }

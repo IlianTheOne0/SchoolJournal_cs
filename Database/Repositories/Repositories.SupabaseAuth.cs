@@ -15,6 +15,7 @@ public partial class RepositoriesSupabase
         {
             var usersTableResult = await FilterAsync<ModelsUser>("Username", Constants.Operator.Equals, Username)
                 ?? throw new Exception($"The username {Username} does not exist!");
+            if (usersTableResult.Count == 0) { throw new Exception($"The username {Username} does not exist!"); }
 
             await SupabaseConnection?.SupabaseClient.Auth.SignIn(usersTableResult[0].Email, Password)!;
         }
