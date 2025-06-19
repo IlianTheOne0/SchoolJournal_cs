@@ -9,6 +9,8 @@ public partial class RepositoriesSupabase : IDatabaseRepositories
 {
     private DataSourcesSupabase? SupabaseConnection { get; set; } = null;
     private RepositoriesJson? _repositoryJson { get; set; } = null;
+    
+    private string _defaultSchema { get; set; } = null!;
 
     public RepositoriesSupabase()
     {
@@ -31,6 +33,7 @@ public partial class RepositoriesSupabase : IDatabaseRepositories
             ModelsSupabaseConfig? supbaseConfig = await _repositoryJson.ReadJsonAsync();
             if (supbaseConfig == null || supbaseConfig.Url == null || supbaseConfig.Key == null) { throw new Exception("Supabase configs are null!"); }
 
+            _defaultSchema = supbaseConfig.DefaultSchema!;
             SupabaseConnection = new DataSourcesSupabase(supbaseConfig.Url, supbaseConfig.Key);
         }
         catch (Exception e) { throw new Exception("Error initializing Supabase client!", e); }

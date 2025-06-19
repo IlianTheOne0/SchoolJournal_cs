@@ -6,6 +6,7 @@ using DesktopApplication.Services.Auth;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using System.Windows;
 
 public class ViewModelsLogin
 {
@@ -26,6 +27,10 @@ public class ViewModelsLogin
         CommandLogIn = new AsyncRelayCommand(OnLogIn);
     }
 
-    private async Task OnLogIn() => await _serviceAuth.Login(Username, Password);
+    private async Task OnLogIn()
+    {
+        try { await _serviceAuth.Login(Username, Password); }
+        catch (Exception e) { MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+    }
     protected void OnPropertyChanged([CallerMemberName] string? PropertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
 }
