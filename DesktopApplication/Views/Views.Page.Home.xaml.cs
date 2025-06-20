@@ -1,15 +1,15 @@
 ﻿namespace DesktopApplication.Views;
 
+using DesktopApplication.Services.Navigation;
 using DesktopApplication.ViewModels.Home;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 
-public partial class HomeUserControl : UserControl
+public partial class HomePage : UserControl
 {
     private readonly ViewModelsHome _viewModel;
 
-    public HomeUserControl(ViewModelsHome ViewModel)
+    public HomePage(ViewModelsHome ViewModel)
     {
         InitializeComponent();
         _viewModel = ViewModel;

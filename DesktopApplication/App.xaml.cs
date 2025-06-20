@@ -58,13 +58,13 @@ public partial class App : Application
         services.AddSingleton<ServicesConvertersUriValidationConverter>();
 
         // User Controls
-        services.AddSingleton<LoginUserControl>(
-            provider => new LoginUserControl(
+        services.AddSingleton<LoginPage>(
+            provider => new LoginPage(
                 ViewModel: provider.GetRequiredService<ViewModelsLogin>()
             )
         );
-        services.AddSingleton<HomeUserControl>(
-            provider => new HomeUserControl(
+        services.AddSingleton<HomePage>(
+            provider => new HomePage(
                 ViewModel: provider.GetRequiredService<ViewModelsHome>()
             )
         );

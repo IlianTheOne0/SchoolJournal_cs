@@ -6,9 +6,9 @@ using DesktopApplication.ViewModels.Login;
 using System.Windows;
 using System.Windows.Controls;
 
-public partial class LoginUserControl : UserControl
+public partial class LoginPage : UserControl
 {
-    public LoginUserControl(ViewModelsLogin ViewModel)
+    public LoginPage(ViewModelsLogin ViewModel)
     {
         InitializeComponent();
         try { DataContext = ViewModel; }
