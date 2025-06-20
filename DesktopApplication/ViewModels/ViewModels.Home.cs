@@ -2,7 +2,11 @@
 
 using CommunityToolkit.Mvvm.Input;
 using DesktopApplication.Services.Auth;
-using System.Collections.ObjectModel;
+using DesktopApplication.Services.Navigation;
+using DesktopApplication.Views;
+using MaterialDesignThemes.Wpf;
+using Models.BradCrumb;
+using Models.Tables.Users;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -11,25 +15,42 @@ using System.Windows.Input;
 public class ViewModelsHome : INotifyPropertyChanged
 {
     public ICommand CommandLogOut { get; }
+    public ICommand NavigateToBreadcrumbCommand;
+
     private readonly ServicesAuth _serviceAuth;
-    private bool _canGrade; public bool CanGrade { get => _canGrade; set { _canGrade = value; OnPropertyChanged(); } }
-    private bool _canManageUsers; public bool CanManageUsers { get => _canManageUsers; set { _canManageUsers = value; OnPropertyChanged(); } }
+    private readonly ServicesNavigation _serviceNavigation;
 
     public event PropertyChangedEventHandler? PropertyChanged;
-    
-    public ViewModelsHome(ServicesAuth ServiceAuth)
+
+    private bool _canGrade; public bool CanGrade { get => _canGrade; set { _canGrade = value; OnPropertyChanged(); } }
+    private bool _canViewGrades; public bool CanViewGrades { get => _canViewGrades; set { _canViewGrades = value; OnPropertyChanged(); } }
+    private bool _canManageUsers; public bool CanManageUsers { get => _canManageUsers; set { _canManageUsers = value; OnPropertyChanged(); } }
+    private ModelsUser? _modelUser = null; public ModelsUser ModelUser { get => _modelUser!; set { _modelUser = value; OnPropertyChanged(); } }
+    private List<ModelsBreadcrumb> _breadcrumbs;
+    public List<ModelsBreadcrumb> Breadcrumbs { get => _breadcrumbs; set { _breadcrumbs = value; OnPropertyChanged(); } }
+
+    public ViewModelsHome(ServicesAuth ServiceAuth, ServicesNavigation ServiceNavigation)
     {
         _serviceAuth = ServiceAuth;
+        _serviceNavigation = ServiceNavigation;
 
         CommandLogOut = new AsyncRelayCommand(OnLogOut);
+        NavigateToBreadcrumbCommand = new RelayCommand<ModelsBreadcrumb>(NavigateToBreadcrumb!);
+
+        _serviceNavigation.ModelListBreadcrumbs.Add(new ModelsBreadcrumb("Home", typeof(HomeUserControl), this));
     }
 
     public void LoadDataAsync()
     {
         try
         {
+            ModelUser = _serviceAuth.AccessStrategy!.ModelUser;
+
             CanGrade = _serviceAuth.AccessStrategy.CanGrade();
+            CanViewGrades = _serviceAuth.AccessStrategy.CanViewGrades();
             CanManageUsers = _serviceAuth.AccessStrategy.CanManageUsers();
+
+            Breadcrumbs = _serviceNavigation.ModelListBreadcrumbs;
         }
         catch (Exception e) { MessageBox.Show($"Load data failed: {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
@@ -38,9 +59,10 @@ public class ViewModelsHome : INotifyPropertyChanged
     {
         await _serviceAuth.Logout();
 
-        OnPropertyChanged("CanGrade");
-        OnPropertyChanged("CanManageUsers");
+        ModelUser = null!;
+        OnPropertyChanged(nameof(CanGrade)); OnPropertyChanged(nameof(CanViewGrades)); OnPropertyChanged(nameof(CanManageUsers));
     }
 
     protected void OnPropertyChanged([CallerMemberName] string? PropertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
+    private void NavigateToBreadcrumb(ModelsBreadcrumb item) => _serviceNavigation.NavigateBack(_serviceNavigation.ModelListBreadcrumbs.IndexOf(item));
 }

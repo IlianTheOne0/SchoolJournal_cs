@@ -10,7 +10,4 @@
         MinHeight="700" MinWidth="1100"
         WindowState="Maximized" WindowStartupLocation="CenterScreen"
         Loaded="MainWindow_OnLoaded">
-    <Grid>
-        
-    </Grid>
 </Window>

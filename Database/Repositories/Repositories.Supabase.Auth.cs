@@ -1,7 +1,7 @@
-﻿namespace Database.Repositories.Supabase;
+﻿namespace Models.Repositories.Supabase;
 
-using Database.Models.Tables.Users;
-using Database.Models.Tables.Statuses;
+using Models.Tables.Users;
+using Models.Tables.Statuses;
 using global::Supabase.Postgrest;
 using System;
 using System.Threading.Tasks;
@@ -9,8 +9,7 @@ using System.Threading.Tasks;
 public partial class RepositoriesSupabase
 {
     public bool IsLoggedIn { get => SupabaseConnection?.SupabaseClient.Auth.CurrentSession != null; }
-    public string? UserStatus { get; private set; }
-    public int? UserId { get; private set; }
+    public ModelsUser? ModelUser { get; private set; } = null;
 
     public async Task Login(string Username, string Password)
     {
@@ -19,17 +18,18 @@ public partial class RepositoriesSupabase
             var usersTableResult = await FilterAsync<ModelsUser>("Username", Constants.Operator.Equals, Username)
                 ?? throw new Exception($"The username {Username} does not exist!");
             if (usersTableResult.Count == 0) { throw new Exception($"The username {Username} does not exist!"); }
-            var currentUser = usersTableResult.FirstOrDefault();
-            if (currentUser == null) { throw new Exception($"Could not retrieve user details for username: {Username}"); }
+            ModelUser = usersTableResult.FirstOrDefault()
+                ?? throw new Exception($"Could not retrieve user details for username: {Username}");
 
-            await SupabaseConnection?.SupabaseClient.Auth.SignIn(currentUser?.Email!, Password)!;
+            await SupabaseConnection?.SupabaseClient.Auth.SignIn(ModelUser.Email, Password)!;
 
-            var statusesTableResult = await FilterAsync<ModelsStatuses>("Id", Constants.Operator.Equals, currentUser?.StatusId!)
-                ?? throw new Exception($"The status id {currentUser?.StatusId!} does not exist!");
-            if (statusesTableResult.Count == 0) { throw new Exception($"The status id {currentUser?.StatusId!} does not exist!"); }
-            var status = statusesTableResult.FirstOrDefault();
-            if (currentUser != null) { UserStatus = status?.Status; UserId = currentUser?.Id;  }
-            else { throw new Exception($"Could not retrieve status details for status id: {currentUser?.StatusId}"); }
+            var statusesTableResult = await FilterAsync<ModelsStatuses>("Id", Constants.Operator.Equals, ModelUser.StatusId)
+                ?? throw new Exception($"The status id {ModelUser.StatusId} does not exist!");
+            if (statusesTableResult.Count == 0) { throw new Exception($"The status id {ModelUser.StatusId} does not exist!"); }
+            var status = statusesTableResult.FirstOrDefault()
+                ?? throw new Exception($"Could not retrieve status details for status id: {ModelUser.StatusId}");
+            
+            ModelUser.StatusName = status.Status;
         }
         catch (Exception e) { throw new Exception($"Login failed: {e.Message}", e); }
     }
@@ -38,7 +38,25 @@ public partial class RepositoriesSupabase
     {
         await SupabaseConnection?.SupabaseClient.Auth.SignOut()!;
 
-        UserId = null;
-        UserStatus = null;
+        ModelUser = null;
     }
+
+    //public async Task UpdateAvatar(int UserId, string FilePath)
+    //{
+    //    try
+    //    {
+    //        var bucket = SupabaseConnection?.SupabaseClient.Storage.From("avatars");
+    //        var fileName = $"avatar_{UserId}_{DateTime.Now.Ticks}.jpg";
+
+    //        await bucket!.Update(fileName, FilePath);
+    //        var url = bucket.GetPublicUrl(fileName);
+
+    //        await SupabaseConnection?.SupabaseClient
+    //            .From<ModelsUser>()
+    //            .Where(user => user.Id == UserId)
+    //            .Set(user => user.AvatarUrl!, url)
+    //            .Update()!;
+    //    }
+    //    catch (Exception e) { throw new Exception($"Update avatar failed: {e.Message}", e ); }
+    //}
 }

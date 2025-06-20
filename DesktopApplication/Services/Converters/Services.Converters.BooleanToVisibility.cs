@@ -1,4 +1,4 @@
-﻿namespace DesktopApplication.Services.Converters.BooleanToVisibility;
+﻿namespace DesktopApplication.Services.Converters;
 
 using System.Globalization;
 using System.Windows;

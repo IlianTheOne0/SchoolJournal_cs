@@ -1,4 +1,4 @@
-﻿namespace Database.Models.Tables.Subjects;
+﻿namespace Models.Tables.Subjects;
 
 using Supabase.Postgrest.Models;
 using Supabase.Postgrest.Attributes;

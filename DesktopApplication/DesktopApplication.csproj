@@ -67,8 +67,13 @@
     <None Remove="Assets\Fonts\Roboto\Roboto_SemiCondensed-SemiBoldItalic.ttf" />
     <None Remove="Assets\Fonts\Roboto\Roboto_SemiCondensed-Thin.ttf" />
     <None Remove="Assets\Fonts\Roboto\Roboto_SemiCondensed-ThinItalic.ttf" />
+    <None Remove="Assets\Icons\DefaultAvatar.png" />
     <None Remove="Assets\Icons\Logo.ico" />
   </ItemGroup>
+	
+	<ItemGroup>
+	  <Page Remove=".xaml" />
+	</ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
@@ -81,6 +86,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Database\Database.csproj" />
+    <ProjectReference Include="..\Models\Models.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -142,6 +148,7 @@
     <Resource Include="Assets\Fonts\Roboto\Roboto_SemiCondensed-SemiBoldItalic.ttf" />
     <Resource Include="Assets\Fonts\Roboto\Roboto_SemiCondensed-Thin.ttf" />
     <Resource Include="Assets\Fonts\Roboto\Roboto_SemiCondensed-ThinItalic.ttf" />
+    <Resource Include="Assets\Avatars\DefaultAvatar.png" />
     <Resource Include="Assets\Icons\Logo.ico" />
   </ItemGroup>
 

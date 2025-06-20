@@ -1,10 +1,9 @@
 ﻿namespace DesktopApplication;
 
 using DesktopApplication.Services.Auth;
-using DesktopApplication.Services.Converters.BooleanToVisibility;
+using DesktopApplication.Services.Converters;
 using DesktopApplication.Services.Navigation;
 using DesktopApplication.Services.Supabase;
-using DesktopApplication.Services.Converters.BooleanToVisibility;
 using DesktopApplication.ViewModels.Home;
 using DesktopApplication.ViewModels.Login;
 using DesktopApplication.Views;
@@ -41,7 +40,8 @@ public partial class App : Application
         );
         services.AddSingleton<ViewModelsHome>(
             provider => new ViewModelsHome(
-                ServiceAuth: provider.GetRequiredService<ServicesAuth>()
+                ServiceAuth: provider.GetRequiredService<ServicesAuth>(),
+                ServiceNavigation: provider.GetRequiredService<ServicesNavigation>()
             )
         );
 
@@ -55,6 +55,7 @@ public partial class App : Application
             }
         );
         services.AddSingleton<ServicesConvertersBooleanToVisibility>();
+        services.AddSingleton<ServicesConvertersUriValidationConverter>();
 
         // User Controls
         services.AddSingleton<LoginUserControl>(
@@ -62,7 +63,7 @@ public partial class App : Application
                 ViewModel: provider.GetRequiredService<ViewModelsLogin>()
             )
         );
-        services.AddTransient<HomeUserControl>(
+        services.AddSingleton<HomeUserControl>(
             provider => new HomeUserControl(
                 ViewModel: provider.GetRequiredService<ViewModelsHome>()
             )

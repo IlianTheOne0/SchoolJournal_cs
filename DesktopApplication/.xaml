@@ -6,7 +6,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <converters:ServicesConvertersBooleanToVisibility x:Key="BooleanToVisibilityConverter"/>
-
+            <converters:ServicesConvertersUriValidationConverter x:Key="ImageSourceConverter"/>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Assets/Fonts/Fonts.Roboto.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/Assets/Fonts/Fonts.Caveat.xaml"/>

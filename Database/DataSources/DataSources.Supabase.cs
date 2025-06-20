@@ -1,6 +1,6 @@
-﻿namespace Database.DataSources.Supabase;
+﻿namespace Models.DataSources.Supabase;
 
-using Database.Interfaces.DataSources;
+using Models.Interfaces.DataSources;
 using global::Supabase;
 
 public class DataSourcesSupabase : InterfacesDataSources

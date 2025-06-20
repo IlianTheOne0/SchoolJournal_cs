@@ -1,4 +1,4 @@
-﻿namespace Database.Models.Tables.Grades;
+﻿namespace Models.Tables.Grades;
 
 using Supabase.Postgrest.Models;
 using Supabase.Postgrest.Attributes;

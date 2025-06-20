@@ -1,4 +1,4 @@
-﻿namespace Database.Interfaces.DataSources;
+﻿namespace Models.Interfaces.DataSources;
 
 public interface InterfacesDataSources
 {

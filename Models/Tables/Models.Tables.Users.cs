@@ -1,4 +1,4 @@
-﻿namespace Database.Models.Tables.Users;
+﻿namespace Models.Tables.Users;
 
 using Supabase.Postgrest.Models;
 using Supabase.Postgrest.Attributes;
@@ -26,4 +26,9 @@ public class ModelsUser : BaseModel
 
     [Column("StatusId")]
     public int StatusId { get; set; }
+
+    [Column("AvatarUrl")]
+    public string? AvatarUrl { get; set; } = null;
+
+    public string? StatusName { get; set; } = null;
 }

@@ -1,7 +1,7 @@
 ﻿namespace DesktopApplication.Views;
 
-using DesktopApplication.Services.Navigation;
 using DesktopApplication.ViewModels.Home;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 

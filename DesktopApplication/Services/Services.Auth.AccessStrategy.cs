@@ -4,7 +4,7 @@ using DesktopApplication.Interfaces.AccessStrategy;
 using DesktopApplication.Services.Strategies.AdminAccess;
 using DesktopApplication.Services.Strategies.StudentAccess;
 using DesktopApplication.Services.Strategies.TeacherAccess;
-using System.Windows;
+using Models.Tables.Users;
 
 public partial class ServicesAuth
 {
@@ -15,11 +15,14 @@ public partial class ServicesAuth
     {
         try
         {
-            _interfacesAccessStrategy = RepositorySupabase.UserStatus switch
+            ModelsUser modelUser = _repositorySupabase.ModelUser!;
+            if (modelUser == null) { throw new Exception("SetupAccessStrategy failed: The model of user is empty!"); }
+
+            _interfacesAccessStrategy = modelUser.StatusName switch
             {
-                "Admin" => new ServicesStrategiesAdminAccess(),
-                "Teacher" => new ServicesStrategiesTeacherAccess(),
-                "Student" => new ServicesStrategiesStudentAccess(),
+                "Admin" => new ServicesStrategiesAdminAccess(modelUser),
+                "Teacher" => new ServicesStrategiesTeacherAccess(modelUser),
+                "Student" => new ServicesStrategiesStudentAccess(modelUser),
                 _ => throw new Exception("SetupAccessStrategy failed: Unknown status")
             };
         }

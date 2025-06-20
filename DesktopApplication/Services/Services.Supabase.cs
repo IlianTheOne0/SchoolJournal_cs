@@ -1,6 +1,6 @@
 ﻿namespace DesktopApplication.Services.Supabase;
 
-using Database.Repositories.Supabase;
+using Models.Repositories.Supabase;
 
 public class ServicesSupabase
 {
