@@ -18,10 +18,6 @@ public class ServicesNavigation
         var view = _serviceProvider.GetRequiredService<TView>();
         var viewModel = _serviceProvider.GetRequiredService<TViewModel>();
 
-        view.DataContext = viewModel;
-
-        var title = typeof(TView).Name.Replace("UserControl", "");
-
         OnNavigate?.Invoke(view);
     }
 }

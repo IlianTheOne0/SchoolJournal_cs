@@ -2,9 +2,6 @@
 
 using CommunityToolkit.Mvvm.Input;
 using DesktopApplication.Services.Auth;
-using DesktopApplication.Services.Navigation;
-using DesktopApplication.Views;
-using MaterialDesignThemes.Wpf;
 using Models.Tables.Users;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -14,10 +11,8 @@ using System.Windows.Input;
 public class ViewModelsHome : INotifyPropertyChanged
 {
     public ICommand CommandLogOut { get; }
-    public ICommand NavigateToBreadcrumbCommand;
 
     private readonly ServicesAuth _serviceAuth;
-    private readonly ServicesNavigation _serviceNavigation;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -26,10 +21,9 @@ public class ViewModelsHome : INotifyPropertyChanged
     private bool _canManageUsers; public bool CanManageUsers { get => _canManageUsers; set { _canManageUsers = value; OnPropertyChanged(); } }
     private ModelsUser? _modelUser = null; public ModelsUser ModelUser { get => _modelUser!; set { _modelUser = value; OnPropertyChanged(); } }
 
-    public ViewModelsHome(ServicesAuth ServiceAuth, ServicesNavigation ServiceNavigation)
+    public ViewModelsHome(ServicesAuth ServiceAuth)
     {
         _serviceAuth = ServiceAuth;
-        _serviceNavigation = ServiceNavigation;
 
         CommandLogOut = new AsyncRelayCommand(OnLogOut);
     }
@@ -51,7 +45,7 @@ public class ViewModelsHome : INotifyPropertyChanged
     {
         await _serviceAuth.Logout();
 
-        ModelUser = null!;
+        ModelUser = null!; OnPropertyChanged(nameof(ModelUser));
         OnPropertyChanged(nameof(CanGrade)); OnPropertyChanged(nameof(CanViewGrades)); OnPropertyChanged(nameof(CanManageUsers));
     }
 

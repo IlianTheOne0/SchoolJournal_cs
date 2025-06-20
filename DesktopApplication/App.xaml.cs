@@ -40,8 +40,7 @@ public partial class App : Application
         );
         services.AddSingleton<ViewModelsHome>(
             provider => new ViewModelsHome(
-                ServiceAuth: provider.GetRequiredService<ServicesAuth>(),
-                ServiceNavigation: provider.GetRequiredService<ServicesNavigation>()
+                ServiceAuth: provider.GetRequiredService<ServicesAuth>()
             )
         );
 
