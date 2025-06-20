@@ -7,6 +7,15 @@
         mc:Ignorable="d"
         Height="450" Width="800">
     <Grid>
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Margin="20">
+            <Button Content="Grade Student"
+            Command="{Binding CommandGrade}"
+                Visibility="{Binding CanGrade, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                <Button Content="Manage Users"
+            Visibility="{Binding CanManageUsers, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        </StackPanel>
+
         <Button 
             x:Name="LoginButton"
             Content="Log Out"

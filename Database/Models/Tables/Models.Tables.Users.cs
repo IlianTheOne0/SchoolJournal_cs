@@ -1,4 +1,4 @@
-﻿namespace Database.Models.Users;
+﻿namespace Database.Models.Tables.Users;
 
 using Supabase.Postgrest.Models;
 using Supabase.Postgrest.Attributes;
@@ -23,4 +23,7 @@ public class ModelsUser : BaseModel
 
     [Column("CreatedAt")]
     public DateTime CreatedAt { get; set; }
+
+    [Column("StatusId")]
+    public int StatusId { get; set; }
 }

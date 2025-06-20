@@ -3,7 +3,7 @@
 using Database.Interfaces.DataSources;
 using global::Supabase;
 
-public class DataSourcesSupabase : IDataSources
+public class DataSourcesSupabase : InterfacesDataSources
 {
     public Client SupabaseClient { get; private set; } = null!;
 

@@ -1,15 +1,15 @@
 ﻿namespace DesktopApplication;
 
 using DesktopApplication.Services.Auth;
+using DesktopApplication.Services.Converters.BooleanToVisibility;
 using DesktopApplication.Services.Navigation;
 using DesktopApplication.Services.Supabase;
+using DesktopApplication.Services.Converters.BooleanToVisibility;
 using DesktopApplication.ViewModels.Home;
 using DesktopApplication.ViewModels.Login;
 using DesktopApplication.Views;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using System.Windows;
-using System.Windows.Navigation;
 
 public partial class App : Application
 {
@@ -54,6 +54,7 @@ public partial class App : Application
                 return new ServicesAuth(serviceSupabase.RepositorySupabase);
             }
         );
+        services.AddSingleton<ServicesConvertersBooleanToVisibility>();
 
         // User Controls
         services.AddSingleton<LoginUserControl>(
@@ -61,7 +62,7 @@ public partial class App : Application
                 ViewModel: provider.GetRequiredService<ViewModelsLogin>()
             )
         );
-        services.AddSingleton<HomeUserControl>(
+        services.AddTransient<HomeUserControl>(
             provider => new HomeUserControl(
                 ViewModel: provider.GetRequiredService<ViewModelsHome>()
             )

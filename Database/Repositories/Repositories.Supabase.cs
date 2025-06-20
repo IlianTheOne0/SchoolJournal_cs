@@ -5,7 +5,7 @@ using Database.Interfaces.Repositories.Database;
 using Database.Models.SupabaseConfig;
 using Database.Repositories.Json;
 
-public partial class RepositoriesSupabase : IDatabaseRepositories
+public partial class RepositoriesSupabase : InterfacesDatabaseRepositories
 {
     private DataSourcesSupabase? SupabaseConnection { get; set; } = null;
     private RepositoriesJson? _repositoryJson { get; set; } = null;
