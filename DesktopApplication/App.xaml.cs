@@ -4,9 +4,14 @@ using DesktopApplication.Services.Auth;
 using DesktopApplication.Services.Converters;
 using DesktopApplication.Services.Navigation;
 using DesktopApplication.Services.Supabase;
+
 using DesktopApplication.ViewModels.Home;
 using DesktopApplication.ViewModels.Login;
-using DesktopApplication.Views;
+using DesktopApplication.ViewModels.SidebarMenu;
+
+using DesktopApplication.Views.UserControls;
+using DesktopApplication.Views.Pages;
+
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 
@@ -38,11 +43,12 @@ public partial class App : Application
                 ServiceAuth: provider.GetRequiredService<ServicesAuth>()
             )
         );
-        services.AddSingleton<ViewModelsHome>(
-            provider => new ViewModelsHome(
+        services.AddSingleton<ViewModelsSidebarMenu>(
+            provider => new ViewModelsSidebarMenu(
                 ServiceAuth: provider.GetRequiredService<ServicesAuth>()
             )
         );
+        services.AddSingleton<ViewModelsHome>();
 
         // Services
         services.AddSingleton<ServicesSupabase>();
@@ -57,14 +63,22 @@ public partial class App : Application
         services.AddSingleton<ServicesConvertersUriValidationConverter>();
 
         // User Controls
-        services.AddSingleton<LoginPage>(
-            provider => new LoginPage(
+        services.AddSingleton<UserControlsSidebarMenu>(
+            provider => new UserControlsSidebarMenu(
+                ViewModel: provider.GetRequiredService<ViewModelsSidebarMenu>()
+            )
+        );
+
+        // Pages
+        services.AddSingleton<PageLogin>(
+            provider => new PageLogin(
                 ViewModel: provider.GetRequiredService<ViewModelsLogin>()
             )
         );
-        services.AddSingleton<HomePage>(
-            provider => new HomePage(
-                ViewModel: provider.GetRequiredService<ViewModelsHome>()
+        services.AddSingleton<PageHome>(
+            provider => new PageHome(
+                ViewModel: provider.GetRequiredService<ViewModelsHome>(),
+                Sidebar: provider.GetRequiredService<UserControlsSidebarMenu>()
             )
         );
 

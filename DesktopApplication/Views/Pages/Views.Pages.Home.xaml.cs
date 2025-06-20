@@ -1,22 +1,23 @@
-﻿namespace DesktopApplication.Views;
+﻿namespace DesktopApplication.Views.Pages;
 
 using DesktopApplication.Services.Navigation;
 using DesktopApplication.ViewModels.Home;
+using DesktopApplication.Views.UserControls;
 using System.Windows;
 using System.Windows.Controls;
 
-public partial class HomePage : UserControl
+public partial class PageHome : UserControl
 {
     private readonly ViewModelsHome _viewModel;
+    private readonly UserControlsSidebarMenu _sidebar;
 
-    public HomePage(ViewModelsHome ViewModel)
+    public PageHome(ViewModelsHome ViewModel, UserControlsSidebarMenu Sidebar)
     {
         InitializeComponent();
         _viewModel = ViewModel;
+        _sidebar = Sidebar;
 
-        try { DataContext = ViewModel; Loaded += HomeUserControl_Loaded; }
+        try { DataContext = ViewModel; SidebarHost.Content = _sidebar; }
         catch (Exception e) { MessageBox.Show($"Error initializing Home: {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
-
-    private void HomeUserControl_Loaded(object sender, RoutedEventArgs e) { _viewModel.LoadDataAsync(); }
 }
