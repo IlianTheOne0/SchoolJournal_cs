@@ -5,12 +5,18 @@ using DesktopApplication.ViewModels.Home;
 using System.Windows;
 using System.Windows.Controls;
 
-public partial class HomeUserControl : UserControl
+public partial class HomePage : UserControl
 {
-    public HomeUserControl(ViewModelsHome ViewModel)
+    private readonly ViewModelsHome _viewModel;
+
+    public HomePage(ViewModelsHome ViewModel)
     {
         InitializeComponent();
-        try { DataContext = ViewModel; }
+        _viewModel = ViewModel;
+
+        try { DataContext = ViewModel; Loaded += HomeUserControl_Loaded; }
         catch (Exception e) { MessageBox.Show($"Error initializing Home: {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
+
+    private void HomeUserControl_Loaded(object sender, RoutedEventArgs e) { _viewModel.LoadDataAsync(); }
 }

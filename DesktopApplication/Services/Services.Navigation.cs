@@ -6,6 +6,7 @@ using System.Windows.Controls;
 public class ServicesNavigation
 {
     private readonly IServiceProvider _serviceProvider;
+    
     public event Action<UserControl>? OnNavigate;
 
     public ServicesNavigation(IServiceProvider ServiceProvider) => _serviceProvider = ServiceProvider;
@@ -17,7 +18,6 @@ public class ServicesNavigation
         var view = _serviceProvider.GetRequiredService<TView>();
         var viewModel = _serviceProvider.GetRequiredService<TViewModel>();
 
-        view.DataContext = viewModel;
         OnNavigate?.Invoke(view);
     }
 }

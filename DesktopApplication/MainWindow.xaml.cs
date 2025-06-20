@@ -26,14 +26,14 @@ public partial class MainWindow : Window
 
     public void OnAuthServicePropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(ServicesAuth.IsLoggedIn) && _serviceAuth.IsLoggedIn) { _serviceNavigation.NavigateTo<HomeUserControl, ViewModelsHome>(); }
-        if (e.PropertyName == nameof(ServicesAuth.IsLoggedIn) && !_serviceAuth.IsLoggedIn) { _serviceNavigation.NavigateTo<LoginUserControl, ViewModelsLogin>(); }
+        if (e.PropertyName == nameof(ServicesAuth.IsLoggedIn) && _serviceAuth.IsLoggedIn) { _serviceNavigation.NavigateTo<HomePage, ViewModelsHome>(); }
+        if (e.PropertyName == nameof(ServicesAuth.IsLoggedIn) && !_serviceAuth.IsLoggedIn) { _serviceNavigation.NavigateTo<LoginPage, ViewModelsLogin>(); }
     }
 
     private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
     {
-        if (_serviceAuth.IsLoggedIn) { _serviceNavigation.NavigateTo<HomeUserControl, ViewModelsHome>(); }
-        else { _serviceNavigation.NavigateTo<LoginUserControl, ViewModelsLogin>(); }
+        if (_serviceAuth.IsLoggedIn) { _serviceNavigation.NavigateTo<HomePage, ViewModelsHome>(); }
+        else { _serviceNavigation.NavigateTo<LoginPage, ViewModelsLogin>(); }
     }
 
     private void SetContent(UserControl Content) => this.Content = Content;

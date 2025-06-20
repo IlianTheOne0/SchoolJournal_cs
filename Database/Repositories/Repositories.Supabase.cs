@@ -1,11 +1,11 @@
-﻿namespace Database.Repositories.Supabase;
+﻿namespace Models.Repositories.Supabase;
 
-using Database.DataSources.Supabase;
-using Database.Interfaces.Repositories.Database;
-using Database.Models.SupabaseConfig;
-using Database.Repositories.Json;
+using Models.DataSources.Supabase;
+using Models.Interfaces.Repositories.Database;
+using Models.SupabaseConfig;
+using Models.Repositories.Json;
 
-public partial class RepositoriesSupabase : IDatabaseRepositories
+public partial class RepositoriesSupabase : InterfacesDatabaseRepositories
 {
     private DataSourcesSupabase? SupabaseConnection { get; set; } = null;
     private RepositoriesJson? _repositoryJson { get; set; } = null;

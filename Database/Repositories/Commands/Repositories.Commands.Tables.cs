@@ -1,4 +1,4 @@
-﻿namespace Database.Repositories.Supabase;
+﻿namespace Models.Repositories.Supabase;
 
 using global::Supabase.Postgrest.Models;
 using System;
@@ -14,7 +14,7 @@ public partial class RepositoriesSupabase
     {
         try
         {
-            SupabaseConnection.SupabaseClient.Postgrest.Options.Schema = Schema ?? _defaultSchema;
+            SupabaseConnection!.SupabaseClient.Postgrest.Options.Schema = Schema ?? _defaultSchema;
             var result = await SupabaseConnection?.SupabaseClient.From<TMethod>().Get()!;
 
             return result.Models.ToList();
@@ -27,7 +27,7 @@ public partial class RepositoriesSupabase
     {
         try
         {
-            SupabaseConnection.SupabaseClient.Postgrest.Options.Schema = Schema ?? _defaultSchema;
+            SupabaseConnection!.SupabaseClient.Postgrest.Options.Schema = Schema ?? _defaultSchema;
             var result = await SupabaseConnection?.SupabaseClient.From<TMethod>().Select(Columns).Get()!;
 
             return result.Models.ToList();
@@ -40,7 +40,7 @@ public partial class RepositoriesSupabase
     {
         try
         {
-            SupabaseConnection.SupabaseClient.Postgrest.Options.Schema = Schema ?? _defaultSchema;
+            SupabaseConnection!.SupabaseClient.Postgrest.Options.Schema = Schema ?? _defaultSchema;
             var result = await SupabaseConnection?.SupabaseClient.From<TMethod>().Filter(ColumnName, Oper, Value).Get()!;
 
             return result.Models;
@@ -53,7 +53,7 @@ public partial class RepositoriesSupabase
     {
         try
         {
-            SupabaseConnection.SupabaseClient.Postgrest.Options.Schema = Schema ?? _defaultSchema;
+            SupabaseConnection!.SupabaseClient.Postgrest.Options.Schema = Schema ?? _defaultSchema;
             var result = await SupabaseConnection?.SupabaseClient.From<TMethod>().Select(JoinString).Filter(FilterColumnName, Oper, Value).Get()!;
 
             return result.Models.ToList();

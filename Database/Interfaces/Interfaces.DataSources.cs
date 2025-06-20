@@ -1,6 +1,6 @@
-﻿namespace Database.Interfaces.DataSources;
+﻿namespace Models.Interfaces.DataSources;
 
-public interface IDataSources
+public interface InterfacesDataSources
 {
     //void Execute(string Url, string Key);
 }

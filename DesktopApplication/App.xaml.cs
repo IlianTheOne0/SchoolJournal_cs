@@ -1,15 +1,14 @@
 ﻿namespace DesktopApplication;
 
 using DesktopApplication.Services.Auth;
+using DesktopApplication.Services.Converters;
 using DesktopApplication.Services.Navigation;
 using DesktopApplication.Services.Supabase;
 using DesktopApplication.ViewModels.Home;
 using DesktopApplication.ViewModels.Login;
 using DesktopApplication.Views;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using System.Windows;
-using System.Windows.Navigation;
 
 public partial class App : Application
 {
@@ -54,15 +53,17 @@ public partial class App : Application
                 return new ServicesAuth(serviceSupabase.RepositorySupabase);
             }
         );
+        services.AddSingleton<ServicesConvertersBooleanToVisibility>();
+        services.AddSingleton<ServicesConvertersUriValidationConverter>();
 
         // User Controls
-        services.AddSingleton<LoginUserControl>(
-            provider => new LoginUserControl(
+        services.AddSingleton<LoginPage>(
+            provider => new LoginPage(
                 ViewModel: provider.GetRequiredService<ViewModelsLogin>()
             )
         );
-        services.AddSingleton<HomeUserControl>(
-            provider => new HomeUserControl(
+        services.AddSingleton<HomePage>(
+            provider => new HomePage(
                 ViewModel: provider.GetRequiredService<ViewModelsHome>()
             )
         );

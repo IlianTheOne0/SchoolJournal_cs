@@ -1,6 +1,6 @@
-﻿namespace Database.Interfaces.Repositories.Database;
+﻿namespace Models.Interfaces.Repositories.Database;
 
-public interface IDatabaseRepositories
+public interface InterfacesDatabaseRepositories
 {
     void InitDatabase(string FilePath);
 }

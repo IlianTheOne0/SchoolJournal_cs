@@ -16,4 +16,8 @@
 	<PackageReference Include="Supabase.Postgrest" Version="4.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Models\Models.csproj" />
+  </ItemGroup>
+
 </Project>
