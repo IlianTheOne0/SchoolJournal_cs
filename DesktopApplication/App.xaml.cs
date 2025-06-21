@@ -5,9 +5,9 @@ using DesktopApplication.Services.Converters;
 using DesktopApplication.Services.Navigation;
 using DesktopApplication.Services.Supabase;
 
-using DesktopApplication.ViewModels.Home;
 using DesktopApplication.ViewModels.Login;
 using DesktopApplication.ViewModels.SidebarMenu;
+using DesktopApplication.ViewModels.Profile;
 
 using DesktopApplication.Views.UserControls;
 using DesktopApplication.Views.Pages;
@@ -43,12 +43,18 @@ public partial class App : Application
                 ServiceAuth: provider.GetRequiredService<ServicesAuth>()
             )
         );
-        services.AddSingleton<ViewModelsSidebarMenu>(
-            provider => new ViewModelsSidebarMenu(
+        services.AddSingleton<ViewModelsProfile>(
+            provider => new ViewModelsProfile(
                 ServiceAuth: provider.GetRequiredService<ServicesAuth>()
             )
         );
-        services.AddSingleton<ViewModelsHome>();
+        services.AddSingleton<ViewModelsSidebarMenu>(
+            provider => new ViewModelsSidebarMenu(
+                ServiceAuth: provider.GetRequiredService<ServicesAuth>(),
+                ServiceNavigation: provider.GetRequiredService<ServicesNavigation>(),
+                ViewModelProvider: provider.GetRequiredService<ViewModelsProfile>()
+            )
+        );
 
         // Services
         services.AddSingleton<ServicesSupabase>();
@@ -59,25 +65,32 @@ public partial class App : Application
                 return new ServicesAuth(serviceSupabase.RepositorySupabase);
             }
         );
+        services.AddSingleton<ServicesConverterBooleanToBorderBrush>();
         services.AddSingleton<ServicesConvertersBooleanToVisibility>();
+        services.AddSingleton<ServicesConvertersBoolToGender>();
         services.AddSingleton<ServicesConvertersUriValidationConverter>();
 
         // User Controls
-        services.AddSingleton<UserControlsSidebarMenu>(
+        services.AddTransient<UserControlsSidebarMenu>(
             provider => new UserControlsSidebarMenu(
                 ViewModel: provider.GetRequiredService<ViewModelsSidebarMenu>()
             )
         );
 
         // Pages
-        services.AddSingleton<PageLogin>(
+        services.AddTransient<PageLogin>(
             provider => new PageLogin(
                 ViewModel: provider.GetRequiredService<ViewModelsLogin>()
             )
         );
-        services.AddSingleton<PageHome>(
+        services.AddTransient<PageHome>(
             provider => new PageHome(
-                ViewModel: provider.GetRequiredService<ViewModelsHome>(),
+                Sidebar: provider.GetRequiredService<UserControlsSidebarMenu>()
+            )
+        );
+        services.AddTransient<PageProfile>(
+            provider => new PageProfile(
+                ViewModel: provider.GetRequiredService<ViewModelsProfile>(),
                 Sidebar: provider.GetRequiredService<UserControlsSidebarMenu>()
             )
         );

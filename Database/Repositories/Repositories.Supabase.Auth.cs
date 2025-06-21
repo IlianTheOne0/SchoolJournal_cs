@@ -5,6 +5,7 @@ using Models.Tables.Statuses;
 using global::Supabase.Postgrest;
 using System;
 using System.Threading.Tasks;
+using Models.Tables.Classes;
 
 public partial class RepositoriesSupabase
 {
@@ -28,8 +29,16 @@ public partial class RepositoriesSupabase
             if (statusesTableResult.Count == 0) { throw new Exception($"The status id {ModelUser.StatusId} does not exist!"); }
             var status = statusesTableResult.FirstOrDefault()
                 ?? throw new Exception($"Could not retrieve status details for status id: {ModelUser.StatusId}");
-            
+                        
             ModelUser.StatusName = status.Status;
+
+            var educationalInstitutionsTableResult = await FilterAsync<ModelsEducationalInstitutions>("Id", Constants.Operator.Equals, ModelUser.EducationalInstitutionId)
+                ?? throw new Exception($"The educational institution id {ModelUser.EducationalInstitutionId} does not exist!");
+            if (educationalInstitutionsTableResult.Count == 0) { throw new Exception($"Theeducational institution id {ModelUser.EducationalInstitutionId} does not exist!"); }
+            var educationalInstitution = educationalInstitutionsTableResult.FirstOrDefault()
+                ?? throw new Exception($"Could not retrieve educational institution details for educational institution id: {ModelUser.EducationalInstitutionId}");
+
+            ModelUser.EducationalInstitutionName = educationalInstitution.Name;
         }
         catch (Exception e) { throw new Exception($"Login failed: {e.Message}", e); }
     }

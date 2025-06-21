@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DesktopApplication.Views.Pages"
-        xmlns:userControls="clr-namespace:DesktopApplication.Views.UserControls"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:converters="clr-namespace:DesktopApplication.Services.Converters"
         mc:Ignorable="d">
@@ -14,10 +13,20 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <ContentControl x:Name="SidebarHost" Grid.Column="0"/>
-        
-        <Grid Grid.Column="1" Background="{StaticResource MaterialDesignDarkSeparatorBackground}">
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+        <ContentControl x:Name="SidebarHost" Grid.Column="0" Grid.Row="0"/>
+
+        <Grid
+            Grid.Column="1"
+            Background="{StaticResource MaterialDesignDarkSeparatorBackground}">
+            <TextBlock
+                Text="Home"
+                FontSize="24" FontWeight="Heavy" FontFamily="{StaticResource Roboto}"
+                VerticalAlignment="Top" HorizontalAlignment="Center"
+                Margin="0,50,0,0"/>
+
+            <StackPanel 
+                VerticalAlignment="Center" 
+                HorizontalAlignment="Center">
                 <materialDesign:PackIcon 
                     Kind="InformationOutline" 
                     Width="100" Height="100"

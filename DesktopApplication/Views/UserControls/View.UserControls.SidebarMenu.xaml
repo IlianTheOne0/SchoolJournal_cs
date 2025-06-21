@@ -7,8 +7,20 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d">
     <Border Background="{StaticResource MaterialDesignShadowBrush}">
-        <StackPanel Margin="20,10">
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,50">
+        <Grid Margin="20,10" MinHeight="700">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,50">
                 <Image Source="/Assets/Icons/Logo.ico" Width="60"/>
                 <TextBlock
                     Text="Journal" 
@@ -18,7 +30,7 @@
                     />
             </StackPanel>
 
-            <StackPanel Margin="0,0,0,50">
+            <StackPanel Grid.Row="1" Margin="0,0,0,50">
                 <Border CornerRadius="50"
                         Width="96" Height="96"
                         Margin="0,0,0,20">
@@ -60,42 +72,51 @@
                 FontSize="20" FontFamily="{StaticResource Roboto}"
                 Command="{Binding CommandLogOut}" Style="{StaticResource MaterialDesignFlatButton}"
                 Foreground="White"
-                HorizontalAlignment="Stretch"
+                Grid.Row="2" HorizontalAlignment="Stretch"
                 Margin="0,0,0,20"/>
 
             <Button
                 Content="Profile"
                 FontSize="20" FontFamily="{StaticResource Roboto}"
-                Style="{StaticResource MaterialDesignFlatButton}"
+                Command="{Binding CommandProfile}" Style="{StaticResource MaterialDesignFlatButton}"
                 Foreground="White"
-                HorizontalAlignment="Stretch"
+                Grid.Row="3" HorizontalAlignment="Stretch"
                 Margin="0,0,0,20"/>
 
             <Button
                 Content="Manage Users"
                 FontSize="20" FontFamily="{StaticResource Roboto}"
                 Visibility="{Binding CanManageUsers, Converter={StaticResource BooleanToVisibilityConverter}}"
-                Style="{StaticResource MaterialDesignFlatButton}"
+                Command="{Binding CommandManageUsers}" Style="{StaticResource MaterialDesignFlatButton}"
                 Foreground="White"
-                HorizontalAlignment="Stretch"
+                Grid.Row="4" HorizontalAlignment="Stretch"
                 Margin="0,0,0,20"/>
 
             <Button
                 Content="Assign Grades"
                 FontSize="20" FontFamily="{StaticResource Roboto}"
                 Visibility="{Binding CanGrade, Converter={StaticResource BooleanToVisibilityConverter}}"
-                Style="{StaticResource MaterialDesignFlatButton}"
+                Command="{Binding CommandGrade}" Style="{StaticResource MaterialDesignFlatButton}"
                 Foreground="White"
-                HorizontalAlignment="Stretch"
+                Grid.Row="5" HorizontalAlignment="Stretch"
                 Margin="0,0,0,20"/>
 
             <Button
                 Content="View Grades"
                 FontSize="20" FontFamily="{StaticResource Roboto}"
                 Visibility="{Binding CanViewGrades, Converter={StaticResource BooleanToVisibilityConverter}}"
+                Command="{Binding CommandViewGrades}" Style="{StaticResource MaterialDesignFlatButton}"
+                Foreground="White"
+                Grid.Row="6" HorizontalAlignment="Stretch"/>
+
+            <Button
+                Content="Home"
+                FontSize="20" FontFamily="{StaticResource Roboto}"
+                Visibility="{Binding CanGoToHome, Converter={StaticResource BooleanToVisibilityConverter}}"
+                Command="{Binding CommandGoToHome}" 
                 Style="{StaticResource MaterialDesignFlatButton}"
                 Foreground="White"
-                HorizontalAlignment="Stretch"/>
-        </StackPanel>
+                Grid.Row="8" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"/>
+        </Grid>
     </Border>
 </UserControl>
