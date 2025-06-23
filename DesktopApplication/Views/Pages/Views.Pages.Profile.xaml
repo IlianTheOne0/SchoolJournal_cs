@@ -28,10 +28,27 @@
                 HorizontalAlignment="Center" VerticalAlignment="Center">
                 <StackPanel Orientation="Horizontal">
                     <Border
-                        CornerRadius="50"
-                        Width="128" Height="128"
-                        HorizontalAlignment="Left"    
-                        Margin="0,0,0,20">
+                    CornerRadius="50"
+                    Width="128" Height="128"
+                    HorizontalAlignment="Left"    
+                    Margin="0,0,0,20"
+                    Cursor="{Binding IsEditing, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter={x:Static Cursors.Hand}}">
+                        <Border.InputBindings>
+                            <MouseBinding 
+                            MouseAction="LeftClick" 
+                            Command="{Binding CommandUploadButton}"
+                            CommandParameter="{Binding}"/>
+                        </Border.InputBindings>
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsEditing}" Value="True">
+                                        <Setter Property="BorderBrush" Value="White"/>
+                                        <Setter Property="BorderThickness" Value="2"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
                         <Border.Background>
                             <ImageBrush Stretch="Fill">
                                 <ImageBrush.ImageSource>
@@ -49,11 +66,16 @@
                                 </ImageBrush.ImageSource>
                             </ImageBrush>
                         </Border.Background>
+                        <Border.ToolTip>
+                            <ToolTip Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                Click to change avatar
+                            </ToolTip>
+                        </Border.ToolTip>
                     </Border>
 
                     <StackPanel Orientation="Vertical" Margin="50,0,0,0">
                         <TextBox
-                            Text="{Binding ModelUser.FullName, FallbackValue='No data available', TargetNullValue='No data available'}"
+                            Text="{Binding ModelUser.FullName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue='No data available', TargetNullValue='No data available'}"
                             FontSize="52" FontWeight="Bold" FontFamily="{StaticResource Roboto}"
                             IsReadOnly="{Binding IsReadOnly}"
                             BorderThickness="0"
@@ -83,7 +105,7 @@
                             </TextBox.Style>
                         </TextBox>
                         <TextBox
-                            Text="{Binding ModelUser.Username, FallbackValue='No data available', TargetNullValue='No data available'}"
+                            Text="{Binding ModelUser.Username, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue='No data available', TargetNullValue='No data available'}"
                             FontSize="32" FontWeight="SemiBold" FontFamily="{StaticResource Roboto}"
                             IsReadOnly="{Binding IsReadOnly}"
                             BorderThickness="0"
@@ -131,38 +153,11 @@
                                     FontSize="20" FontWeight="Normal" FontFamily="{StaticResource Roboto}"
                                     Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left"
                                     Margin="5,10,0,10"/>
-                                <TextBox
+                                <TextBlock
                                     Text="{Binding ModelUser.Email, FallbackValue='No data available', TargetNullValue='No data available'}"
                                     FontSize="20" FontWeight="Bold" FontFamily="{StaticResource Roboto}"
-                                    IsReadOnly="{Binding IsReadOnly}"
-                                    BorderThickness="0"
                                     Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"
-                                    Background="Transparent"
-                                    Margin="0,10,-50,10">
-                                    <TextBox.Style>
-                                        <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
-                                            <Style.Triggers>
-                                                <Trigger Property="IsReadOnly" Value="True">
-                                                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                                                    <Setter Property="Template">
-                                                        <Setter.Value>
-                                                            <ControlTemplate TargetType="TextBox">
-                                                                <TextBlock 
-                                                                    Text="{TemplateBinding Text}"
-                                                                    FontSize="{TemplateBinding FontSize}" FontWeight="{TemplateBinding FontWeight}" FontFamily="{TemplateBinding FontFamily}"
-                                                                    Margin="{TemplateBinding Padding}"
-                                                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
-                                                            </ControlTemplate>
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                </Trigger>
-                                                <Trigger Property="IsReadOnly" Value="False">
-                                                    <Setter Property="BorderBrush" Value="{Binding IsReadOnly, Converter={StaticResource BooleanToBorderBrushConverter}}"/>
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBox.Style>
-                                </TextBox>
+                                    Margin="0,10,-50,10"/>
                             </Grid>
                         </Border>
 
@@ -178,7 +173,7 @@
                                     Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left"
                                     Margin="5,10,0,10"/>
                                 <TextBox
-                                    Text="{Binding ModelUser.PhoneNumber, FallbackValue='No data available', TargetNullValue='No data available'}"
+                                    Text="{Binding ModelUser.PhoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue='No data available', TargetNullValue='No data available'}"
                                     FontSize="20" FontWeight="Bold" FontFamily="{StaticResource Roboto}"
                                     IsReadOnly="{Binding IsReadOnly}"
                                     BorderThickness="0"
@@ -256,8 +251,16 @@
                                     Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left"
                                     Margin="150,10,0,10"
                                     Visibility="{Binding IsReadOnly, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
-                                    <ComboBoxItem Content="Male" Tag="True"/>
-                                    <ComboBoxItem Content="Female" Tag="False"/>
+                                    <ComboBoxItem
+                                        Tag="True"
+                                        FontSize="20" FontWeight="Bold" FontFamily="{StaticResource Roboto}">
+                                        Male
+                                    </ComboBoxItem>
+                                    <ComboBoxItem
+                                        Tag="False"
+                                        FontSize="20" FontWeight="Bold" FontFamily="{StaticResource Roboto}">
+                                        Female
+                                    </ComboBoxItem>
                                 </ComboBox>
                             </Grid>
                         </Border>

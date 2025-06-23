@@ -7,7 +7,7 @@ using Database.Repositories.Json;
 
 public partial class RepositoriesSupabase : InterfacesDatabaseRepositories
 {
-    private DataSourcesSupabase? SupabaseConnection { get; set; } = null;
+    public DataSourcesSupabase? SupabaseConnection { get; set; } = null;
     private RepositoriesJson? _repositoryJson { get; set; } = null;
     
     private string _defaultSchema { get; set; } = null!;

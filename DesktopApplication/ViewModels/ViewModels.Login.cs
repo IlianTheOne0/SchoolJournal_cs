@@ -1,7 +1,6 @@
 ﻿namespace DesktopApplication.ViewModels.Login;
 
 using CommunityToolkit.Mvvm.Input;
-using DesktopApplication.Services.Navigation;
 using DesktopApplication.Services.Auth;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;

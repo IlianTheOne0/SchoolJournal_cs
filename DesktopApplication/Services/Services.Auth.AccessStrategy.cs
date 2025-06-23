@@ -4,8 +4,7 @@ using DesktopApplication.Interfaces.AccessStrategy;
 using DesktopApplication.Services.Strategies.AdminAccess;
 using DesktopApplication.Services.Strategies.StudentAccess;
 using DesktopApplication.Services.Strategies.TeacherAccess;
-using Database.Repositories.Supabase;
-using Models.Tables.Users;
+using Models.Tables.Users.Extended;
 
 public partial class ServicesAuth
 {
@@ -16,7 +15,7 @@ public partial class ServicesAuth
     {
         try
         {
-            ModelsUser modelUser = _repositorySupabase.ModelUser!;
+            ModelsUserExtended modelUser = _repositorySupabase.ModelUser!;
             if (modelUser == null) { throw new Exception("SetupAccessStrategy failed: The model of user is empty!"); }
 
             _interfacesAccessStrategy = modelUser.StatusName switch

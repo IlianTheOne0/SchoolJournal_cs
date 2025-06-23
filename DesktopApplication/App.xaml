@@ -11,6 +11,8 @@
             <converters:ServicesConvertersInverseBooleanToVisibility x:Key="InverseBooleanToVisibilityConverter"/>
             <converters:ServicesConverterBooleanToBorderBrush x:Key="BooleanToBorderBrushConverter" TrueValue="Transparent" FalseValue="Black"/>
             
+            <Cursor x:Key="HandCursor">Hand</Cursor>
+            
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Assets/Fonts/Fonts.Roboto.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/Assets/Fonts/Fonts.Caveat.xaml"/>
