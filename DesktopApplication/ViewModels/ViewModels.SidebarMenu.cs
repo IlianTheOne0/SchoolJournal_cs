@@ -1,6 +1,7 @@
 ﻿namespace DesktopApplication.ViewModels.SidebarMenu;
 
 using CommunityToolkit.Mvvm.Input;
+using DesktopApplication.Services;
 using DesktopApplication.Services.Auth;
 using DesktopApplication.Services.Navigation;
 using DesktopApplication.ViewModels.Profile;
@@ -22,8 +23,8 @@ public class ViewModelsSidebarMenu : INotifyPropertyChanged
 
     private readonly ServicesAuth _serviceAuth;
     private readonly ServicesNavigation _serviceNavigation;
+    private readonly ServicesUser _serviceUser;
     private readonly ViewModelsProfile _viewModelsProfile;
-
     private Type _currentPageType; public Type CurrentPageType { get => _currentPageType; set { if (_currentPageType != value) { _currentPageType = value; OnPropertyChanged(); UpdateCanGoToHome(); } } }
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -34,9 +35,10 @@ public class ViewModelsSidebarMenu : INotifyPropertyChanged
     private bool _canGoToHome; public bool CanGoToHome { get => _canGoToHome; private set { if (_canGoToHome != value) { _canGoToHome = value; OnPropertyChanged(); } } }
     private ModelsUser? _modelUser = null; public ModelsUser ModelUser { get => _modelUser!; set { _modelUser = value; OnPropertyChanged(); OnPropertyChanged("AvatarUrl"); } }
 
-    public ViewModelsSidebarMenu(ServicesAuth ServiceAuth, ServicesNavigation ServiceNavigation, ViewModelsProfile ViewModelProvider)
+    public ViewModelsSidebarMenu(ServicesAuth ServiceAuth, ServicesNavigation ServiceNavigation, ServicesUser ServiceUser, ViewModelsProfile ViewModelProvider)
     {
-        _serviceAuth = ServiceAuth; _serviceNavigation = ServiceNavigation; _viewModelsProfile = ViewModelProvider;
+        _serviceAuth = ServiceAuth; _serviceNavigation = ServiceNavigation; _serviceUser = ServiceUser;
+        _viewModelsProfile = ViewModelProvider;
         _serviceNavigation.OnPageChanged += pageType => { CurrentPageType = pageType; };
 
         CommandLogOut = new AsyncRelayCommand(OnLogOut);
@@ -51,17 +53,20 @@ public class ViewModelsSidebarMenu : INotifyPropertyChanged
     {
         try
         {
-            ModelUser = _serviceAuth.AccessStrategy!.ModelUser;
-            CanGrade = _serviceAuth.AccessStrategy.CanGrade();
-            CanViewGrades = _serviceAuth.AccessStrategy.CanViewGrades();
-            CanManageUsers = _serviceAuth.AccessStrategy.CanManageUsers();
+            ModelUser = _serviceUser.AccessStrategy?.ModelUser!;
+            CanGrade = _serviceUser.AccessStrategy?.CanGrade() ?? false;
+            CanViewGrades = _serviceUser.AccessStrategy?.CanViewGrades() ?? false;
+            CanManageUsers = _serviceUser.AccessStrategy?.CanManageUsers() ?? false;
 
             OnPropertyChanged(nameof(ModelUser));
             OnPropertyChanged(nameof(CanGrade));
             OnPropertyChanged(nameof(CanViewGrades));
             OnPropertyChanged(nameof(CanManageUsers));
         }
-        catch (Exception e) { MessageBox.Show($"Load data failed: {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+        catch (Exception e)
+        {
+            MessageBox.Show($"Load data failed: {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 
     private async Task OnLogOut()
@@ -73,15 +78,11 @@ public class ViewModelsSidebarMenu : INotifyPropertyChanged
         OnPropertyChanged(nameof(ModelUser)); OnPropertyChanged(nameof(CanGrade)); OnPropertyChanged(nameof(CanViewGrades)); OnPropertyChanged(nameof(CanManageUsers));
     }
 
-    public void OnProfile() { _viewModelsProfile.ResetEditingState(); _serviceNavigation.NavigateTo<PageProfile, ViewModelsProfile>(); }
+    public void OnProfile() => _serviceNavigation.NavigateTo<PageProfile, ViewModelsProfile>();
     public void OnGrade() => MessageBox.Show($"Grade Page do not implemented", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
     public void OnViewGrades() => MessageBox.Show($"View grades Page do not implemented", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
     public void OnManageUsers() => MessageBox.Show($"Manage users Page do not implemented", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-    public void OnGoToHome()
-    {
-        if (_viewModelsProfile.IsEditing) { _viewModelsProfile.ResetEditingState(); }
-        _serviceNavigation.NavigateTo<PageHome>();
-    }
+    public void OnGoToHome() { _viewModelsProfile.ResetEditingState(); _serviceNavigation.NavigateTo<PageHome>(); }
 
     private void UpdateCanGoToHome() => CanGoToHome = CurrentPageType != typeof(PageHome);
     protected void OnPropertyChanged([CallerMemberName] string? PropertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));

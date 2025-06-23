@@ -1,85 +1,121 @@
 ﻿namespace DesktopApplication.ViewModels.Profile;
 
 using CommunityToolkit.Mvvm.Input;
-using DesktopApplication.Services.Auth;
+using DesktopApplication.Services;
 using Models.Tables.Users;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using System.Windows.Input;
+using System.Threading.Tasks;
 
 public class ViewModelsProfile : INotifyPropertyChanged
 {
-    public ICommand CommandEditButton { get; }
-    public ICommand CommandSaveButton { get; }
-    public ICommand CommandResetButton { get; }
-
-    private readonly ServicesAuth _serviceAuth;
+    private readonly ServicesUser _userService;
+    private ModelsUser? _originalModelUser;
+    private ModelsUser? _modelUser;
+    private bool _isEditing;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    private ModelsUser? _originalModelUser = null;
-    private ModelsUser? _modelUser = null; public ModelsUser ModelUser { get => _modelUser!; set { _modelUser = value; OnPropertyChanged(); OnPropertyChanged("AvatarUrl"); } }
-    public bool IsEditing = false;
+    public ModelsUser? ModelUser
+    {
+        get => _modelUser;
+        private set { if (_modelUser != value) { _modelUser = value; OnPropertyChanged(); OnPropertyChanged(nameof(AvatarUrl)); } }
+    }
+
+    public bool IsEditing
+    {
+        get => _isEditing;
+        private set
+        {
+            if (_isEditing != value)
+            {
+                _isEditing = value;
+                
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsReadOnly));
+                OnPropertyChanged(nameof(ShowEditButton));
+                OnPropertyChanged(nameof(ShowSaveButton));
+            }
+        }
+    }
+
     public bool IsReadOnly => !IsEditing;
     public bool ShowEditButton => !IsEditing;
     public bool ShowSaveButton => IsEditing;
+    public string? AvatarUrl => ModelUser?.AvatarUrl;
 
-    public ViewModelsProfile(ServicesAuth ServiceAuth)
+    public IAsyncRelayCommand CommandSaveButton { get; }
+    public IRelayCommand CommandEditButton { get; }
+    public IRelayCommand CommandResetButton { get; }
+
+    public ViewModelsProfile(ServicesUser ServiceUser)
     {
-        _serviceAuth = ServiceAuth;
+        _userService = ServiceUser;
 
         CommandEditButton = new RelayCommand(OnEditButton);
-        CommandSaveButton = new RelayCommand(OnSaveButton);
+        CommandSaveButton = new AsyncRelayCommand(OnSaveButtonAsync);
         CommandResetButton = new RelayCommand(OnResetButton);
     }
 
-    public void LoadData()
+    public async Task LoadDataAsync()
     {
         try
         {
-            _originalModelUser = _serviceAuth.AccessStrategy!.ModelUser;
-            ModelUser = new ModelsUser
-            {
-                Id = _originalModelUser.Id,
-                Username = _originalModelUser.Username,
-                FullName = _originalModelUser.FullName,
-                Email = _originalModelUser.Email,
-                PhoneNumber = _originalModelUser.PhoneNumber,
-                Sex = _originalModelUser.Sex,
-                DateOfBirth = _originalModelUser.DateOfBirth,
-                CreatedAt = _originalModelUser.CreatedAt,
-                DateOfTheLastUpdate = _originalModelUser.DateOfTheLastUpdate,
-                DateOfTheLastVisitToTheJorunal = _originalModelUser.DateOfTheLastVisitToTheJorunal,
-                AvatarUrl = _originalModelUser.AvatarUrl,
-                StatusId = _originalModelUser.StatusId,
-                EducationalInstitutionId = _originalModelUser.EducationalInstitutionId,
-                ProfileId = _originalModelUser.ProfileId,
-                StatusName = _originalModelUser.StatusName,
-                EducationalInstitutionName = _originalModelUser.EducationalInstitutionName
-            };
-            OnPropertyChanged(nameof(ModelUser));
+            if (_userService.AccessStrategy?.ModelUser == null) { return; }
+
+            var currentUser = await _userService.GetUserById(_userService.AccessStrategy.ModelUser.Id);
+
+            if (currentUser == null) { MessageBox.Show("Failed to load user data", "Error", MessageBoxButton.OK, MessageBoxImage.Error); return; }
+
+            _originalModelUser = currentUser;
+            ModelUser = CloneUser(currentUser);
         }
         catch (Exception e) { MessageBox.Show($"Load data failed: {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
 
-    public void OnEditButton()
-    {
-        IsEditing = true;
+    private void OnEditButton() => IsEditing = true;
 
-        OnPropertyChanged(nameof(IsReadOnly)); OnPropertyChanged(nameof(ShowEditButton)); OnPropertyChanged(nameof(ShowSaveButton));
+    private async Task OnSaveButtonAsync()
+    {
+        if (ModelUser == null) { return; }
+
+        try
+        {
+            await _userService.UpdateUser(ModelUser);
+            _originalModelUser = CloneUser(ModelUser);
+            IsEditing = false;
+        }
+        catch (Exception e) { MessageBox.Show($"Save failed: {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
 
-    public void OnSaveButton() => throw new NotImplementedException();
-    public void OnResetButton() => ResetEditingState();
-
-    public void ResetEditingState()
+    private void OnResetButton()
     {
+        if (_originalModelUser != null) { ModelUser = CloneUser(_originalModelUser); }
         IsEditing = false;
-        LoadData();
-
-        OnPropertyChanged(nameof(IsReadOnly)); OnPropertyChanged(nameof(ShowEditButton)); OnPropertyChanged(nameof(ShowSaveButton));
     }
 
-    protected void OnPropertyChanged([CallerMemberName] string? PropertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
+    public void ResetEditingState() => OnResetButton();
+
+    private static ModelsUser CloneUser(ModelsUser user) => new()
+    {
+        Id = user.Id,
+        Username = user.Username,
+        FullName = user.FullName,
+        Email = user.Email,
+        PhoneNumber = user.PhoneNumber,
+        Sex = user.Sex,
+        DateOfBirth = user.DateOfBirth,
+        CreatedAt = user.CreatedAt,
+        DateOfTheLastUpdate = user.DateOfTheLastUpdate,
+        DateOfTheLastVisitToTheJorunal = user.DateOfTheLastVisitToTheJorunal,
+        AvatarUrl = user.AvatarUrl,
+        StatusId = user.StatusId,
+        EducationalInstitutionId = user.EducationalInstitutionId,
+        ProfileId = user.ProfileId,
+        StatusName = user.StatusName,
+        EducationalInstitutionName = user.EducationalInstitutionName
+    };
+
+    protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)); }
 }

@@ -1,4 +1,4 @@
-﻿namespace Models.Repositories.Supabase;
+﻿namespace Database.Repositories.Supabase;
 
 using Models.Tables.Users;
 using Models.Tables.Statuses;

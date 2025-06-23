@@ -1,17 +1,16 @@
 ﻿namespace DesktopApplication;
 
+using Database.Repositories.Supabase;
+using DesktopApplication.Services;
 using DesktopApplication.Services.Auth;
 using DesktopApplication.Services.Converters;
 using DesktopApplication.Services.Navigation;
 using DesktopApplication.Services.Supabase;
-
 using DesktopApplication.ViewModels.Login;
-using DesktopApplication.ViewModels.SidebarMenu;
 using DesktopApplication.ViewModels.Profile;
-
-using DesktopApplication.Views.UserControls;
+using DesktopApplication.ViewModels.SidebarMenu;
 using DesktopApplication.Views.Pages;
-
+using DesktopApplication.Views.UserControls;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 
@@ -45,24 +44,33 @@ public partial class App : Application
         );
         services.AddSingleton<ViewModelsProfile>(
             provider => new ViewModelsProfile(
-                ServiceAuth: provider.GetRequiredService<ServicesAuth>()
+                ServiceUser: provider.GetRequiredService<ServicesUser>()
             )
         );
         services.AddSingleton<ViewModelsSidebarMenu>(
             provider => new ViewModelsSidebarMenu(
                 ServiceAuth: provider.GetRequiredService<ServicesAuth>(),
                 ServiceNavigation: provider.GetRequiredService<ServicesNavigation>(),
-                ViewModelProvider: provider.GetRequiredService<ViewModelsProfile>()
+                ViewModelProvider: provider.GetRequiredService<ViewModelsProfile>(),
+                ServiceUser: provider.GetRequiredService<ServicesUser>()
             )
         );
 
         // Services
         services.AddSingleton<ServicesSupabase>();
+        services.AddSingleton<ServicesUser>(
+            provider =>
+            {
+                ServicesSupabase serviceSupabase = provider.GetRequiredService<ServicesSupabase>();
+                return new ServicesUser(serviceSupabase.RepositorySupabase);
+            }
+        );
         services.AddSingleton<ServicesAuth>(
             provider =>
             {
                 ServicesSupabase serviceSupabase = provider.GetRequiredService<ServicesSupabase>();
-                return new ServicesAuth(serviceSupabase.RepositorySupabase);
+                ServicesUser servicesUser = provider.GetRequiredService<ServicesUser>();
+                return new ServicesAuth(serviceSupabase.RepositorySupabase, servicesUser);
             }
         );
         services.AddSingleton<ServicesConverterBooleanToBorderBrush>();

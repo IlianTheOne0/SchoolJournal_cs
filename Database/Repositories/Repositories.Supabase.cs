@@ -1,9 +1,9 @@
-﻿namespace Models.Repositories.Supabase;
+﻿namespace Database.Repositories.Supabase;
 
-using Models.DataSources.Supabase;
-using Models.Interfaces.Repositories.Database;
-using Models.SupabaseConfig;
-using Models.Repositories.Json;
+using Database.DataSources.Supabase;
+using Database.Interfaces.Repositories.Database;
+using Models.Repositories.SupabaseConfig;
+using Database.Repositories.Json;
 
 public partial class RepositoriesSupabase : InterfacesDatabaseRepositories
 {

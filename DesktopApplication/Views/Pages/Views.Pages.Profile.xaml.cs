@@ -19,5 +19,5 @@ public partial class PageProfile : UserControl
         catch (Exception e) { MessageBox.Show($"Error initializing Profile: {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
 
-    private void PageProfile_Loaded(object sender, RoutedEventArgs e) { _viewModel.LoadData(); }
+    private async void PageProfile_Loaded(object sender, RoutedEventArgs e) { await _viewModel.LoadDataAsync(); }
 }

@@ -1,4 +1,4 @@
-﻿namespace Models.SupabaseConfig;
+﻿namespace Models.Repositories.SupabaseConfig;
 
 public class ModelsSupabaseConfig
 {

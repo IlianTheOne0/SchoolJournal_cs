@@ -1,20 +1,24 @@
 ﻿namespace DesktopApplication.Services.Auth;
 
-using Models.Repositories.Supabase;
+using Database.Repositories.Supabase;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 public partial class ServicesAuth : INotifyPropertyChanged
 {
     private bool _isLoggedIn; public bool IsLoggedIn { get => _isLoggedIn; private set { if (_isLoggedIn != value) { _isLoggedIn = value; OnPropertyChanged("IsLoggedIn"); } } }
-    private RepositoriesSupabase _repositorySupabase;
+
+    private readonly RepositoriesSupabase _repositorySupabase;
+    private readonly ServicesUser _servicesUser;
 
     public event PropertyChangedEventHandler? PropertyChanged;
-    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null!) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null!) =>
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-    public ServicesAuth(RepositoriesSupabase RepositorySupabase)
+    public ServicesAuth(RepositoriesSupabase RepositorySupabase, ServicesUser servicesUser)
     {
         _repositorySupabase = RepositorySupabase;
+        _servicesUser = servicesUser;
         _isLoggedIn = _repositorySupabase.IsLoggedIn;
     }
 
@@ -22,16 +26,15 @@ public partial class ServicesAuth : INotifyPropertyChanged
     {
         await _repositorySupabase.Login(Username, Password);
 
-        SetupAccessStrategy();
+        if (_repositorySupabase.ModelUser != null) { _servicesUser.SetupAccessStrategy(_repositorySupabase.ModelUser); }
+
         IsLoggedIn = _repositorySupabase.IsLoggedIn;
     }
 
     public async Task Logout()
     {
         await _repositorySupabase.Logout();
-
+        _servicesUser.ClearAccessStrategy();
         IsLoggedIn = _repositorySupabase.IsLoggedIn;
-
-        _interfacesAccessStrategy = null;
     }
 }
