@@ -33,8 +33,8 @@ public class ModelsUser : BaseModel
     [Column("DateOfTheLastUpdate")]
     public DateTime DateOfTheLastUpdate { get; set; }
 
-    [Column("DateOfTheLastVisitToTheJorunal")]
-    public DateTime DateOfTheLastVisitToTheJorunal { get; set; }
+    [Column("DateOfTheLastVisitToTheJournal")]
+    public DateTime DateOfTheLastVisitToTheJournal { get; set; }
 
     [Column("AvatarUrl")]
     public string? AvatarUrl { get; set; } = null;

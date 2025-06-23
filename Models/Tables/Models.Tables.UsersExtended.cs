@@ -28,7 +28,7 @@ public class ModelsUserExtended : ModelsUser, INotifyPropertyChanged
         DateOfBirth = user.DateOfBirth;
         CreatedAt = user.CreatedAt;
         DateOfTheLastUpdate = user.DateOfTheLastUpdate;
-        DateOfTheLastVisitToTheJorunal = user.DateOfTheLastVisitToTheJorunal;
+        DateOfTheLastVisitToTheJournal = user.DateOfTheLastVisitToTheJournal;
         AvatarUrl = user.AvatarUrl;
         StatusId = user.StatusId;
         EducationalInstitutionId = user.EducationalInstitutionId;

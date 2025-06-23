@@ -41,7 +41,7 @@ public partial class RepositoriesSupabase
 
             if (!string.Equals(existingUser.PhoneNumber, user.PhoneNumber, StringComparison.OrdinalIgnoreCase))
             {
-                if (user.PhoneNumber?.Length != 10) { throw new ArgumentException("Phone number cannot be longer than 10 characters!"); }
+                if (user.PhoneNumber?.Length != 10) { throw new ArgumentException("Phone number must be exactly 10 characters long!"); }
 
                 var phoneNumberExistsResult = await SupabaseConnection.SupabaseClient
                     .From<ModelsUser>()
@@ -62,7 +62,7 @@ public partial class RepositoriesSupabase
                 .Set(userProvider => userProvider.Sex, user.Sex)
                 .Set(userProvider => userProvider.DateOfBirth, user.DateOfBirth)
                 .Set(userProvider => userProvider.DateOfTheLastUpdate, user.DateOfTheLastUpdate)
-                .Set(userProvider => userProvider.DateOfTheLastVisitToTheJorunal, user.DateOfTheLastVisitToTheJorunal)
+                .Set(userProvider => userProvider.DateOfTheLastVisitToTheJournal, user.DateOfTheLastVisitToTheJournal)
                 .Set(userProvider => userProvider.AvatarUrl!, user.AvatarUrl)
                 .Update();
 

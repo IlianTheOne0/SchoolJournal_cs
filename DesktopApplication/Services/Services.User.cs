@@ -62,5 +62,5 @@ public class ServicesUser
         catch (Exception e) { throw new Exception($"Update avatar failed: {e.Message}", e); }
     }
     public void ClearAccessStrategy() => _accessStrategy = null;
-    public async void RefreshTheData() => AccessStrategy.ModelUser = await GetUserById(AccessStrategy.ModelUser.Id)!;
+    public async Task RefreshTheData() => AccessStrategy.ModelUser = await GetUserById(AccessStrategy.ModelUser.Id)!;
 }

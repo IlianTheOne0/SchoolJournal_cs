@@ -362,7 +362,7 @@
                                     Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left"
                                     Margin="5,10,0,10"/>
                                 <TextBlock
-                                    Text="{Binding ModelUser.DateOfTheLastVisitToTheJorunal, StringFormat='{}{0:MM/dd/yyyy}', FallbackValue='No data available', TargetNullValue='No data available'}"
+                                    Text="{Binding ModelUser.DateOfTheLastVisitToTheJournal, StringFormat='{}{0:MM/dd/yyyy}', FallbackValue='No data available', TargetNullValue='No data available'}"
                                     FontSize="20" FontWeight="Bold" FontFamily="{StaticResource Roboto}"
                                     Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"
                                     Margin="0,10,-50,10"/>
