@@ -8,6 +8,7 @@ public class ServicesNavigation
     private readonly IServiceProvider _serviceProvider;
     
     public event Action<UserControl>? OnNavigate;
+    public event Action<Type>? OnPageChanged;
 
     public ServicesNavigation(IServiceProvider ServiceProvider) => _serviceProvider = ServiceProvider;
 
@@ -19,5 +20,15 @@ public class ServicesNavigation
         var viewModel = _serviceProvider.GetRequiredService<TViewModel>();
 
         OnNavigate?.Invoke(view);
+        OnPageChanged?.Invoke(typeof(TView));
+    }
+
+    public void NavigateTo<TView>()
+    where TView : UserControl
+    {
+        var view = _serviceProvider.GetRequiredService<TView>();
+
+        OnNavigate?.Invoke(view);
+        OnPageChanged?.Invoke(typeof(TView));
     }
 }

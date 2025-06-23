@@ -1,4 +1,4 @@
-﻿namespace Models.Repositories.Supabase;
+﻿namespace Database.Repositories.Supabase;
 
 using global::Supabase.Postgrest.Models;
 using System;

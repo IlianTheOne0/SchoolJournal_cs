@@ -1,16 +1,15 @@
-﻿namespace DesktopApplication.Views;
+﻿namespace DesktopApplication.Views.Pages;
 
-using DesktopApplication.Services.Navigation;
-using DesktopApplication.ViewModels.Home;
 using DesktopApplication.ViewModels.Login;
 using System.Windows;
 using System.Windows.Controls;
 
-public partial class LoginPage : UserControl
+public partial class PageLogin : UserControl
 {
-    public LoginPage(ViewModelsLogin ViewModel)
+    public PageLogin(ViewModelsLogin ViewModel)
     {
         InitializeComponent();
+
         try { DataContext = ViewModel; }
         catch (Exception e) { MessageBox.Show($"Error initializing Login: {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
