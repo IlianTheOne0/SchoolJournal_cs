@@ -280,7 +280,7 @@
                                      BorderThickness="0"
                                      Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Left"
                                      Background="Transparent"
-                                     Margin="97,0,0,10" TextChanged="TextBox_TextChanged">
+                                     Margin="97,0,0,10">
                                     <TextBox.Style>
                                         <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
                                             <Style.Triggers>
@@ -387,7 +387,7 @@
                     </StackPanel>
                 </ScrollViewer>
                 
-                <Grid Width="475" Margin="0,50,0,0">
+                <Grid Width="500" Margin="0,50,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
@@ -397,7 +397,7 @@
 
                     <Button
                         Grid.Column="1"
-                        Content="Change the data"
+                        Content="Change data"
                         Width="200"
                         Height="45"
                         FontSize="20" 
@@ -408,15 +408,27 @@
                         HorizontalAlignment="Center"/>
 
                     <Button
-                        Grid.Column="2"
-                        Content="Save the changed data"
-                        Width="250"
+                        Grid.Column="1"
+                        Content="Save changes"
+                        Width="200"
                         Height="45"
                         FontSize="20" 
                         FontFamily="{StaticResource Roboto}"
                         Visibility="{Binding ShowSaveButton, Converter={StaticResource BooleanToVisibilityConverter}}"
                         Command="{Binding CommandSaveButton}" Style="{StaticResource MaterialDesignRaisedButton}"
-                        HorizontalAlignment="Center"/>
+                        HorizontalAlignment="Left"
+                        Margin="0,0,25,0"/>
+                    <Button
+                        Grid.Column="2"
+                        Content="Reset changes"
+                        Width="200"
+                        Height="45"
+                        FontSize="20" 
+                        FontFamily="{StaticResource Roboto}"
+                        Visibility="{Binding ShowSaveButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Command="{Binding CommandResetButton}" Style="{StaticResource MaterialDesignRaisedButton}"
+                        HorizontalAlignment="Right"
+                        Margin="25,0,0,0"/>
                 </Grid>
             </StackPanel>
         </StackPanel>

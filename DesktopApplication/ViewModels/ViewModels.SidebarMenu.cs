@@ -69,20 +69,19 @@ public class ViewModelsSidebarMenu : INotifyPropertyChanged
         await _serviceAuth.Logout();
         _serviceNavigation.OnPageChanged -= pageType => CurrentPageType = pageType;
 
-        if (CurrentPageType == typeof(PageProfile)) { _viewModelsProfile.ResetEditingState(); }
-
         ModelUser = null!;
-        OnPropertyChanged(nameof(ModelUser));
-        OnPropertyChanged(nameof(CanGrade));
-        OnPropertyChanged(nameof(CanViewGrades));
-        OnPropertyChanged(nameof(CanManageUsers));
+        OnPropertyChanged(nameof(ModelUser)); OnPropertyChanged(nameof(CanGrade)); OnPropertyChanged(nameof(CanViewGrades)); OnPropertyChanged(nameof(CanManageUsers));
     }
 
-    public void OnProfile() { _viewModelsProfile.ResetEditingState(); _viewModelsProfile.LoadData(); _serviceNavigation.NavigateTo<PageProfile, ViewModelsProfile>(); }
+    public void OnProfile() { _viewModelsProfile.ResetEditingState(); _serviceNavigation.NavigateTo<PageProfile, ViewModelsProfile>(); }
     public void OnGrade() => MessageBox.Show($"Grade Page do not implemented", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
     public void OnViewGrades() => MessageBox.Show($"View grades Page do not implemented", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
     public void OnManageUsers() => MessageBox.Show($"Manage users Page do not implemented", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-    public void OnGoToHome() => _serviceNavigation.NavigateTo<PageHome>();
+    public void OnGoToHome()
+    {
+        if (_viewModelsProfile.IsEditing) { _viewModelsProfile.ResetEditingState(); }
+        _serviceNavigation.NavigateTo<PageHome>();
+    }
 
     private void UpdateCanGoToHome() => CanGoToHome = CurrentPageType != typeof(PageHome);
     protected void OnPropertyChanged([CallerMemberName] string? PropertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));

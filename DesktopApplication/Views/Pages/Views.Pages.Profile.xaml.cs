@@ -20,14 +20,4 @@ public partial class PageProfile : UserControl
     }
 
     private void PageProfile_Loaded(object sender, RoutedEventArgs e) { _viewModel.LoadData(); }
-
-    private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-    {
-
-    }
-
-    private void TextBox_TextChanged_1(object sender, TextChangedEventArgs e)
-    {
-
-    }
 }
