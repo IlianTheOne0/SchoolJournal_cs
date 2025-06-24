@@ -1,12 +1,17 @@
 ﻿namespace DesktopApplication;
 
+using Database.Interfaces.Repositories.Grade;
+using Database.Repositories.Grades;
 using DesktopApplication.Interfaces.Services.Auth;
+using DesktopApplication.Interfaces.Services.Grades;
 using DesktopApplication.Interfaces.Services.Navigation;
+using DesktopApplication.Interfaces.Services.Strategies.AccessStrategy;
 using DesktopApplication.Interfaces.Services.User;
 
 using DesktopApplication.Services;
 using DesktopApplication.Services.Auth;
 using DesktopApplication.Services.Converters;
+using DesktopApplication.Services.Grades;
 using DesktopApplication.Services.Navigation;
 using DesktopApplication.Services.Supabase;
 
@@ -80,6 +85,15 @@ public partial class App : Application
                 ServicesSupabase serviceSupabase = provider.GetRequiredService<ServicesSupabase>();
                 ServicesUser servicesUser = (ServicesUser)provider.GetRequiredService<InterfacesServicesUser>();
                 return new ServicesAuth(serviceSupabase.RepositorySupabase, servicesUser);
+            }
+        );
+        Services.AddSingleton<InterfacesServicesGrades, ServicesGrade>(
+            provider =>
+            {
+
+                InterfacesRepositoriesGrades repositoryGrades = new RepositoriesGrades()
+                InterfacesAccessStrategy accessStrategy = provider.GetRequiredService<InterfacesAccessStrategy>();
+                return new ServicesGrade(repositoryGrades, accessStrategy);
             }
         );
         Services.AddSingleton<ServicesConverterBooleanToBorderBrush>();

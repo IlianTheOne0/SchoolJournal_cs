@@ -1,8 +1,8 @@
 ﻿namespace DesktopApplication.ViewModels.Login;
 
-using CommunityToolkit.Mvvm.Input;
 using DesktopApplication.Interfaces.Services.Auth;
 using DesktopApplication.Services.Auth;
+using CommunityToolkit.Mvvm.Input;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;

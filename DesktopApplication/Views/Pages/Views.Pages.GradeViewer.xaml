@@ -40,11 +40,13 @@
                     VerticalAlignment="Center"
                     Margin="0,0,5,0"/>
                 <ComboBox
+                    x:Name="ClassComboBox" 
                     Width="165"
                     FontSize="18" FontWeight="Normal" FontFamily="{StaticResource Roboto}"
                     ItemsSource="{Binding AvailableClasses}" 
                     DisplayMemberPath="ClassName"
                     SelectedItem="{Binding SelectedClass}"
+                    SelectionChanged="ClassComboBox_SelectionChanged"
                     Margin="5"/>
                     
                 <TextBlock
@@ -53,11 +55,13 @@
                     VerticalAlignment="Center"
                     Margin="30,0,5,0"/>
                 <ComboBox
+                    x:Name="StudentComboBox"
                     Width="165"
                     FontSize="18" FontWeight="Normal" FontFamily="{StaticResource Roboto}"
                     ItemsSource="{Binding StudentsInClass}" 
                     DisplayMemberPath="FullName"
                     SelectedItem="{Binding SelectedStudent}"
+                    SelectionChanged="StudentComboBox_SelectionChanged"
                     IsEnabled="{Binding HasClassSelected}"
                     Margin="5"/>
                     
@@ -67,10 +71,12 @@
                     VerticalAlignment="Center"
                     Margin="30,0,5,0"/>
                 <ComboBox
+                    x:Name="SubjectComboBox"
                     Width="165"
                     FontSize="18" FontWeight="Normal" FontFamily="{StaticResource Roboto}"
                     ItemsSource="{Binding AvailableSubjects}" 
                     SelectedItem="{Binding SelectedSubject}"
+                    SelectionChanged="SubjectComboBox_SelectionChanged"
                     DisplayMemberPath="Name"
                     Margin="5">
                     <ComboBox.Items>
@@ -87,8 +93,10 @@
             </StackPanel>
 
             <DataGrid
+                x:Name="GradesDataGrid"
                 Grid.Row="2"
-                ItemsSource="{Binding Grades}" IsReadOnly="True"
+                ItemsSource="{Binding FilteredGrades}"
+                IsReadOnly="True"
                 AutoGenerateColumns="False"
                 Margin="5">
                 <DataGrid.Columns>
