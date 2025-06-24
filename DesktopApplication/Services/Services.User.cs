@@ -1,21 +1,26 @@
 ﻿namespace DesktopApplication.Services;
 
+using Database.Interfaces.Repositories.Supabase;
 using Database.Repositories.Supabase;
-using DesktopApplication.Interfaces.AccessStrategy;
+using DesktopApplication.Interfaces.Services.Strategies.AccessStrategy;
+using DesktopApplication.Interfaces.Services.User;
 using DesktopApplication.Services.Strategies.AdminAccess;
 using DesktopApplication.Services.Strategies.StudentAccess;
 using DesktopApplication.Services.Strategies.TeacherAccess;
+using global::Supabase.Postgrest;
 using Models.Tables.Classes;
 using Models.Tables.Statuses;
 using Models.Tables.Users;
 using Models.Tables.Users.Extended;
-using global::Supabase.Postgrest;
 using System.Threading.Tasks;
 
-public class ServicesUser
+public class ServicesUser : InterfacesServicesUser
 {
-    private readonly RepositoriesSupabase _repositorySupabase;
-    private InterfacesAccessStrategy? _accessStrategy; public InterfacesAccessStrategy? AccessStrategy { get => _accessStrategy; private set => _accessStrategy = value; }
+    private readonly InterfacesRepositoriesSupabase _repositorySupabase;
+    
+    private InterfacesAccessStrategy? _accessStrategy;
+    InterfacesAccessStrategy? InterfacesServicesUser.AccessStrategy { get => _accessStrategy; set => AccessStrategy = value; }
+    public InterfacesAccessStrategy? AccessStrategy { get => _accessStrategy; private set => _accessStrategy = value; }
 
     public ServicesUser(RepositoriesSupabase RepositorySupabase) => _repositorySupabase = RepositorySupabase;
 

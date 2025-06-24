@@ -1,9 +1,10 @@
 ﻿namespace DesktopApplication.Services.Navigation;
 
+using DesktopApplication.Interfaces.Services.Navigation;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows.Controls;
 
-public class ServicesNavigation
+public class ServicesNavigation : InterfacesServicesNavigation
 {
     private readonly IServiceProvider _serviceProvider;
     
@@ -24,7 +25,7 @@ public class ServicesNavigation
     }
 
     public void NavigateTo<TView>()
-    where TView : UserControl
+        where TView : UserControl
     {
         var view = _serviceProvider.GetRequiredService<TView>();
 

@@ -1,6 +1,6 @@
 ﻿namespace DesktopApplication.Services.Auth;
 
-using DesktopApplication.Interfaces.AccessStrategy;
+using DesktopApplication.Interfaces.Services.Strategies.AccessStrategy;
 using DesktopApplication.Services.Strategies.AdminAccess;
 using DesktopApplication.Services.Strategies.StudentAccess;
 using DesktopApplication.Services.Strategies.TeacherAccess;

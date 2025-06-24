@@ -1,13 +1,14 @@
 ﻿namespace Database.Repositories.Json;
 
+using Database.Interfaces.Repositories.Json;
 using Models.Repositories.SupabaseConfig;
 using Newtonsoft.Json;
 
-public class RepositoriesJson(string FilePath)
+public class RepositoriesJson(string FilePath) : InterfacesRepositoriesJson
 {
     private string _filePath { get; set; } = FilePath;
 
-    public async Task<ModelsSupabaseConfig?> ReadJsonAsync()
+    public async Task<ModelsSupabaseConfig?> ReadJsonAsync<ModelsSupabaseConfig>()
     {
         try
         {

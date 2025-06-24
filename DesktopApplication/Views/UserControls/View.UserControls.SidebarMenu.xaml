@@ -7,7 +7,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d">
     <Border Background="{StaticResource MaterialDesignShadowBrush}">
-        <Grid Margin="20,10" MinHeight="700">
+        <Grid Margin="20,10" MinHeight="650">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -116,7 +116,7 @@
                 Command="{Binding CommandGoToHome}" 
                 Style="{StaticResource MaterialDesignFlatButton}"
                 Foreground="White"
-                Grid.Row="8" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"/>
+                Grid.Row="7" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"/>
         </Grid>
     </Border>
 </UserControl>

@@ -1,5 +1,7 @@
 ﻿namespace DesktopApplication;
 
+using DesktopApplication.Interfaces.Services.Auth;
+using DesktopApplication.Interfaces.Services.Navigation;
 using DesktopApplication.Services.Auth;
 using DesktopApplication.Services.Navigation;
 using DesktopApplication.ViewModels.Login;
@@ -10,8 +12,8 @@ using System.Windows.Controls;
 
 public partial class MainWindow : Window
 {
-    private readonly ServicesNavigation _serviceNavigation;
-    private readonly ServicesAuth _serviceAuth;
+    private readonly InterfacesServicesNavigation _serviceNavigation;
+    private readonly InterfacesServicesAuth _serviceAuth;
 
     public MainWindow(ServicesNavigation ServicesNavigation, ServicesAuth authService)
     {
@@ -26,14 +28,14 @@ public partial class MainWindow : Window
 
     public void OnAuthServicePropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(ServicesAuth.IsLoggedIn))
+        if (e.PropertyName == nameof(InterfacesServicesAuth.IsLoggedIn))
         {
-            if (_serviceAuth.IsLoggedIn) { _serviceNavigation.NavigateTo<PageHome>(); }
-            else { _serviceNavigation.NavigateTo<PageLogin, ViewModelsLogin>(); }
+            if (_serviceAuth.IsLoggedIn) { _serviceNavigation.NavigateTo<PagesHome>(); }
+            else { _serviceNavigation.NavigateTo<PagesLogin, ViewModelsLogin>(); }
         }
     }
 
-    private void MainWindow_OnLoaded(object sender, RoutedEventArgs e) => _serviceNavigation.NavigateTo<PageLogin, ViewModelsLogin>();
+    private void MainWindow_OnLoaded(object sender, RoutedEventArgs e) => _serviceNavigation.NavigateTo<PagesLogin, ViewModelsLogin>();
 
     private void SetContent(UserControl Content) => this.Content = Content;
 }

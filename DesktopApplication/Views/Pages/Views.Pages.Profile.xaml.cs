@@ -5,12 +5,12 @@ using DesktopApplication.Views.UserControls;
 using System.Windows;
 using System.Windows.Controls;
 
-public partial class PageProfile : UserControl
+public partial class PagesProfile : UserControl
 {
     public ViewModelsProfile _viewModel;
     private readonly UserControlsSidebarMenu _sidebar;
 
-    public PageProfile(ViewModelsProfile ViewModel, UserControlsSidebarMenu Sidebar)
+    public PagesProfile(ViewModelsProfile ViewModel, UserControlsSidebarMenu Sidebar)
     {
         InitializeComponent();
         _viewModel = ViewModel; _sidebar = Sidebar;
