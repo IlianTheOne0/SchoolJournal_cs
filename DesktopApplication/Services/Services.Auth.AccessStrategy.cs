@@ -4,7 +4,7 @@ using DesktopApplication.Interfaces.Services.Strategies.AccessStrategy;
 using DesktopApplication.Services.Strategies.AdminAccess;
 using DesktopApplication.Services.Strategies.StudentAccess;
 using DesktopApplication.Services.Strategies.TeacherAccess;
-using Models.Tables.Users.Extended;
+using Models.Tables.Users;
 
 public partial class ServicesAuth
 {

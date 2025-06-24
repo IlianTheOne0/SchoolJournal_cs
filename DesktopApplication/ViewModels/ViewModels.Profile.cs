@@ -4,7 +4,6 @@ using CommunityToolkit.Mvvm.Input;
 using DesktopApplication.Interfaces.Services.User;
 using DesktopApplication.Services;
 using Models.Tables.Users;
-using Models.Tables.Users.Extended;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;

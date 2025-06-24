@@ -2,7 +2,6 @@
 
 using global::Supabase.Postgrest.Models;
 using Models.Tables.Users;
-using Models.Tables.Users.Extended;
 using System.Linq.Expressions;
 using static global::Supabase.Postgrest.Constants;
 

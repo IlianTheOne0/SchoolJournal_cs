@@ -2,7 +2,6 @@
 
 using DesktopApplication.Interfaces.Services.Strategies.AccessStrategy;
 using Models.Tables.Users;
-using Models.Tables.Users.Extended;
 
 public interface InterfacesServicesUser
 {

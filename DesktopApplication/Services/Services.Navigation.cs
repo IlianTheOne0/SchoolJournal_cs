@@ -13,12 +13,14 @@ public class ServicesNavigation : InterfacesServicesNavigation
 
     public ServicesNavigation(IServiceProvider ServiceProvider) => _serviceProvider = ServiceProvider;
 
-    public void NavigateTo<TView, TViewModel>()
+    public void NavigateTo<TView, TViewModel>(Action<TViewModel>? initialize = null)
         where TView : UserControl
         where TViewModel : class
     {
         var view = _serviceProvider.GetRequiredService<TView>();
         var viewModel = _serviceProvider.GetRequiredService<TViewModel>();
+
+        initialize?.Invoke(viewModel);
 
         OnNavigate?.Invoke(view);
         OnPageChanged?.Invoke(typeof(TView));

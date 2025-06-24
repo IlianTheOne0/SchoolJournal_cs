@@ -1,12 +1,17 @@
 ﻿namespace DesktopApplication;
 
+using Database.Interfaces.Repositories.Grade;
+using Database.Repositories.Grades;
 using DesktopApplication.Interfaces.Services.Auth;
+using DesktopApplication.Interfaces.Services.Grades;
 using DesktopApplication.Interfaces.Services.Navigation;
+using DesktopApplication.Interfaces.Services.Strategies.AccessStrategy;
 using DesktopApplication.Interfaces.Services.User;
 
 using DesktopApplication.Services;
 using DesktopApplication.Services.Auth;
 using DesktopApplication.Services.Converters;
+using DesktopApplication.Services.Grades;
 using DesktopApplication.Services.Navigation;
 using DesktopApplication.Services.Supabase;
 
@@ -82,6 +87,12 @@ public partial class App : Application
                 return new ServicesAuth(serviceSupabase.RepositorySupabase, servicesUser);
             }
         );
+        Services.AddSingleton<InterfacesServicesGrades, ServicesGrade>(
+            provider => new ServicesGrade(
+                ServiceSupabase: provider.GetRequiredService<ServicesSupabase>(),
+                ServiceUser: (ServicesUser)provider.GetRequiredService<InterfacesServicesUser>()
+            )
+        );
         Services.AddSingleton<ServicesConverterBooleanToBorderBrush>();
         Services.AddSingleton<ServicesConvertersBooleanToVisibility>();
         Services.AddSingleton<ServicesConvertersBoolToGender>();
@@ -104,11 +115,16 @@ public partial class App : Application
             provider => new ViewModelsSidebarMenu(
                 ServiceAuth: (ServicesAuth)provider.GetRequiredService<InterfacesServicesAuth>(),
                 ServiceNavigation: (ServicesNavigation)provider.GetRequiredService<InterfacesServicesNavigation>(),
+                ServiceUser: (ServicesUser)provider.GetRequiredService<InterfacesServicesUser>(),
                 ViewModelProvider: provider.GetRequiredService<ViewModelsProfile>(),
-                ServiceUser: (ServicesUser)provider.GetRequiredService<InterfacesServicesUser>()
+                ViewModelsGradeViewer: provider.GetRequiredService<ViewModelsGradeViewer>()
             )
         );
-        Services.AddSingleton<ViewModelsGradeViewer>();
+        Services.AddSingleton<ViewModelsGradeViewer>(
+            provider => new ViewModelsGradeViewer(
+                ServiceGrade: (ServicesGrade)provider.GetRequiredService<InterfacesServicesGrades>()
+            )
+        );
     }
 
     private void LoadUserControls(IServiceCollection services)

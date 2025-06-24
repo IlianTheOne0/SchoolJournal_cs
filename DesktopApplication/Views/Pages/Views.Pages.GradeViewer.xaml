@@ -40,11 +40,13 @@
                     VerticalAlignment="Center"
                     Margin="0,0,5,0"/>
                 <ComboBox
+                    x:Name="ClassComboBox" 
                     Width="165"
                     FontSize="18" FontWeight="Normal" FontFamily="{StaticResource Roboto}"
                     ItemsSource="{Binding AvailableClasses}" 
                     DisplayMemberPath="ClassName"
                     SelectedItem="{Binding SelectedClass}"
+                    SelectionChanged="ClassComboBox_SelectionChanged"
                     Margin="5"/>
                     
                 <TextBlock
@@ -53,11 +55,13 @@
                     VerticalAlignment="Center"
                     Margin="30,0,5,0"/>
                 <ComboBox
+                    x:Name="StudentComboBox"
                     Width="165"
                     FontSize="18" FontWeight="Normal" FontFamily="{StaticResource Roboto}"
                     ItemsSource="{Binding StudentsInClass}" 
                     DisplayMemberPath="FullName"
                     SelectedItem="{Binding SelectedStudent}"
+                    SelectionChanged="StudentComboBox_SelectionChanged"
                     IsEnabled="{Binding HasClassSelected}"
                     Margin="5"/>
                     
@@ -67,35 +71,28 @@
                     VerticalAlignment="Center"
                     Margin="30,0,5,0"/>
                 <ComboBox
+                    x:Name="SubjectComboBox"
+                    ItemsSource="{Binding AvailableSubjects}" 
                     Width="165"
                     FontSize="18" FontWeight="Normal" FontFamily="{StaticResource Roboto}"
-                    ItemsSource="{Binding AvailableSubjects}" 
                     SelectedItem="{Binding SelectedSubject}"
+                    SelectionChanged="SubjectComboBox_SelectionChanged"
                     DisplayMemberPath="Name"
-                    Margin="5">
-                    <ComboBox.Items>
-                        <CompositeCollection>
-                            <ComboBoxItem
-                                IsSelected="True"
-                                FontSize="18" FontWeight="Normal" FontFamily="{StaticResource Roboto}">
-                                All Subjects
-                            </ComboBoxItem>
-                            <CollectionContainer Collection="{Binding AvailableSubjects}"/>
-                        </CompositeCollection>
-                    </ComboBox.Items>
-                </ComboBox>
+                    Margin="5"/>
             </StackPanel>
 
             <DataGrid
+                x:Name="GradesDataGrid"
                 Grid.Row="2"
-                ItemsSource="{Binding Grades}" IsReadOnly="True"
+                ItemsSource="{Binding FilteredGrades}"
+                IsReadOnly="True"
                 AutoGenerateColumns="False"
                 Margin="5">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Subject" Binding="{Binding SubjectName}" Width="*"/>
-                    <DataGridTextColumn Header="Grade" Binding="{Binding GradeValue}" Width="100"/>
-                    <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat={}{0:dd.MM.yyyy}}" Width="120"/>
-                    <DataGridTextColumn Header="Comment" Binding="{Binding Comment}" Width="*"/>
+                    <DataGridTextColumn Header="Subject" Binding="{Binding SubjectName}" Width="200"/>
+                    <DataGridTextColumn Header="Grade" Binding="{Binding Grade}" Width="200"/>
+                    <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat={}{0:dd.MM.yyyy}}" Width="200"/>
+                    <DataGridTextColumn Header="Comment" Binding="{Binding Description}" Width="*"/>
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>

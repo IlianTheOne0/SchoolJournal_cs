@@ -1,6 +1,5 @@
-﻿namespace Models.Tables.Users.Extended;
+﻿namespace Models.Tables.Users;
 
-using Models.Tables.Users;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -17,25 +16,25 @@ public class ModelsUserExtended : ModelsUser, INotifyPropertyChanged
 
     public ModelsUserExtended() { }
 
-    public ModelsUserExtended(ModelsUser user, string statusName, string educationalInstitutionName)
+    public ModelsUserExtended(ModelsUser User, string StatusName, string EducationalInstitutionName)
     {
-        Id = user.Id;
-        Username = user.Username;
-        FullName = user.FullName;
-        Email = user.Email;
-        PhoneNumber = user.PhoneNumber;
-        Sex = user.Sex;
-        DateOfBirth = user.DateOfBirth;
-        CreatedAt = user.CreatedAt;
-        DateOfTheLastUpdate = user.DateOfTheLastUpdate;
-        DateOfTheLastVisitToTheJournal = user.DateOfTheLastVisitToTheJournal;
-        AvatarUrl = user.AvatarUrl;
-        StatusId = user.StatusId;
-        EducationalInstitutionId = user.EducationalInstitutionId;
-        ProfileId = user.ProfileId;
+        Id = User.Id;
+        Username = User.Username;
+        FullName = User.FullName;
+        Email = User.Email;
+        PhoneNumber = User.PhoneNumber;
+        Sex = User.Sex;
+        DateOfBirth = User.DateOfBirth;
+        CreatedAt = User.CreatedAt;
+        DateOfTheLastUpdate = User.DateOfTheLastUpdate;
+        DateOfTheLastVisitToTheJournal = User.DateOfTheLastVisitToTheJournal;
+        AvatarUrl = User.AvatarUrl;
+        StatusId = User.StatusId;
+        EducationalInstitutionId = User.EducationalInstitutionId;
+        ProfileId = User.ProfileId;
 
-        StatusName = statusName;
-        EducationalInstitutionName = educationalInstitutionName;
+        this.StatusName = StatusName;
+        this.EducationalInstitutionName = EducationalInstitutionName;
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
