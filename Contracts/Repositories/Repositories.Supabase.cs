@@ -1,14 +1,25 @@
-﻿namespace Database.Repositories.Supabase;
+﻿namespace Contracts.Repositories.Supabase;
 
+using Contracts.Mediators.Auth;
+using Contracts.Mediators.Grades;
+using Contracts.Mediators.Users;
 using Database.DataSources.Supabase;
 using Database.Interfaces.Repositories.Database;
 using Database.Interfaces.Repositories.Json;
-using Database.Interfaces.Repositories.Supabase;
+using Contracts.Interfaces.Repositories.Supabase;
+using Contracts.Interfaces.Mediators.Auth;
+using Contracts.Interfaces.Mediators.Grades;
+using Contracts.Interfaces.Mediators.Users;
+using Database.Repositories.Grades;
 using Database.Repositories.Json;
-using Models.Repositories.SupabaseConfig;
+using Contracts.Models.Repositories.SupabaseConfig;
 
 public partial class RepositoriesSupabase : InterfacesRepositoriesDatabase, InterfacesRepositoriesSupabase
 {
+    public InterfacesMediatorsGrades GradeMediator { get; }
+    public InterfacesMediatorsUsers UserMediator { get; }
+    public InterfacesMediatorsAuth AuthMediator { get; }
+
     public DataSourcesSupabase? SupabaseConnection { get; set; } = null;
     private InterfacesRepositoriesJson? _repositoryJson { get; set; } = null;
     
@@ -16,6 +27,10 @@ public partial class RepositoriesSupabase : InterfacesRepositoriesDatabase, Inte
 
     public RepositoriesSupabase()
     {
+        GradeMediator = new MediatorsGrade(new RepositoriesGrades(this));
+        UserMediator = new MediatorsUsers(this);
+        AuthMediator = new MediatorsAuth(this);
+
         string solutionDirectory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\"));
         string filePath = solutionDirectory + @"Database\.env\supabase_keys.json";
 

@@ -7,21 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include=".env\supabase_keys.json" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.6" />
+    <PackageReference Include="Supabase" Version="1.1.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="Supabase" Version="1.1.1" />
-	<PackageReference Include="Supabase.Postgrest" Version="4.0.3" />
+    <Folder Include="Mediators\" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Contracts\Contracts.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Interfaces\Repositories\" />
   </ItemGroup>
 
 </Project>

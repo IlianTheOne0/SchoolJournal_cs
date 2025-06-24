@@ -1,4 +1,4 @@
-﻿namespace Models.Tables.Enrollments;
+﻿namespace Contracts.Models.Tables.Enrollments;
 
 using Supabase.Postgrest.Models;
 using Supabase.Postgrest.Attributes;

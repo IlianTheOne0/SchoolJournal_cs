@@ -1,6 +1,6 @@
 ﻿namespace Database.Repositories.Grades;
 
-using Database.Interfaces.Repositories.Grade;
+using Database.Interfaces.Repositories.Grades;
 using Database.Interfaces.Repositories.Supabase;
 using Database.Repositories.Supabase;
 using Models.Tables.Classes;

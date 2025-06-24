@@ -1,4 +1,4 @@
-﻿namespace Models.Tables.Attending;
+﻿namespace Contracts.Models.Tables.Attending;
 
 using Supabase.Postgrest.Models;
 using Supabase.Postgrest.Attributes;

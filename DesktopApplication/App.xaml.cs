@@ -1,7 +1,7 @@
 ﻿namespace DesktopApplication;
 
-using Database.Interfaces.Repositories.Grade;
-using Database.Repositories.Grades;
+using Infrastructure;
+
 using DesktopApplication.Interfaces.Services.Auth;
 using DesktopApplication.Interfaces.Services.Grades;
 using DesktopApplication.Interfaces.Services.Navigation;
@@ -13,7 +13,6 @@ using DesktopApplication.Services.Auth;
 using DesktopApplication.Services.Converters;
 using DesktopApplication.Services.Grades;
 using DesktopApplication.Services.Navigation;
-using DesktopApplication.Services.Supabase;
 
 using DesktopApplication.ViewModels.GradeViewer;
 using DesktopApplication.ViewModels.Login;
@@ -25,6 +24,9 @@ using DesktopApplication.Views.UserControls;
 
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
+using Infrastructure.Mediators.Users;
+using Infrastructure.Mediators.Auth;
+using Infrastructure.Mediators.Grades;
 
 public partial class App : Application
 {
@@ -47,7 +49,8 @@ public partial class App : Application
 
         // Navigation service
         Services.AddSingleton<InterfacesServicesNavigation, ServicesNavigation>();
-
+        
+        Services.AddInfrastructure();
         LoadServices(Services);
         LoadViewModels(Services);
         LoadUserControls(Services);
@@ -71,30 +74,22 @@ public partial class App : Application
 
     private void LoadServices(IServiceCollection Services)
     {
-        Services.AddSingleton<ServicesSupabase>();
-        Services.AddSingleton<InterfacesServicesUser, ServicesUser>(
-            provider =>
-            {
-                ServicesSupabase serviceSupabase = provider.GetRequiredService<ServicesSupabase>();
-                return new ServicesUser(serviceSupabase.RepositorySupabase);
-            }
-        );
         Services.AddSingleton<InterfacesServicesAuth, ServicesAuth>(
-            provider =>
-            {
-                ServicesSupabase serviceSupabase = provider.GetRequiredService<ServicesSupabase>();
-                ServicesUser servicesUser = (ServicesUser)provider.GetRequiredService<InterfacesServicesUser>();
-                return new ServicesAuth(serviceSupabase.RepositorySupabase, servicesUser);
-            }
+            provider => new ServicesAuth(
+                MediatorAuth: provider.GetRequiredService<MediatorsAuth>(),
+                ServiceUser: provider.GetRequiredService<InterfacesServicesUser>()
+            )
+        );
+        Services.AddSingleton<InterfacesServicesUser, ServicesUser>(
+            provider => new ServicesUser(
+                UserMediator: provider.GetRequiredService<MediatorsUsers>()
+            )
         );
         Services.AddSingleton<InterfacesServicesGrades, ServicesGrade>(
-            provider =>
-            {
-
-                InterfacesRepositoriesGrades repositoryGrades = new RepositoriesGrades()
-                InterfacesAccessStrategy accessStrategy = provider.GetRequiredService<InterfacesAccessStrategy>();
-                return new ServicesGrade(repositoryGrades, accessStrategy);
-            }
+            provider => new ServicesGrade(
+                MediatorGrade: provider.GetRequiredService<MediatorsGrades>(),
+                AccessStrategy: provider.GetRequiredService<InterfacesAccessStrategy>()
+            )
         );
         Services.AddSingleton<ServicesConverterBooleanToBorderBrush>();
         Services.AddSingleton<ServicesConvertersBooleanToVisibility>();

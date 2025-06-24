@@ -1,7 +1,6 @@
 ﻿namespace DesktopApplication.Services.Auth;
 
-using Database.Interfaces.Repositories.Supabase;
-using Database.Repositories.Supabase;
+using Infrastructure.Interfaces.Mediators.Auth;
 using DesktopApplication.Interfaces.Services.Auth;
 using DesktopApplication.Interfaces.Services.User;
 using System.ComponentModel;
@@ -9,36 +8,49 @@ using System.Runtime.CompilerServices;
 
 public partial class ServicesAuth : INotifyPropertyChanged, InterfacesServicesAuth
 {
+    private readonly InterfacesMediatorsAuth _mediatorAuth;
+    private readonly InterfacesServicesUser _servicesUser;
+
     private bool _isLoggedIn;
     bool InterfacesServicesAuth.IsLoggedIn { get => _isLoggedIn; set => IsLoggedIn = value; }
     public bool IsLoggedIn { get => _isLoggedIn; private set { if (_isLoggedIn != value) { _isLoggedIn = value; OnPropertyChanged("IsLoggedIn"); } } }
 
-    private readonly InterfacesRepositoriesSupabase _repositorySupabase;
-    private readonly InterfacesServicesUser _servicesUser;
-
     public event PropertyChangedEventHandler? PropertyChanged;
-    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null!) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-    public ServicesAuth(RepositoriesSupabase RepositorySupabase, ServicesUser servicesUser)
+    public ServicesAuth(InterfacesMediatorsAuth MediatorAuth, InterfacesServicesUser ServiceUser)
     {
-        _repositorySupabase = RepositorySupabase;
-        _servicesUser = servicesUser;
-        _isLoggedIn = _repositorySupabase.IsLoggedIn;
+        _mediatorAuth = MediatorAuth; _servicesUser = ServiceUser;
+
+        _isLoggedIn = _mediatorAuth.IsLoggedIn;
     }
+
 
     public async Task Login(string Username, string Password)
     {
-        await _repositorySupabase.Login(Username, Password);
+        try
+        {
+            await _mediatorAuth.Login(Username, Password);
+            IsLoggedIn = _mediatorAuth.IsLoggedIn;
 
-        if (_repositorySupabase.ModelUser != null) { _servicesUser.SetupAccessStrategy(_repositorySupabase.ModelUser); }
-
-        IsLoggedIn = _repositorySupabase.IsLoggedIn;
+            if (_servicesUser is ServicesUser userService && IsLoggedIn)
+            {
+                var currentUser = await userService.GetUserById(userService.AccessStrategy?.ModelUser.Id ?? 0);
+                if (currentUser != null) { userService.SetupAccessStrategy(currentUser); }
+            }
+        }
+        catch (Exception e) { throw new Exception($"Login failed: {e.Message}", e); }
     }
 
     public async Task Logout()
     {
-        await _repositorySupabase.Logout();
-        _servicesUser.ClearAccessStrategy();
-        IsLoggedIn = _repositorySupabase.IsLoggedIn;
+        try
+        {
+            await _mediatorAuth.Logout();
+            _servicesUser.ClearAccessStrategy();
+            IsLoggedIn = _mediatorAuth.IsLoggedIn;
+        }
+        catch (Exception e) { throw new Exception($"Logout failed: {e.Message}", e); }
     }
+
+    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null!) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 }

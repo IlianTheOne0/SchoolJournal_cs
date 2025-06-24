@@ -1,10 +1,10 @@
-﻿namespace Database.Interfaces.Repositories.Grade;
+﻿namespace Contracts.Interfaces.Repositories.Grades;
 
-using Models.Tables.Classes;
-using Models.Tables.Enrollments;
-using Models.Tables.Grades;
-using Models.Tables.Subjects;
-using Models.Tables.Users;
+using Contracts.Models.Tables.Classes;
+using Contracts.Models.Tables.Enrollments;
+using Contracts.Models.Tables.Grades;
+using Contracts.Models.Tables.Subjects;
+using Contracts.Models.Tables.Users;
 
 public interface InterfacesRepositoriesGrades
 {

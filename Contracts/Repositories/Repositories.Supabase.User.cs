@@ -1,6 +1,6 @@
-﻿namespace Database.Repositories.Supabase;
+﻿namespace Contracts.Repositories.Supabase;
 
-using Models.Tables.Users;
+using Contracts.Models.Tables.Users;
 using System.Threading.Tasks;
 
 public partial class RepositoriesSupabase

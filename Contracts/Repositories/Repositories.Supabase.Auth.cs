@@ -1,10 +1,10 @@
-﻿namespace Database.Repositories.Supabase;
+﻿namespace Contracts.Repositories.Supabase;
 
 using global::Supabase.Postgrest;
-using Models.Tables.Classes;
-using Models.Tables.Statuses;
-using Models.Tables.Users;
-using Models.Tables.Users.Extended;
+using Contracts.Models.Tables.Classes;
+using Contracts.Models.Tables.Statuses;
+using Contracts.Models.Tables.Users;
+using Contracts.Models.Tables.Users.Extended;
 using System;
 using System.Threading.Tasks;
 

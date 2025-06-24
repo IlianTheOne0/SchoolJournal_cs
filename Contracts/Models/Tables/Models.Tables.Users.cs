@@ -1,4 +1,4 @@
-﻿namespace Models.Tables.Users;
+﻿namespace Contracts.Models.Tables.Users;
 
 using Supabase.Postgrest.Models;
 using Supabase.Postgrest.Attributes;

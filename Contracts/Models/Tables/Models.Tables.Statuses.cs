@@ -1,4 +1,4 @@
-﻿namespace Models.Tables.Statuses;
+﻿namespace Contracts.Models.Tables.Statuses;
 
 using Supabase.Postgrest.Models;
 using Supabase.Postgrest.Attributes;

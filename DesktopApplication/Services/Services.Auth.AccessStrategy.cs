@@ -1,10 +1,6 @@
 ﻿namespace DesktopApplication.Services.Auth;
 
 using DesktopApplication.Interfaces.Services.Strategies.AccessStrategy;
-using DesktopApplication.Services.Strategies.AdminAccess;
-using DesktopApplication.Services.Strategies.StudentAccess;
-using DesktopApplication.Services.Strategies.TeacherAccess;
-using Models.Tables.Users.Extended;
 
 public partial class ServicesAuth
 {
@@ -15,16 +11,7 @@ public partial class ServicesAuth
     {
         try
         {
-            ModelsUserExtended modelUser = _repositorySupabase.ModelUser!;
-            if (modelUser == null) { throw new Exception("SetupAccessStrategy failed: The model of user is empty!"); }
-
-            _interfacesAccessStrategy = modelUser.StatusName switch
-            {
-                "Admin" => new ServicesStrategiesAdminAccess(modelUser),
-                "Teacher" => new ServicesStrategiesTeacherAccess(modelUser),
-                "Student" => new ServicesStrategiesStudentAccess(modelUser),
-                _ => throw new Exception("SetupAccessStrategy failed: Unknown status")
-            };
+            if (_servicesUser is ServicesUser userService && userService.AccessStrategy?.ModelUser != null) { AccessStrategy = userService.AccessStrategy; }
         }
         catch (Exception e) { throw new Exception($"SetupAccessStrategy failed: {e.Message}", e); }
     }

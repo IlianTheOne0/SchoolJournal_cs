@@ -1,4 +1,4 @@
-﻿namespace Models.Tables.Users.Extended;
+﻿namespace Contracts.Models.Tables.Users.Extended;
 
 using Models.Tables.Users;
 using System.ComponentModel;

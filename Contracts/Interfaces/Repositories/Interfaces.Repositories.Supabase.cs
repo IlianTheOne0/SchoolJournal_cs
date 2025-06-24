@@ -1,9 +1,9 @@
-﻿namespace Database.Interfaces.Repositories.Supabase;
+﻿namespace Contracts.Interfaces.Repositories.Supabase;
 
-using global::Supabase.Postgrest.Models;
-using Models.Tables.Users;
-using Models.Tables.Users.Extended;
+using Contracts.Models.Tables.Users;
+using Contracts.Models.Tables.Users.Extended;
 using System.Linq.Expressions;
+using global::Supabase.Postgrest.Models;
 using static global::Supabase.Postgrest.Constants;
 
 public interface InterfacesRepositoriesSupabase

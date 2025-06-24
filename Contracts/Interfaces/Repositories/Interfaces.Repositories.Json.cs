@@ -1,4 +1,4 @@
-﻿namespace Database.Interfaces.Repositories.Json;
+﻿namespace Contracts.Interfaces.Repositories.Json;
 
 public interface InterfacesRepositoriesJson
 {
