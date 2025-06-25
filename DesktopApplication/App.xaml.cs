@@ -1,11 +1,8 @@
 ﻿namespace DesktopApplication;
 
-using Database.Interfaces.Repositories.Grade;
-using Database.Repositories.Grades;
 using DesktopApplication.Interfaces.Services.Auth;
 using DesktopApplication.Interfaces.Services.Grades;
 using DesktopApplication.Interfaces.Services.Navigation;
-using DesktopApplication.Interfaces.Services.Strategies.AccessStrategy;
 using DesktopApplication.Interfaces.Services.User;
 
 using DesktopApplication.Services;
@@ -87,8 +84,8 @@ public partial class App : Application
                 return new ServicesAuth(serviceSupabase.RepositorySupabase, servicesUser);
             }
         );
-        Services.AddSingleton<InterfacesServicesGrades, ServicesGrade>(
-            provider => new ServicesGrade(
+        Services.AddSingleton<InterfacesServicesGrades, ServicesGrades>(
+            provider => new ServicesGrades(
                 ServiceSupabase: provider.GetRequiredService<ServicesSupabase>(),
                 ServiceUser: (ServicesUser)provider.GetRequiredService<InterfacesServicesUser>()
             )
@@ -122,7 +119,7 @@ public partial class App : Application
         );
         Services.AddSingleton<ViewModelsGradeViewer>(
             provider => new ViewModelsGradeViewer(
-                ServiceGrade: (ServicesGrade)provider.GetRequiredService<InterfacesServicesGrades>()
+                ServiceGrades: (ServicesGrades)provider.GetRequiredService<InterfacesServicesGrades>()
             )
         );
     }

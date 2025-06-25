@@ -1,102 +1,77 @@
 ﻿namespace DesktopApplication.Services.Grades;
 
-using Database.Interfaces.Repositories.Grade;
 using Database.Repositories.Grades;
+using Database.Interfaces.Repositories.Grades;
 using DesktopApplication.Interfaces.Services.Grades;
-using DesktopApplication.Interfaces.Services.Strategies.AccessStrategy;
 using DesktopApplication.Interfaces.Services.User;
-using DesktopApplication.Services.Strategies.TeacherAccess;
 using DesktopApplication.Services.Supabase;
 using Models.Tables.Classes;
 using Models.Tables.Grades;
 using Models.Tables.Subjects;
 using Models.Tables.Users;
+using DesktopApplication.Services.Strategies.TeacherAccess;
 
-public class ServicesGrade : InterfacesServicesGrades
+public class ServicesGrades : InterfacesServicesGrades
 {
     private readonly InterfacesRepositoriesGrades _repositoryGrades;
     private readonly InterfacesServicesUser _serviceUser;
 
-    private List<ModelsClasses> _availableClasses = new(); public List<ModelsClasses> AvailableClasses => _availableClasses;
-    private List<ModelsUser> _studentsInClass = new(); public List<ModelsUser> StudentsInClass => _studentsInClass;
-    private List<ModelsGradesExtended> _grades = new(); public List<ModelsGradesExtended> FilteredGrades { get; private set; } = new();
-    private List<ModelsSubjects> _availableSubjects = new(); public List<ModelsSubjects> AvailableSubjects => _availableSubjects;
+    public int CurrentUserId { get; private set; }
 
-    public event Action PropertyChanged;
+    public List<ModelsClasses> AvailableClasses { get; private set; } = new();
+    public List<ModelsUserExtended> AvailableStudents { get; private set; } = new();
+    public List<ModelsSubjects> AvailableSubjects { get; private set; } = new();
+    public List<ModelsGradesExtended> AvailableGrades { get; private set; } = new();
 
-    public ModelsClasses SelectedClass { get; set; }
-    public ModelsUser SelectedStudent { get; set; }
-    public ModelsSubjects SelectedSubject { get; set; }
+    private bool _isTeacherMode;
 
-    public bool IsTeacherMode { get; private set; }
-    public bool HasClassSelected => SelectedClass != null;
-
-    public ServicesGrade(ServicesSupabase ServiceSupabase, ServicesUser ServiceUser)
+    public ServicesGrades(ServicesSupabase ServiceSupabase, ServicesUser ServiceUser)
     {
         _repositoryGrades = new RepositoriesGrades(ServiceSupabase.RepositorySupabase);
         _serviceUser = ServiceUser;
+
+        CurrentUserId = _serviceUser.AccessStrategy?.ModelUser.Id ?? -1;
     }
+
+    public bool GetIsTeacherMode() => _isTeacherMode;
 
     public async Task Initialize()
     {
-        if (_serviceUser?.AccessStrategy == null) { throw new InvalidOperationException("User access strategy is not initialized"); }
-
-        InterfacesAccessStrategy accessStrategy = _serviceUser.AccessStrategy;
-        IsTeacherMode = accessStrategy is ServicesStrategiesTeacherAccess;
-
-        if (IsTeacherMode) { await LoadClasses(); await LoadSubjects(); }
-        else
+        try
         {
-            if (accessStrategy.ModelUser == null) { throw new InvalidOperationException("User model is not initialized"); }
-            await LoadStudentGrades(accessStrategy.ModelUser.Id);
+            CurrentUserId = _serviceUser.AccessStrategy?.ModelUser.Id ?? -1;
+
+            _isTeacherMode = false;
+
+            if (_serviceUser.AccessStrategy is ServicesStrategiesTeacherAccess)
+            {
+                _isTeacherMode = true;
+
+                AvailableClasses = await _repositoryGrades.GetAllClassesByEducationalInstitution(_serviceUser.AccessStrategy!.ModelUser.EducationalInstitutionId);
+            }
+            AvailableSubjects = await _repositoryGrades.GetAllSubjectsByEducationalInstitution(_isTeacherMode, _serviceUser.AccessStrategy!.ModelUser.EducationalInstitutionId);
         }
+        catch (Exception e) { throw new Exception($"Grades initialize failed: {e.Message}", e); }
     }
-
-    private async Task LoadClasses() { _availableClasses = await _repositoryGrades.GetAllClassesAsync(); InvokeChangedProperty(); }
-    private async Task LoadSubjects() {  _availableSubjects = await _repositoryGrades.GetAllSubjectsAsync(); InvokeChangedProperty(); }
-    
-    private async Task LoadStudentInClass(int ClassId)
+    public async Task Refresh()
     {
-        var enrollments = await _repositoryGrades.GetEnrollmentsByClassAsync(ClassId);
-        var studentIds = enrollments.Select(enrollmentProvider => enrollmentProvider.UserId).ToList();
-
-        _studentsInClass = studentIds.Any() ? await _repositoryGrades.GetStudentsByIdsAsync(studentIds) : new List<ModelsUser>();
-
-        InvokeChangedProperty();
+        try { await Initialize(); }
+        catch (Exception e) { throw new Exception($"Grades refreshment failed: {e.Message}", e); }
     }
 
-    private async Task LoadGradesForStudent(int StudentId) { _grades = await _repositoryGrades.GetGradesByStudentAsync(StudentId); UpdatedFilteredGrades(); }
-
-    private async Task LoadStudentGrades(int StudentId)
+    public async Task<List<ModelsUserExtended>> GetAllStudentsByClassId(int ClassId)
     {
-        _grades = await _repositoryGrades.GetGradesByStudentAsync(StudentId);
-        FilteredGrades = new List<ModelsGradesExtended>(_grades);
-
-        var subjectsIds = _grades.Select(gradeProvider => gradeProvider.SubjectId).Distinct().ToList();
-        _availableSubjects = subjectsIds.Any() ? await _repositoryGrades.GetSubjectsByIdsAsync(subjectsIds) : new List<ModelsSubjects>();
-
-        InvokeChangedProperty();
+        try { AvailableStudents = await _repositoryGrades.GetAllStudentsByClassId(ClassId); return AvailableStudents; }
+        catch (Exception e) { throw new Exception($"Getting students by class failed: {e.Message}", e); }
     }
-
-    public async Task RefreshData()
+    public async Task<List<ModelsGradesExtended>> GetAllGradesByStudentId(int ClassId)
     {
-        if (IsTeacherMode)
-        {
-            await LoadClasses(); await LoadSubjects();
-
-            if (SelectedClass != null) { await LoadStudentInClass(SelectedClass.Id); }
-            if (SelectedStudent != null) { await LoadGradesForStudent(SelectedStudent.Id); }
-        }
-        else { await LoadStudentGrades(_serviceUser.AccessStrategy?.ModelUser.Id ?? 0); }
-
-        InvokeChangedProperty();
+        try { AvailableGrades = await _repositoryGrades.GetAllGradesByStudentId(ClassId); return AvailableGrades; }
+        catch (Exception e) { throw new Exception($"Grades refreshment failed: {e.Message}", e); }
     }
-
-    private void UpdatedFilteredGrades()
+    public async Task<List<ModelsGradesExtended>> GetAllGradesBySubjectAndStudent(int SubjectId, int StudentId)
     {
-        FilteredGrades = SelectedSubject == null ? new List<ModelsGradesExtended>(_grades) : _grades.Where(gradeProvider => gradeProvider.SubjectId == SelectedSubject.Id).ToList();
-        InvokeChangedProperty();
+        try { AvailableGrades = await _repositoryGrades.GetAllGradesBySubjectAndStudent(SubjectId, StudentId); return AvailableGrades; }
+        catch (Exception e) { throw new Exception($"Grades refreshment failed: {e.Message}", e); }
     }
-
-    private void InvokeChangedProperty() => PropertyChanged?.Invoke();
 }

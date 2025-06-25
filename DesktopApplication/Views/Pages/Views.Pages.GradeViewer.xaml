@@ -20,6 +20,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <TextBlock
@@ -32,69 +33,74 @@
                 Grid.Row="0"
                 Orientation="Horizontal"
                 HorizontalAlignment="Center"
-                Visibility="{Binding IsTeacherMode, Converter={StaticResource BooleanToVisibilityConverter}}"
                 Margin="5,100,5,5">
-                <TextBlock
-                    Text="Class:"
-                    FontSize="18" FontWeight="Normal" FontFamily="{StaticResource Roboto}"
-                    VerticalAlignment="Center"
-                    Margin="0,0,5,0"/>
-                <ComboBox
-                    x:Name="ClassComboBox" 
-                    Width="165"
-                    FontSize="18" FontWeight="Normal" FontFamily="{StaticResource Roboto}"
-                    ItemsSource="{Binding AvailableClasses}" 
-                    DisplayMemberPath="ClassName"
-                    SelectedItem="{Binding SelectedClass}"
-                    SelectionChanged="ClassComboBox_SelectionChanged"
-                    Margin="5"/>
-                    
-                <TextBlock
-                    Text="Student:"
-                    FontSize="18" FontWeight="Normal" FontFamily="{StaticResource Roboto}"
-                    VerticalAlignment="Center"
-                    Margin="30,0,5,0"/>
-                <ComboBox
-                    x:Name="StudentComboBox"
-                    Width="165"
-                    FontSize="18" FontWeight="Normal" FontFamily="{StaticResource Roboto}"
-                    ItemsSource="{Binding StudentsInClass}" 
-                    DisplayMemberPath="FullName"
-                    SelectedItem="{Binding SelectedStudent}"
-                    SelectionChanged="StudentComboBox_SelectionChanged"
-                    IsEnabled="{Binding HasClassSelected}"
-                    Margin="5"/>
-                    
-                <TextBlock
-                    Text="Subject:"
-                    FontSize="18" FontWeight="Normal" FontFamily="{StaticResource Roboto}"
-                    VerticalAlignment="Center"
-                    Margin="30,0,5,0"/>
-                <ComboBox
-                    x:Name="SubjectComboBox"
-                    ItemsSource="{Binding AvailableSubjects}" 
-                    Width="165"
-                    FontSize="18" FontWeight="Normal" FontFamily="{StaticResource Roboto}"
-                    SelectedItem="{Binding SelectedSubject}"
-                    SelectionChanged="SubjectComboBox_SelectionChanged"
-                    DisplayMemberPath="Name"
-                    Margin="5"/>
+                <StackPanel
+                    Orientation="Horizontal"
+                    Visibility="{Binding IsTeacherMode, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    HorizontalAlignment="Center">
+                    <TextBlock
+                        Text="Class:"
+                        FontSize="18" FontWeight="Normal" FontFamily="{StaticResource Roboto}"
+                        VerticalAlignment="Center"
+                        Margin="0,0,5,0"/>
+                    <ComboBox
+                        Width="165"
+                        FontSize="18" FontWeight="Normal" FontFamily="{StaticResource Roboto}"
+                        DisplayMemberPath="Name" SelectedItem="{Binding ChosenClass}" ItemsSource="{Binding AvailableClasses}"
+                        Margin="5"/>
+
+                    <TextBlock
+                        Text="Student:"
+                        FontSize="18" FontWeight="Normal" FontFamily="{StaticResource Roboto}"
+                        VerticalAlignment="Center"
+                        Margin="30,0,5,0"/>
+                    <ComboBox
+                        Width="165"
+                        FontSize="18" FontWeight="Normal" FontFamily="{StaticResource Roboto}"
+                        DisplayMemberPath="FullName" SelectedItem="{Binding ChosenStudent}" ItemsSource="{Binding AvailableStudents}"
+                        IsEnabled="{Binding IsChosenClass}"
+                        Margin="5"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Center">
+                    <TextBlock
+                        Text="Subject:"
+                        FontSize="18" FontWeight="Normal" FontFamily="{StaticResource Roboto}"
+                        VerticalAlignment="Center"
+                        Margin="30,0,5,0"/>
+                    <ComboBox
+                        Width="165"
+                        FontSize="18" FontWeight="Normal" FontFamily="{StaticResource Roboto}"
+                        DisplayMemberPath="Name" SelectedItem="{Binding ChosenSubject}" ItemsSource="{Binding AvailableSubjects}"
+                        Margin="5"/>
+                </StackPanel>
             </StackPanel>
 
             <DataGrid
-                x:Name="GradesDataGrid"
                 Grid.Row="2"
-                ItemsSource="{Binding FilteredGrades}"
                 IsReadOnly="True"
                 AutoGenerateColumns="False"
+                ItemsSource="{Binding AvailableGrades}"
                 Margin="5">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Subject" Binding="{Binding SubjectName}" Width="200"/>
                     <DataGridTextColumn Header="Grade" Binding="{Binding Grade}" Width="200"/>
                     <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat={}{0:dd.MM.yyyy}}" Width="200"/>
-                    <DataGridTextColumn Header="Comment" Binding="{Binding Description}" Width="*"/>
+                    <DataGridTextColumn Header="Comment" Binding="{Binding Description, FallbackValue='no comment', TargetNullValue='no comment'}" Width="*"/>
                 </DataGrid.Columns>
             </DataGrid>
+
+            <Button
+                Grid.Row="3"
+                Content="Refresh"
+                Width="200"
+                Height="45"
+                FontSize="20" FontFamily="{StaticResource Roboto}"
+                Command="{Binding CommandRefreshButton}" 
+                Style="{StaticResource MaterialDesignRaisedButton}"
+                HorizontalAlignment="Center"
+                Margin="0,15"/>
         </Grid>
     </Grid>
 </UserControl>

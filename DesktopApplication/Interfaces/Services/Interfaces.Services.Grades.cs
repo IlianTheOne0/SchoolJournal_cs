@@ -8,17 +8,18 @@ using System.Threading.Tasks;
 
 public interface InterfacesServicesGrades
 {
-    event Action PropertyChanged;
-    bool IsTeacherMode { get; }
-    bool HasClassSelected { get; }
+    int CurrentUserId { get; }
 
     List<ModelsClasses> AvailableClasses { get; }
-    ModelsClasses SelectedClass { get; set; }
-    List<ModelsUser> StudentsInClass { get; }
-    ModelsUser SelectedStudent { get; set; }
+    List<ModelsUserExtended> AvailableStudents { get; }
     List<ModelsSubjects> AvailableSubjects { get; }
-    ModelsSubjects SelectedSubject { get; set; }
-    List<ModelsGradesExtended> FilteredGrades { get; }
+    List<ModelsGradesExtended> AvailableGrades { get;  }
 
+    bool GetIsTeacherMode();
     Task Initialize();
+    Task Refresh();
+
+    Task<List<ModelsUserExtended>> GetAllStudentsByClassId(int ClassId);
+    Task<List<ModelsGradesExtended>> GetAllGradesByStudentId(int ClassId);
+    Task<List<ModelsGradesExtended>> GetAllGradesBySubjectAndStudent(int SubjectId, int StudentId);
 }

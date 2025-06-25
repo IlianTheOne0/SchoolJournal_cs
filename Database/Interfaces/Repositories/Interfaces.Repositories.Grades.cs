@@ -1,17 +1,15 @@
-﻿namespace Database.Interfaces.Repositories.Grade;
+﻿namespace Database.Interfaces.Repositories.Grades;
 
 using Models.Tables.Classes;
-using Models.Tables.Enrollments;
 using Models.Tables.Grades;
 using Models.Tables.Subjects;
 using Models.Tables.Users;
 
 public interface InterfacesRepositoriesGrades
 {
-    Task<List<ModelsClasses>> GetAllClassesAsync();
-    Task<List<ModelsSubjects>> GetAllSubjectsAsync();
-    Task<List<ModelsEnrollments>> GetEnrollmentsByClassAsync(int ClassId);
-    Task<List<ModelsUser>> GetStudentsByIdsAsync(List<int> StudentIds);
-    Task<List<ModelsGradesExtended>> GetGradesByStudentAsync(int StudentId);
-    Task<List<ModelsSubjects>> GetSubjectsByIdsAsync(List<int> SubjectIds);
+    Task<List<ModelsClasses>> GetAllClassesByEducationalInstitution(int EducationalInstitutionId);
+    Task<List<ModelsSubjects>> GetAllSubjectsByEducationalInstitution(bool IsTeacher, int EducationalInstitutionId);
+    Task<List<ModelsUserExtended>> GetAllStudentsByClassId(int ClassId);
+    Task<List<ModelsGradesExtended>> GetAllGradesByStudentId(int ClassId);
+    Task<List<ModelsGradesExtended>> GetAllGradesBySubjectAndStudent(int SubjectId, int StudentId);
 }

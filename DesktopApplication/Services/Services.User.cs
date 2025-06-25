@@ -28,7 +28,7 @@ public class ServicesUser : InterfacesServicesUser
         try
         {
             var user = await _repositorySupabase.GetUserById(UserId);
-            if (user == null) return null;
+            if (user == null) { return null; }
 
             var status = (await _repositorySupabase.FilterAsync<ModelsStatuses>("Id", Constants.Operator.Equals, user.StatusId))?.FirstOrDefault();
             var institution = (await _repositorySupabase.FilterAsync<ModelsEducationalInstitutions>("Id", Constants.Operator.Equals, user.EducationalInstitutionId))?.FirstOrDefault();

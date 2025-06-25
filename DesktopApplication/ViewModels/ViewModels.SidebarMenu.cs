@@ -86,7 +86,7 @@ public class ViewModelsSidebarMenu : INotifyPropertyChanged
 
     public void OnProfile() { LoadData(); _serviceNavigation.NavigateTo<PagesProfile, ViewModelsProfile>(); }
     public void OnGrade() => MessageBox.Show($"Grade Page do not implemented", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-    public void OnViewGrades() { LoadData(); _serviceNavigation.NavigateTo<PagesGradeViewer, ViewModelsGradeViewer>(viewModelProvider => viewModelProvider.RefreshData()); }
+    public async void OnViewGrades() { LoadData(); _viewModelGradeViewer.Refresh(); _serviceNavigation.NavigateTo<PagesGradeViewer, ViewModelsGradeViewer>(); }
     public void OnManageUsers() => MessageBox.Show($"Manage users Page do not implemented", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
     public void OnGoToHome() { LoadData(); _viewModelProfile.ResetEditingState(); _serviceNavigation.NavigateTo<PagesHome>(); }
 
