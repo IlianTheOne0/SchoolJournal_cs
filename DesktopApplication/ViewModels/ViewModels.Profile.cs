@@ -1,11 +1,10 @@
 ﻿namespace DesktopApplication.ViewModels.Profile;
 
 using CommunityToolkit.Mvvm.Input;
+using DesktopApplication.Interfaces.Services.User;
 using DesktopApplication.Services;
 using Models.Tables.Users;
-using Models.Tables.Users.Extended;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
@@ -13,7 +12,7 @@ using System.Windows.Input;
 
 public class ViewModelsProfile : INotifyPropertyChanged
 {
-    private readonly ServicesUser _serviceUser;
+    private readonly InterfacesServicesUser _serviceUser;
     private ModelsUserExtended? _originalModelUser;
     private ModelsUserExtended? _modelUser;
     public ModelsUserExtended? ModelUser
@@ -110,7 +109,6 @@ public class ViewModelsProfile : INotifyPropertyChanged
             };
 
             if (string.IsNullOrWhiteSpace(userToUpdate.Username)) { MessageBox.Show("Username is required", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning); return; }
-            if (string.IsNullOrWhiteSpace(userToUpdate.Email) || !Database.Utilities.EmailValidation.UtilitiesEmailValidation.Execute(userToUpdate.Email)) { MessageBox.Show("Please enter a valid email address", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning); return; }
 
             await _serviceUser.UpdateUser(userToUpdate);
             _originalModelUser = CloneUser(ModelUser);

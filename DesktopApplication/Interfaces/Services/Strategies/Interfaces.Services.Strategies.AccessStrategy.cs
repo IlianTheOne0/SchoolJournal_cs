@@ -1,4 +1,4 @@
-﻿namespace DesktopApplication.Interfaces.AccessStrategy;
+﻿namespace DesktopApplication.Interfaces.Services.Strategies.AccessStrategy;
 
 using Models.Tables.Users;
 

@@ -1,0 +1,106 @@
+﻿<UserControl x:Class="DesktopApplication.Views.Pages.PagesGradeViewer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DesktopApplication.Views.Pages"
+             xmlns:converter="clr-namespace:DesktopApplication.Services.Converters"
+             mc:Ignorable="d" 
+             MinHeight="450" MinWidth="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <ContentControl x:Name="SidebarHost" Grid.Column="0"/>
+
+        <Grid Grid.Column="1" Background="{StaticResource MaterialDesignDarkSeparatorBackground}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock
+                Text="Grades"
+                FontSize="24" FontWeight="Heavy" FontFamily="{StaticResource Roboto}"
+                VerticalAlignment="Top" HorizontalAlignment="Center"
+                Margin="0,50,0,0"/>
+
+            <StackPanel
+                Grid.Row="0"
+                Orientation="Horizontal"
+                HorizontalAlignment="Center"
+                Margin="5,100,5,5">
+                <StackPanel
+                    Orientation="Horizontal"
+                    Visibility="{Binding IsTeacherMode, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    HorizontalAlignment="Center">
+                    <TextBlock
+                        Text="Class:"
+                        FontSize="18" FontWeight="Normal" FontFamily="{StaticResource Roboto}"
+                        VerticalAlignment="Center"
+                        Margin="0,0,5,0"/>
+                    <ComboBox
+                        Width="165"
+                        FontSize="18" FontWeight="Normal" FontFamily="{StaticResource Roboto}"
+                        DisplayMemberPath="Name" SelectedItem="{Binding ChosenClass}" ItemsSource="{Binding AvailableClasses}"
+                        Margin="5"/>
+
+                    <TextBlock
+                        Text="Student:"
+                        FontSize="18" FontWeight="Normal" FontFamily="{StaticResource Roboto}"
+                        VerticalAlignment="Center"
+                        Margin="30,0,5,0"/>
+                    <ComboBox
+                        Width="165"
+                        FontSize="18" FontWeight="Normal" FontFamily="{StaticResource Roboto}"
+                        DisplayMemberPath="FullName" SelectedItem="{Binding ChosenStudent}" ItemsSource="{Binding AvailableStudents}"
+                        IsEnabled="{Binding IsChosenClass}"
+                        Margin="5"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Center">
+                    <TextBlock
+                        Text="Subject:"
+                        FontSize="18" FontWeight="Normal" FontFamily="{StaticResource Roboto}"
+                        VerticalAlignment="Center"
+                        Margin="30,0,5,0"/>
+                    <ComboBox
+                        Width="165"
+                        FontSize="18" FontWeight="Normal" FontFamily="{StaticResource Roboto}"
+                        DisplayMemberPath="Name" SelectedItem="{Binding ChosenSubject}" ItemsSource="{Binding AvailableSubjects}"
+                        Margin="5"/>
+                </StackPanel>
+            </StackPanel>
+
+            <DataGrid
+                Grid.Row="2"
+                IsReadOnly="True"
+                AutoGenerateColumns="False"
+                ItemsSource="{Binding AvailableGrades}"
+                Margin="5">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Subject" Binding="{Binding SubjectName}" Width="200"/>
+                    <DataGridTextColumn Header="Grade" Binding="{Binding Grade}" Width="200"/>
+                    <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat={}{0:dd.MM.yyyy}}" Width="200"/>
+                    <DataGridTextColumn Header="Comment" Binding="{Binding Description, FallbackValue='no comment', TargetNullValue='no comment'}" Width="*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <Button
+                Grid.Row="3"
+                Content="Refresh"
+                Width="200"
+                Height="45"
+                FontSize="20" FontFamily="{StaticResource Roboto}"
+                Command="{Binding CommandRefreshButton}" 
+                Style="{StaticResource MaterialDesignRaisedButton}"
+                HorizontalAlignment="Center"
+                Margin="0,15"/>
+        </Grid>
+    </Grid>
+</UserControl>

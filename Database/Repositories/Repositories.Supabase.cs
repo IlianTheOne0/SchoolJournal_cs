@@ -2,13 +2,15 @@
 
 using Database.DataSources.Supabase;
 using Database.Interfaces.Repositories.Database;
-using Models.Repositories.SupabaseConfig;
+using Database.Interfaces.Repositories.Json;
+using Database.Interfaces.Repositories.Supabase;
 using Database.Repositories.Json;
+using Models.Repositories.SupabaseConfig;
 
-public partial class RepositoriesSupabase : InterfacesDatabaseRepositories
+public partial class RepositoriesSupabase : InterfacesRepositoriesDatabase, InterfacesRepositoriesSupabase
 {
     public DataSourcesSupabase? SupabaseConnection { get; set; } = null;
-    private RepositoriesJson? _repositoryJson { get; set; } = null;
+    private InterfacesRepositoriesJson? _repositoryJson { get; set; } = null;
     
     private string _defaultSchema { get; set; } = null!;
 
@@ -30,7 +32,7 @@ public partial class RepositoriesSupabase : InterfacesDatabaseRepositories
         try
         {
             _repositoryJson = new RepositoriesJson(FilePath);
-            ModelsSupabaseConfig? supbaseConfig = await _repositoryJson.ReadJsonAsync();
+            ModelsSupabaseConfig? supbaseConfig = await _repositoryJson.ReadJsonAsync<ModelsSupabaseConfig>();
             if (supbaseConfig == null || supbaseConfig.Url == null || supbaseConfig.Key == null) { throw new Exception("Supabase configs are null!"); }
 
             _defaultSchema = supbaseConfig.DefaultSchema!;

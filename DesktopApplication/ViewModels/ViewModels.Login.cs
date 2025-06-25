@@ -1,16 +1,17 @@
 ﻿namespace DesktopApplication.ViewModels.Login;
 
-using CommunityToolkit.Mvvm.Input;
+using DesktopApplication.Interfaces.Services.Auth;
 using DesktopApplication.Services.Auth;
+using CommunityToolkit.Mvvm.Input;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Windows.Input;
 using System.Windows;
+using System.Windows.Input;
 
 public class ViewModelsLogin
 {
     public ICommand CommandLogIn { get; }
-    private readonly ServicesAuth _serviceAuth;
+    private readonly InterfacesServicesAuth _serviceAuth;
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private string _username; public string Username { get => _username; set { _username = value; OnPropertyChanged(); } }

@@ -1,19 +1,23 @@
 ﻿namespace DesktopApplication.Services.Auth;
 
+using Database.Interfaces.Repositories.Supabase;
 using Database.Repositories.Supabase;
+using DesktopApplication.Interfaces.Services.Auth;
+using DesktopApplication.Interfaces.Services.User;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-public partial class ServicesAuth : INotifyPropertyChanged
+public partial class ServicesAuth : INotifyPropertyChanged, InterfacesServicesAuth
 {
-    private bool _isLoggedIn; public bool IsLoggedIn { get => _isLoggedIn; private set { if (_isLoggedIn != value) { _isLoggedIn = value; OnPropertyChanged("IsLoggedIn"); } } }
+    private bool _isLoggedIn;
+    bool InterfacesServicesAuth.IsLoggedIn { get => _isLoggedIn; set => IsLoggedIn = value; }
+    public bool IsLoggedIn { get => _isLoggedIn; private set { if (_isLoggedIn != value) { _isLoggedIn = value; OnPropertyChanged("IsLoggedIn"); } } }
 
-    private readonly RepositoriesSupabase _repositorySupabase;
-    private readonly ServicesUser _servicesUser;
+    private readonly InterfacesRepositoriesSupabase _repositorySupabase;
+    private readonly InterfacesServicesUser _servicesUser;
 
     public event PropertyChangedEventHandler? PropertyChanged;
-    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null!) =>
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null!) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
     public ServicesAuth(RepositoriesSupabase RepositorySupabase, ServicesUser servicesUser)
     {

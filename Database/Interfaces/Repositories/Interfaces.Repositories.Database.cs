@@ -1,6 +1,6 @@
 ﻿namespace Database.Interfaces.Repositories.Database;
 
-public interface InterfacesDatabaseRepositories
+public interface InterfacesRepositoriesDatabase
 {
     void InitDatabase(string FilePath);
 }

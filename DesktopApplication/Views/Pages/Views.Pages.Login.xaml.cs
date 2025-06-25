@@ -4,9 +4,9 @@ using DesktopApplication.ViewModels.Login;
 using System.Windows;
 using System.Windows.Controls;
 
-public partial class PageLogin : UserControl
+public partial class PagesLogin : UserControl
 {
-    public PageLogin(ViewModelsLogin ViewModel)
+    public PagesLogin(ViewModelsLogin ViewModel)
     {
         InitializeComponent();
 

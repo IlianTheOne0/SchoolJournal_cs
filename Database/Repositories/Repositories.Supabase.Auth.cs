@@ -4,7 +4,6 @@ using global::Supabase.Postgrest;
 using Models.Tables.Classes;
 using Models.Tables.Statuses;
 using Models.Tables.Users;
-using Models.Tables.Users.Extended;
 using System;
 using System.Threading.Tasks;
 

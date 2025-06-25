@@ -1,7 +1,5 @@
 ﻿namespace Database.Repositories.Supabase;
 
-using Database.Utilities.EmailValidation;
-using global::Supabase.Gotrue;
 using Models.Tables.Users;
 using System.Threading.Tasks;
 
@@ -17,53 +15,53 @@ public partial class RepositoriesSupabase
         catch (Exception e) { throw new Exception($"Failed to get user by ID: {e.Message}", e); }
     }
 
-    public async Task UpdateUser(ModelsUser user)
+    public async Task UpdateUser(ModelsUser User)
     {
         try
         {
             var existingUserResult = await SupabaseConnection?.SupabaseClient
                 .From<ModelsUser>()
-                .Where(u => u.Id == user.Id)
+                .Where(u => u.Id == User.Id)
                 .Get()!;
 
             var existingUser = existingUserResult.Models.FirstOrDefault();
             if (existingUser == null) { throw new ArgumentException("User not found!"); }
 
-            if (!string.Equals(existingUser.Username, user.Username, StringComparison.OrdinalIgnoreCase))
+            if (!string.Equals(existingUser.Username, User.Username, StringComparison.OrdinalIgnoreCase))
             {
                 var usernameExistsResult = await SupabaseConnection.SupabaseClient
                     .From<ModelsUser>()
-                    .Where(u => u.Username == user.Username && u.Id != user.Id)
+                    .Where(u => u.Username == User.Username && u.Id != User.Id)
                     .Get();
 
                 if (usernameExistsResult.Models.Count > 0) { throw new ArgumentException("Username already exists!"); }
             }
 
-            if (!string.Equals(existingUser.PhoneNumber, user.PhoneNumber, StringComparison.OrdinalIgnoreCase))
+            if (!string.Equals(existingUser.PhoneNumber, User.PhoneNumber, StringComparison.OrdinalIgnoreCase))
             {
-                if (user.PhoneNumber?.Length != 10) { throw new ArgumentException("Phone number must be exactly 10 characters long!"); }
+                if (User.PhoneNumber?.Length != 10) { throw new ArgumentException("Phone number must be exactly 10 characters long!"); }
 
                 var phoneNumberExistsResult = await SupabaseConnection.SupabaseClient
                     .From<ModelsUser>()
-                    .Where(u => u.PhoneNumber == user.PhoneNumber && u.Id != user.Id)
+                    .Where(u => u.PhoneNumber == User.PhoneNumber && u.Id != User.Id)
                     .Get();
 
                 if (phoneNumberExistsResult.Models.Count > 0) { throw new ArgumentException("Phone number already exists!"); }
             }
 
-            if (user.DateOfBirth > DateTime.Now) { throw new ArgumentException("Date of birth cannot be in the future!"); }
+            if (User.DateOfBirth > DateTime.Now) { throw new ArgumentException("Date of birth cannot be in the future!"); }
 
             var response = await SupabaseConnection.SupabaseClient
                 .From<ModelsUser>()
-                .Where(userProvider => userProvider.Id == user.Id)
-                .Set(userProvider => userProvider.FullName, user.FullName)
-                .Set(userProvider => userProvider.Username, user.Username)
-                .Set(userProvider => userProvider.PhoneNumber, user.PhoneNumber)
-                .Set(userProvider => userProvider.Sex, user.Sex)
-                .Set(userProvider => userProvider.DateOfBirth, user.DateOfBirth)
-                .Set(userProvider => userProvider.DateOfTheLastUpdate, user.DateOfTheLastUpdate)
-                .Set(userProvider => userProvider.DateOfTheLastVisitToTheJournal, user.DateOfTheLastVisitToTheJournal)
-                .Set(userProvider => userProvider.AvatarUrl!, user.AvatarUrl)
+                .Where(userProvider => userProvider.Id == User.Id)
+                .Set(userProvider => userProvider.FullName, User.FullName)
+                .Set(userProvider => userProvider.Username, User.Username)
+                .Set(userProvider => userProvider.PhoneNumber, User.PhoneNumber)
+                .Set(userProvider => userProvider.Sex, User.Sex)
+                .Set(userProvider => userProvider.DateOfBirth, User.DateOfBirth)
+                .Set(userProvider => userProvider.DateOfTheLastUpdate, User.DateOfTheLastUpdate)
+                .Set(userProvider => userProvider.DateOfTheLastVisitToTheJournal, User.DateOfTheLastVisitToTheJournal)
+                .Set(userProvider => userProvider.AvatarUrl!, User.AvatarUrl)
                 .Update();
 
             if (response.ResponseMessage?.IsSuccessStatusCode != true) { throw new Exception("Failed to update user in database"); }

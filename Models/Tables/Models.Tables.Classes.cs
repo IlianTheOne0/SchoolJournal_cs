@@ -14,4 +14,7 @@ public class ModelsClasses : BaseModel
 
     [Column("Year")]
     public int Year { get; set; }
+    
+    [Column("EducationalInstitutionId")]
+    public int EducationalInstitutionId { get; set; }
 }

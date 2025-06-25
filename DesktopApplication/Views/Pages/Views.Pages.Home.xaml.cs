@@ -5,11 +5,11 @@ using DesktopApplication.Views.UserControls;
 using System.Windows;
 using System.Windows.Controls;
 
-public partial class PageHome : UserControl
+public partial class PagesHome : UserControl
 {
     private readonly UserControlsSidebarMenu _sidebar;
 
-    public PageHome(UserControlsSidebarMenu Sidebar)
+    public PagesHome(UserControlsSidebarMenu Sidebar)
     {
         InitializeComponent();
         _sidebar = Sidebar;
