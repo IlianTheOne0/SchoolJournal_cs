@@ -1,14 +1,15 @@
 ﻿namespace DesktopApplication.ViewModels.Profile;
 
-using CommunityToolkit.Mvvm.Input;
 using DesktopApplication.Interfaces.Services.User;
-using DesktopApplication.Services;
+
 using Models.Tables.Users;
+
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
 
 public class ViewModelsProfile : INotifyPropertyChanged
 {
@@ -51,7 +52,7 @@ public class ViewModelsProfile : INotifyPropertyChanged
     public ICommand CommandResetButton { get; }
     public ICommand CommandUploadButton { get; }
 
-    public ViewModelsProfile(ServicesUser ServiceUser)
+    public ViewModelsProfile(InterfacesServicesUser ServiceUser)
     {
         _serviceUser = ServiceUser;
 
@@ -146,25 +147,25 @@ public class ViewModelsProfile : INotifyPropertyChanged
 
     public void ResetEditingState() => OnResetButton();
 
-    private static ModelsUserExtended CloneUser(ModelsUserExtended user) => new()
+    private static ModelsUserExtended CloneUser(ModelsUserExtended User) => new()
     {
-        Id = user.Id,
-        Username = user.Username,
-        FullName = user.FullName,
-        Email = user.Email,
-        PhoneNumber = user.PhoneNumber,
-        Sex = user.Sex,
-        DateOfBirth = user.DateOfBirth,
-        CreatedAt = user.CreatedAt,
-        DateOfTheLastUpdate = user.DateOfTheLastUpdate,
-        DateOfTheLastVisitToTheJournal = user.DateOfTheLastVisitToTheJournal,
-        AvatarUrl = user.AvatarUrl,
-        StatusId = user.StatusId,
-        EducationalInstitutionId = user.EducationalInstitutionId,
-        ProfileId = user.ProfileId,
-        StatusName = user.StatusName,
-        EducationalInstitutionName = user.EducationalInstitutionName
+        Id = User.Id,
+        Username = User.Username,
+        FullName = User.FullName,
+        Email = User.Email,
+        PhoneNumber = User.PhoneNumber,
+        Sex = User.Sex,
+        DateOfBirth = User.DateOfBirth,
+        CreatedAt = User.CreatedAt,
+        DateOfTheLastUpdate = User.DateOfTheLastUpdate,
+        DateOfTheLastVisitToTheJournal = User.DateOfTheLastVisitToTheJournal,
+        AvatarUrl = User.AvatarUrl,
+        StatusId = User.StatusId,
+        EducationalInstitutionId = User.EducationalInstitutionId,
+        ProfileId = User.ProfileId,
+        StatusName = User.StatusName,
+        EducationalInstitutionName = User.EducationalInstitutionName
     };
 
-    protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)); }
+    protected virtual void OnPropertyChanged([CallerMemberName] string? PropertyName = null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName)); }
 }

@@ -1,7 +1,7 @@
 ﻿namespace Database.Repositories.Json;
 
 using Database.Interfaces.Repositories.Json;
-using Models.Repositories.SupabaseConfig;
+
 using Newtonsoft.Json;
 
 public class RepositoriesJson(string FilePath) : InterfacesRepositoriesJson

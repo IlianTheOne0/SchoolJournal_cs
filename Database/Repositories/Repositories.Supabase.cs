@@ -1,15 +1,19 @@
 ﻿namespace Database.Repositories.Supabase;
 
-using Database.DataSources.Supabase;
+using Database.Interfaces.DataSources.Supabase;
 using Database.Interfaces.Repositories.Database;
 using Database.Interfaces.Repositories.Json;
 using Database.Interfaces.Repositories.Supabase;
+
+using Database.DataSources.Supabase;
+
 using Database.Repositories.Json;
+
 using Models.Repositories.SupabaseConfig;
 
 public partial class RepositoriesSupabase : InterfacesRepositoriesDatabase, InterfacesRepositoriesSupabase
 {
-    public DataSourcesSupabase? SupabaseConnection { get; set; } = null;
+    public InterfacesDataSourcesSupabase? SupabaseConnection { get; set; } = null;
     private InterfacesRepositoriesJson? _repositoryJson { get; set; } = null;
     
     private string _defaultSchema { get; set; } = null!;

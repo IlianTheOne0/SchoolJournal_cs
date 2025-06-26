@@ -1,6 +1,7 @@
 ﻿namespace DesktopApplication.Services.Strategies.AdminAccess;
 
 using DesktopApplication.Interfaces.Services.Strategies.AccessStrategy;
+
 using Models.Tables.Users;
 
 public class ServicesStrategiesAdminAccess : InterfacesAccessStrategy

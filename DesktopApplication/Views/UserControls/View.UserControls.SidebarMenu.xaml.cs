@@ -1,6 +1,7 @@
 ﻿namespace DesktopApplication.Views.UserControls;
 
 using DesktopApplication.ViewModels.SidebarMenu;
+
 using System.Windows;
 using System.Windows.Controls;
 

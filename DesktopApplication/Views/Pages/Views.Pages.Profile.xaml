@@ -241,15 +241,15 @@
                                 <TextBlock
                                     Text="{Binding ModelUser.Sex, Converter={StaticResource BoolToGenderConverter}}"
                                     FontSize="20" FontWeight="Bold" FontFamily="{StaticResource Roboto}"
-                                    Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left"
-                                    Margin="150,10,0,10"
+                                    Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                    Margin="0,10,-50,10"
                                     Visibility="{Binding IsReadOnly, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                 <ComboBox
                                     SelectedValue="{Binding ModelUser.Sex}"
                                     SelectedValuePath="Tag"
                                     FontSize="20" FontWeight="Bold" FontFamily="{StaticResource Roboto}"
-                                    Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left"
-                                    Margin="150,10,0,10"
+                                    Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                    Margin="0,10,-50,10"
                                     Visibility="{Binding IsReadOnly, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                                     <ComboBoxItem
                                         Tag="True"
@@ -281,9 +281,9 @@
                                      FontSize="20" FontWeight="Bold" FontFamily="{StaticResource Roboto}"
                                      IsReadOnly="{Binding IsReadOnly}"
                                      BorderThickness="0"
-                                     Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Left"
+                                     Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"
                                      Background="Transparent"
-                                     Margin="97,0,0,10">
+                                     Margin="0,10,-50,10">
                                     <TextBox.Style>
                                         <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
                                             <Style.Triggers>

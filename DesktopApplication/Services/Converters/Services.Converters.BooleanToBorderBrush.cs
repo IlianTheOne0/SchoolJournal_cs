@@ -10,11 +10,11 @@ public class ServicesConverterBooleanToBorderBrush : IValueConverter
     public Brush FalseValue { get; set; } = Brushes.Black;
     public Brush FocusedValue { get; set; } = Brushes.Transparent;
 
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    public object Convert(object Value, Type TargetType, object Parameter, CultureInfo Culture)
     {
-        if (value is bool isReadOnly) { return isReadOnly ? TrueValue : FalseValue; }
+        if (Value is bool isReadOnly) { return isReadOnly ? TrueValue : FalseValue; }
         return TrueValue;
     }
 
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotSupportedException();
+    public object ConvertBack(object Value, Type TargetType, object Parameter, CultureInfo Culture) => throw new NotSupportedException();
 }

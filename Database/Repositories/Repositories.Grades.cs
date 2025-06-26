@@ -1,21 +1,23 @@
 ﻿namespace Database.Repositories.Grades;
 
 using Database.Interfaces.Repositories.Grades;
-using Database.Repositories.Supabase;
+using Database.Interfaces.Repositories.Supabase;
+
 using Models.Tables.Classes;
 using Models.Tables.Enrollments;
 using Models.Tables.Grades;
 using Models.Tables.Statuses;
 using Models.Tables.Subjects;
 using Models.Tables.Users;
-using System.Threading.Tasks;
+
 using static global::Supabase.Postgrest.Constants;
+using System.Threading.Tasks;
 
 public class RepositoriesGrades : InterfacesRepositoriesGrades
 {
-    private readonly RepositoriesSupabase _repositorySupabase;
+    private readonly InterfacesRepositoriesSupabase _repositorySupabase;
 
-    public RepositoriesGrades(RepositoriesSupabase RepositorySupabase) => _repositorySupabase = RepositorySupabase;
+    public RepositoriesGrades(InterfacesRepositoriesSupabase RepositorySupabase) => _repositorySupabase = RepositorySupabase;
 
     public async Task<List<ModelsClasses>> GetAllClassesByEducationalInstitution(int EducationalInstitutionId)
     {

@@ -6,6 +6,7 @@ using DesktopApplication.Services.Auth;
 using DesktopApplication.Services.Navigation;
 using DesktopApplication.ViewModels.Login;
 using DesktopApplication.Views.Pages;
+
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;

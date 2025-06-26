@@ -1,6 +1,7 @@
 ﻿namespace DesktopApplication.Interfaces.Services.User;
 
 using DesktopApplication.Interfaces.Services.Strategies.AccessStrategy;
+
 using Models.Tables.Users;
 
 public interface InterfacesServicesUser
@@ -10,7 +11,7 @@ public interface InterfacesServicesUser
     Task<ModelsUserExtended?> GetUserById(int UserId);
     Task UpdateUser(ModelsUser User);
     void SetupAccessStrategy(ModelsUserExtended ModelUser);
-    Task UpdateAvatar(int UserId, string FilePath);
     void ClearAccessStrategy();
+    Task UpdateAvatar(int UserId, string FilePath);
     Task RefreshTheData();
 }

@@ -6,6 +6,6 @@ using System.Windows.Data;
 
 public class ServicesConvertersBooleanToVisibility : IValueConverter
 {
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture) => (bool)value ? Visibility.Visible : Visibility.Collapsed;
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => (Visibility)value == Visibility.Visible;
+    public object Convert(object Value, Type TargetType, object Parameter, CultureInfo Culture) => (bool)Value ? Visibility.Visible : Visibility.Collapsed;
+    public object ConvertBack(object Value, Type TargetType, object Parameter, CultureInfo Culture) => (Visibility)Value == Visibility.Visible;
 }

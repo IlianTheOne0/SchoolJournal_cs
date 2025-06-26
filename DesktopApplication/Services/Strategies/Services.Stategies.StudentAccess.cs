@@ -1,6 +1,7 @@
 ﻿namespace DesktopApplication.Services.Strategies.StudentAccess;
 
 using DesktopApplication.Interfaces.Services.Strategies.AccessStrategy;
+
 using Models.Tables.Users;
 
 public class ServicesStrategiesStudentAccess : InterfacesAccessStrategy

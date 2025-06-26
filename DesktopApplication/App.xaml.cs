@@ -27,7 +27,7 @@ public partial class App : Application
 {
     private IServiceProvider? _serviceProvider;
 
-    protected override void OnStartup(StartupEventArgs e)
+    protected override void OnStartup(StartupEventArgs E)
     {
         ServiceCollection serviceCollection = new ServiceCollection();
         ConfigureServices(serviceCollection);
@@ -61,7 +61,7 @@ public partial class App : Application
         );
     }
 
-    private void OnExit(object sender, ExitEventArgs e)
+    private void OnExit(object Sender, ExitEventArgs E)
     {
         if (_serviceProvider is IDisposable disposable) { disposable.Dispose(); }
     }
@@ -124,9 +124,9 @@ public partial class App : Application
         );
     }
 
-    private void LoadUserControls(IServiceCollection services)
+    private void LoadUserControls(IServiceCollection Services)
     {
-        services.AddTransient<UserControlsSidebarMenu>(
+        Services.AddTransient<UserControlsSidebarMenu>(
             provider => new UserControlsSidebarMenu(
                 ViewModel: provider.GetRequiredService<ViewModelsSidebarMenu>()
             )

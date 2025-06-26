@@ -1,18 +1,18 @@
 ﻿namespace DesktopApplication.ViewModels.GradeViewer;
 
 using Interfaces.Services.Grades;
-using DesktopApplication.Services.Grades;
+
 using Models.Tables.Classes;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using Models.Tables.Users;
 using Models.Tables.Subjects;
 using Models.Tables.Grades;
+
 using System.Windows.Input;
-using CommunityToolkit.Mvvm.Input;
 using System.Windows;
-using Models.Tables.Statuses;
 using System.Threading.Tasks;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using CommunityToolkit.Mvvm.Input;
 
 public class ViewModelsGradeViewer : INotifyPropertyChanged
 {
@@ -45,7 +45,7 @@ public class ViewModelsGradeViewer : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
     
-    public ViewModelsGradeViewer(ServicesGrades ServiceGrades)
+    public ViewModelsGradeViewer(InterfacesServicesGrades ServiceGrades)
     {
         _serviceGrades = ServiceGrades;
 
@@ -157,5 +157,5 @@ public class ViewModelsGradeViewer : INotifyPropertyChanged
         catch (Exception e) { MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
 
-    private void OnPropertyChanged([CallerMemberName] string? propertyName = null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)); }
+    private void OnPropertyChanged([CallerMemberName] string? PropertyName = null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName)); }
 }

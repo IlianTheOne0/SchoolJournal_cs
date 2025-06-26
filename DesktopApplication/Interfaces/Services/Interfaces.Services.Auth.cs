@@ -9,6 +9,4 @@ public interface InterfacesServicesAuth
 
     Task Login(string Username, string Password);
     Task Logout();
-
-    void SetupAccessStrategy();
 }

@@ -5,11 +5,11 @@ using System.Windows.Data;
 
 public class ServicesConvertersBoolToGender : IValueConverter
 {
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    public object Convert(object Value, Type TargetType, object Parameter, CultureInfo Culture)
     {
-        if (value is bool sex) { return sex ? "Male" : "Female"; }
+        if (Value is bool sex) { return sex ? "Male" : "Female"; }
         return null!;
     }
 
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => (string)value == "Male";
+    public object ConvertBack(object Value, Type TargetType, object Parameter, CultureInfo Culture) => (string)Value == "Male";
 }

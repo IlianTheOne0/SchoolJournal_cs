@@ -1,20 +1,19 @@
 ﻿namespace DesktopApplication.ViewModels.SidebarMenu;
 
-using CommunityToolkit.Mvvm.Input;
 using DesktopApplication.Interfaces.Services.Auth;
 using DesktopApplication.Interfaces.Services.Navigation;
 using DesktopApplication.Interfaces.Services.User;
-using DesktopApplication.Services;
-using DesktopApplication.Services.Auth;
-using DesktopApplication.Services.Navigation;
 using DesktopApplication.ViewModels.GradeViewer;
 using DesktopApplication.ViewModels.Profile;
 using DesktopApplication.Views.Pages;
+
 using Models.Tables.Users;
+
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
 
 public class ViewModelsSidebarMenu : INotifyPropertyChanged
 {
@@ -40,7 +39,7 @@ public class ViewModelsSidebarMenu : INotifyPropertyChanged
     private bool _canGoToHome; public bool CanGoToHome { get => _canGoToHome; private set { if (_canGoToHome != value) { _canGoToHome = value; OnPropertyChanged(); } } }
     private ModelsUser? _modelUser = null; public ModelsUser ModelUser { get => _modelUser!; set { _modelUser = value; OnPropertyChanged(); OnPropertyChanged("AvatarUrl"); } }
 
-    public ViewModelsSidebarMenu(ServicesAuth ServiceAuth, ServicesNavigation ServiceNavigation, ServicesUser ServiceUser, ViewModelsProfile ViewModelProvider, ViewModelsGradeViewer ViewModelsGradeViewer)
+    public ViewModelsSidebarMenu(InterfacesServicesAuth ServiceAuth, InterfacesServicesNavigation ServiceNavigation, InterfacesServicesUser ServiceUser, ViewModelsProfile ViewModelProvider, ViewModelsGradeViewer ViewModelsGradeViewer)
     {
         _serviceAuth = ServiceAuth; _serviceNavigation = ServiceNavigation; _serviceUser = ServiceUser;
         _viewModelProfile = ViewModelProvider; _viewModelGradeViewer = ViewModelsGradeViewer;

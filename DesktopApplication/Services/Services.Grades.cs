@@ -1,15 +1,17 @@
 ﻿namespace DesktopApplication.Services.Grades;
 
-using Database.Repositories.Grades;
-using Database.Interfaces.Repositories.Grades;
 using DesktopApplication.Interfaces.Services.Grades;
+using DesktopApplication.Interfaces.Services.Supabase;
 using DesktopApplication.Interfaces.Services.User;
-using DesktopApplication.Services.Supabase;
+using DesktopApplication.Services.Strategies.TeacherAccess;
+
+using Database.Interfaces.Repositories.Grades;
+using Database.Repositories.Grades;
+
 using Models.Tables.Classes;
 using Models.Tables.Grades;
 using Models.Tables.Subjects;
 using Models.Tables.Users;
-using DesktopApplication.Services.Strategies.TeacherAccess;
 
 public class ServicesGrades : InterfacesServicesGrades
 {
@@ -25,7 +27,7 @@ public class ServicesGrades : InterfacesServicesGrades
 
     private bool _isTeacherMode;
 
-    public ServicesGrades(ServicesSupabase ServiceSupabase, ServicesUser ServiceUser)
+    public ServicesGrades(InterfacesServicesSupabase ServiceSupabase, InterfacesServicesUser ServiceUser)
     {
         _repositoryGrades = new RepositoriesGrades(ServiceSupabase.RepositorySupabase);
         _serviceUser = ServiceUser;

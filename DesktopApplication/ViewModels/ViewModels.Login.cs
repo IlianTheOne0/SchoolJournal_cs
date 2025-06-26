@@ -1,12 +1,12 @@
 ﻿namespace DesktopApplication.ViewModels.Login;
 
 using DesktopApplication.Interfaces.Services.Auth;
-using DesktopApplication.Services.Auth;
-using CommunityToolkit.Mvvm.Input;
+
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
 
 public class ViewModelsLogin
 {
@@ -17,7 +17,7 @@ public class ViewModelsLogin
     private string _username; public string Username { get => _username; set { _username = value; OnPropertyChanged(); } }
     private string _password; public string Password { get => _password; set { _password = value; OnPropertyChanged(); } }
 
-    public ViewModelsLogin(ServicesAuth ServiceAuth)
+    public ViewModelsLogin(InterfacesServicesAuth ServiceAuth)
     {
         _username = string.Empty;
         _password = string.Empty;

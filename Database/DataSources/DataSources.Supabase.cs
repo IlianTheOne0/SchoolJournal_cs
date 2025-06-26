@@ -1,8 +1,10 @@
 ﻿namespace Database.DataSources.Supabase;
 
+using Database.Interfaces.DataSources.Supabase;
+
 using global::Supabase;
 
-public class DataSourcesSupabase
+public class DataSourcesSupabase : InterfacesDataSourcesSupabase
 {
     public Client SupabaseClient { get; private set; } = null!;
 

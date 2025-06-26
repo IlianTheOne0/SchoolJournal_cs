@@ -1,6 +1,7 @@
 ﻿namespace DesktopApplication.Services.Navigation;
 
 using DesktopApplication.Interfaces.Services.Navigation;
+
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows.Controls;
 

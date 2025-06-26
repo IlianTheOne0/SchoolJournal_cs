@@ -1,20 +1,22 @@
 ﻿namespace Database.Repositories.Supabase;
 
 using global::Supabase.Postgrest.Models;
+using static global::Supabase.Postgrest.Constants;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using static global::Supabase.Postgrest.Constants;
 
 public partial class RepositoriesSupabase
 {
+    private async Task ChangeTheSchema(string? Schema = null) => SupabaseConnection!.SupabaseClient.Postgrest.Options.Schema = Schema ?? _defaultSchema;
+
     public async Task<List<TMethod>> GetAllAsync<TMethod>(string? Schema = null)
         where TMethod : BaseModel, new()
     {
         try
         {
-            SupabaseConnection!.SupabaseClient.Postgrest.Options.Schema = Schema ?? _defaultSchema;
+            await ChangeTheSchema(Schema);
             var result = await SupabaseConnection?.SupabaseClient.From<TMethod>().Get()!;
 
             return result.Models.ToList();
@@ -27,7 +29,7 @@ public partial class RepositoriesSupabase
     {
         try
         {
-            SupabaseConnection!.SupabaseClient.Postgrest.Options.Schema = Schema ?? _defaultSchema;
+            await ChangeTheSchema(Schema);
             var result = await SupabaseConnection?.SupabaseClient.From<TMethod>().Select(Columns).Get()!;
 
             return result.Models.ToList();
@@ -40,7 +42,7 @@ public partial class RepositoriesSupabase
     {
         try
         {
-            SupabaseConnection!.SupabaseClient.Postgrest.Options.Schema = Schema ?? _defaultSchema;
+            await ChangeTheSchema(Schema);
             var result = await SupabaseConnection?.SupabaseClient.From<TMethod>().Filter(ColumnName, Oper, Value).Get()!;
 
             return result.Models;
@@ -53,7 +55,7 @@ public partial class RepositoriesSupabase
     {
         try
         {
-            SupabaseConnection!.SupabaseClient.Postgrest.Options.Schema = Schema ?? _defaultSchema;
+            await ChangeTheSchema(Schema);
             var result = await SupabaseConnection?.SupabaseClient.From<TMethod>().Select(JoinString).Filter(FilterColumnName, Oper, Value).Get()!;
 
             return result.Models.ToList();

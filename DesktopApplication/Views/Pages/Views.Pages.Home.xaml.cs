@@ -1,7 +1,7 @@
 ﻿namespace DesktopApplication.Views.Pages;
 
-using DesktopApplication.Services.Navigation;
 using DesktopApplication.Views.UserControls;
+
 using System.Windows;
 using System.Windows.Controls;
 

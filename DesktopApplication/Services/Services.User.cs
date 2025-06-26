@@ -1,17 +1,19 @@
 ﻿namespace DesktopApplication.Services;
 
-using Database.Interfaces.Repositories.Supabase;
-using Database.Repositories.Supabase;
 using DesktopApplication.Interfaces.Services.Strategies.AccessStrategy;
 using DesktopApplication.Interfaces.Services.User;
 using DesktopApplication.Services.Strategies.AdminAccess;
 using DesktopApplication.Services.Strategies.StudentAccess;
 using DesktopApplication.Services.Strategies.TeacherAccess;
-using global::Supabase.Postgrest;
+
+using Database.Interfaces.Repositories.Supabase;
+
 using Models.Tables.Classes;
 using Models.Tables.Statuses;
 using Models.Tables.Users;
 using System.Threading.Tasks;
+
+using global::Supabase.Postgrest;
 
 public class ServicesUser : InterfacesServicesUser
 {
@@ -21,7 +23,7 @@ public class ServicesUser : InterfacesServicesUser
     InterfacesAccessStrategy? InterfacesServicesUser.AccessStrategy { get => _accessStrategy; set => AccessStrategy = value; }
     public InterfacesAccessStrategy? AccessStrategy { get => _accessStrategy; private set => _accessStrategy = value; }
 
-    public ServicesUser(RepositoriesSupabase RepositorySupabase) => _repositorySupabase = RepositorySupabase;
+    public ServicesUser(InterfacesRepositoriesSupabase RepositorySupabase) => _repositorySupabase = RepositorySupabase;
 
     public async Task<ModelsUserExtended?> GetUserById(int UserId)
     {
@@ -65,6 +67,7 @@ public class ServicesUser : InterfacesServicesUser
         }
         catch (Exception e) { throw new Exception($"Update avatar failed: {e.Message}", e); }
     }
+
     public void ClearAccessStrategy() => _accessStrategy = null;
     public async Task RefreshTheData() => AccessStrategy.ModelUser = await GetUserById(AccessStrategy.ModelUser.Id)!;
 }
