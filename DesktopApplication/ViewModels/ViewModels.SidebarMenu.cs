@@ -13,24 +13,15 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
-using CommunityToolkit.Mvvm.Input;
 using DesktopApplication.ViewModels.GradesAssigner;
 
-public class ViewModelsSidebarMenu : INotifyPropertyChanged
+public partial class ViewModelsSidebarMenu : INotifyPropertyChanged
 {
-    public ICommand CommandLogOut { get; }
-    public ICommand CommandProfile { get; }
-    public ICommand CommandGrade { get; }
-    public ICommand CommandViewGrades { get; }
-    public ICommand CommandManageUsers { get; }
-    public ICommand CommandGoToHome { get; }
-
     private readonly InterfacesServicesAuth _serviceAuth;
     private readonly InterfacesServicesNavigation _serviceNavigation;
     private readonly InterfacesServicesUser _serviceUser;
     private readonly ViewModelsProfile _viewModelProfile;
     private readonly ViewModelsGradesViewer _viewModelGradesViewer;
-    private readonly ViewModelsGradesAssigner _viewModelGradesAssigner;
     private Type _currentPageType; public Type CurrentPageType { get => _currentPageType; set { if (_currentPageType != value) { _currentPageType = value; OnPropertyChanged(); UpdateCanGoToHome(); } } }
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -44,15 +35,10 @@ public class ViewModelsSidebarMenu : INotifyPropertyChanged
     public ViewModelsSidebarMenu(InterfacesServicesAuth ServiceAuth, InterfacesServicesNavigation ServiceNavigation, InterfacesServicesUser ServiceUser, ViewModelsProfile ViewModelProvider, ViewModelsGradesViewer ViewModelGradesViewer)
     {
         _serviceAuth = ServiceAuth; _serviceNavigation = ServiceNavigation; _serviceUser = ServiceUser;
-        _viewModelProfile = ViewModelProvider; _viewModelGradesViewer = ViewModelGradesViewer; // _viewModelGradesAssigner = ViewModelGradesAssigner;
-        _serviceNavigation.OnPageChanged += pageType => { CurrentPageType = pageType; };
+        _viewModelProfile = ViewModelProvider; _viewModelGradesViewer = ViewModelGradesViewer;
 
-        CommandLogOut = new AsyncRelayCommand(OnLogOut);
-        CommandProfile = new RelayCommand(OnProfile);
-        CommandGrade = new RelayCommand(OnAssignGrades);
-        CommandViewGrades = new RelayCommand(OnViewGrades);
-        CommandManageUsers = new RelayCommand(OnManageUsers);
-        CommandGoToHome = new RelayCommand(OnGoToHome);
+        _serviceNavigation.OnPageChanged += pageType => { CurrentPageType = pageType; };
+        InitializeComamnds();
     }
 
     public void LoadData()
@@ -84,12 +70,6 @@ public class ViewModelsSidebarMenu : INotifyPropertyChanged
         ModelUser = null!;
         OnPropertyChanged(nameof(ModelUser)); OnPropertyChanged(nameof(CanGrade)); OnPropertyChanged(nameof(CanViewGrades)); OnPropertyChanged(nameof(CanManageUsers));
     }
-
-    public void OnProfile() { LoadData(); _serviceNavigation.NavigateTo<PagesProfile, ViewModelsProfile>(); }
-    public void OnAssignGrades() { LoadData(); _serviceNavigation.NavigateTo<PagesGradesAssigner, ViewModelsGradesAssigner>(); }
-    public async void OnViewGrades() { LoadData(); _viewModelGradesViewer.Refresh(); _serviceNavigation.NavigateTo<PagesGradesViewer, ViewModelsGradesViewer>(); }
-    public void OnManageUsers() => MessageBox.Show($"Manage users Page do not implemented", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-    public void OnGoToHome() { LoadData(); _viewModelProfile.ResetEditingState(); _serviceNavigation.NavigateTo<PagesHome>(); }
 
     private void UpdateCanGoToHome() => CanGoToHome = CurrentPageType != typeof(PagesHome);
     protected void OnPropertyChanged([CallerMemberName] string? PropertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));

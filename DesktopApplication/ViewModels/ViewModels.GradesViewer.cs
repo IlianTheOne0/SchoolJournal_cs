@@ -14,7 +14,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using CommunityToolkit.Mvvm.Input;
 
-public class ViewModelsGradesViewer : INotifyPropertyChanged
+public partial class ViewModelsGradesViewer : INotifyPropertyChanged
 {
     private readonly InterfacesServicesGrades _serviceGrades = null!;
 
@@ -38,22 +38,13 @@ public class ViewModelsGradesViewer : INotifyPropertyChanged
     private ModelsUserExtended _chosenStudent; public ModelsUserExtended ChosenStudent { get => _chosenStudent; set { _chosenStudent = value; OnPropertyChanged(); OnStudentChoise(value); } }
     private ModelsSubjects _chosenSubject; public ModelsSubjects ChosenSubject { get => _chosenSubject; set { _chosenSubject = value; OnPropertyChanged(); OnSubjectChoise(value); } }
 
-    public ICommand CommandChosenClass { get; }
-    public ICommand CommandChosenStudent { get; }
-    public ICommand CommandChosenSubject { get; }
-    public ICommand CommandRefreshButton { get; }
-
     public event PropertyChangedEventHandler? PropertyChanged;
     
     public ViewModelsGradesViewer(InterfacesServicesGrades ServiceGrades)
     {
         _serviceGrades = ServiceGrades;
 
-        CommandRefreshButton = new RelayCommand(Refresh);
-        CommandChosenClass = new RelayCommand<ModelsClasses>(OnClassChoise!);
-        CommandChosenStudent = new RelayCommand<ModelsUserExtended>(OnStudentChoise!);
-        CommandChosenSubject = new AsyncRelayCommand<ModelsSubjects>(OnSubjectChoise!);
-
+        InitializeComamnds();
         Initialize();
     }
 
@@ -106,53 +97,6 @@ public class ViewModelsGradesViewer : INotifyPropertyChanged
 
             ChosenSubject = _allSubjectsOption;
             await OnSubjectChoise(ChosenSubject);
-        }
-        catch (Exception e) { MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
-    }
-
-    public async void OnClassChoise(ModelsClasses ModelClass)
-    {
-        try
-        {
-            IsChosenClass = ModelClass != null && IsTeacherMode;
-
-            if (IsChosenClass)
-            {
-                List<ModelsUserExtended> students = await _serviceGrades.GetAllStudentsByClassId(ModelClass!.Id);
-                AvailableStudents = students;
-            }
-            else { AvailableStudents = new List<ModelsUserExtended>(); }
-        }
-        catch (Exception e) { MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
-    }
-    public async void OnStudentChoise(ModelsUserExtended ModelUser)
-    {
-        try
-        {
-            if (ModelUser != null) { await _serviceGrades.GetAllGradesByStudentId(ModelUser.Id); AvailableGrades = await _serviceGrades.GetAllGradesByStudentId(ModelUser.Id); }
-        }
-        catch (Exception e) { MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
-    }
-    public async Task OnSubjectChoise(ModelsSubjects ModelSubject)
-    {
-        try
-        {
-            if (ModelSubject == null) { AvailableGrades = new List<ModelsGradesExtended>(); return; }
-
-            if (!IsTeacherMode)
-            {
-                List<ModelsGradesExtended> grades;
-                if (ModelSubject.Id == -1) { grades = await _serviceGrades.GetAllGradesByStudentId(_serviceGrades.CurrentUserId); }
-                else { grades = await _serviceGrades.GetAllGradesBySubjectAndStudent(ModelSubject.Id, _serviceGrades.CurrentUserId); }
-                AvailableGrades = grades;
-                return;
-            }
-            if (ChosenStudent == null) { AvailableGrades = new List<ModelsGradesExtended>(); return; }
-
-            List<ModelsGradesExtended> studentGrades;
-            if (ModelSubject.Id == -1) { studentGrades = await _serviceGrades.GetAllGradesByStudentId(ChosenStudent.Id); }
-            else { studentGrades = await _serviceGrades.GetAllGradesBySubjectAndStudent(ModelSubject.Id, ChosenStudent.Id); }
-            AvailableGrades = studentGrades;
         }
         catch (Exception e) { MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }

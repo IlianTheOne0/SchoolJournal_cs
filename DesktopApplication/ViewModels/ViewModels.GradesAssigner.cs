@@ -1,5 +1,6 @@
 ﻿namespace DesktopApplication.ViewModels.GradesAssigner;
 
+using CommunityToolkit.Mvvm.Input;
 using DesktopApplication.Interfaces.Services.Grades;
 using Models.Supports.GradesAssigner;
 using Models.Tables.Classes;
@@ -9,7 +10,7 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Windows;
 
-public class ViewModelsGradesAssigner : INotifyPropertyChanged
+public partial class ViewModelsGradesAssigner : INotifyPropertyChanged
 {
     private readonly InterfacesServicesGrades _serviceGrades;
 
@@ -28,9 +29,18 @@ public class ViewModelsGradesAssigner : INotifyPropertyChanged
     private string _chosenMonth; public string ChosenMonth { get => _chosenMonth; set { _chosenMonth = value; OnPropertyChanged(); LoadGrades(); } }
     private int _chosenYear; public int ChosenYear { get => _chosenYear; set { _chosenYear = value; OnPropertyChanged(); LoadGrades(); } }
 
+    private StudentGradeAssignment _currentStudent; public StudentGradeAssignment CurrentStudent { get => _currentStudent; set { _currentStudent = value; OnPropertyChanged(); } }
+
+    private DateTime _currentDate; public DateTime CurrentDate { get => _currentDate; set { _currentDate = value; OnPropertyChanged(); } }
+    private string _customGradeText = ""; public string CustomGradeText { get => _customGradeText; set { _customGradeText = value; OnPropertyChanged(); } }
+    private string _commentText = ""; public string CommentText { get => _commentText; set { _commentText = value; OnPropertyChanged(); } }
+    private bool _isCustomGradeEnabled = false; public bool IsCustomGradeEnabled { get => _isCustomGradeEnabled; set { _isCustomGradeEnabled = value; OnPropertyChanged(); } }
+    private bool _isGradeEntryVisible = false; public bool IsGradeEntryVisible { get => _isGradeEntryVisible; set { _isGradeEntryVisible = value; OnPropertyChanged(); } }
+    public string StudentDateInfo => CurrentStudent != null ? $"Student: {CurrentStudent.StudentName} | Date: {CurrentDate:dd.MM.yyyy}" : "";
+
     public event PropertyChangedEventHandler PropertyChanged;
 
-    public ViewModelsGradesAssigner(InterfacesServicesGrades ServiceGrades) { _serviceGrades = ServiceGrades; Initialize(); }
+    public ViewModelsGradesAssigner(InterfacesServicesGrades ServiceGrades) { _serviceGrades = ServiceGrades; InitializeComamnds(); Initialize(); }
 
     private async void Initialize()
     {
