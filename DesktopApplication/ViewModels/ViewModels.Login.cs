@@ -4,14 +4,11 @@ using DesktopApplication.Interfaces.Services.Auth;
 
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Windows;
-using System.Windows.Input;
-using CommunityToolkit.Mvvm.Input;
 
-public class ViewModelsLogin
+public partial class ViewModelsLogin
 {
-    public ICommand CommandLogIn { get; }
     private readonly InterfacesServicesAuth _serviceAuth;
+    
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private string _username; public string Username { get => _username; set { _username = value; OnPropertyChanged(); } }
@@ -24,13 +21,8 @@ public class ViewModelsLogin
 
         _serviceAuth = ServiceAuth;
 
-        CommandLogIn = new AsyncRelayCommand(OnLogIn);
+        InitializeComamnds();
     }
 
-    private async Task OnLogIn()
-    {
-        try { await _serviceAuth.Login(Username, Password); }
-        catch (Exception e) { MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
-    }
-    protected void OnPropertyChanged([CallerMemberName] string? PropertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
+    private void OnPropertyChanged([CallerMemberName] string? PropertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
 }

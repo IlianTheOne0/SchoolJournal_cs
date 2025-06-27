@@ -16,8 +16,8 @@ public partial class PagesProfile : UserControl
         _viewModel = ViewModel;
 
         try { DataContext = ViewModel; SidebarHost.Content = Sidebar; Loaded += PageProfile_Loaded; }
-        catch (Exception e) { MessageBox.Show($"Error initializing Profile: {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+        catch (Exception E) { MessageBox.Show($"Error initializing Profile: {E.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
 
-    private async void PageProfile_Loaded(object sender, RoutedEventArgs e) { await _viewModel.LoadDataAsync(); }
+    private async void PageProfile_Loaded(object Sender, RoutedEventArgs E) { await _viewModel.LoadDataAsync(); }
 }

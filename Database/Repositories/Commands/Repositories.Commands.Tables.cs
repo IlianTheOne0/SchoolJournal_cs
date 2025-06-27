@@ -1,5 +1,7 @@
 ﻿namespace Database.Repositories.Supabase;
 
+using Models.Supports.SupabaseCommands;
+
 using global::Supabase.Postgrest.Models;
 using static global::Supabase.Postgrest.Constants;
 using System;
@@ -21,7 +23,7 @@ public partial class RepositoriesSupabase
 
             return result.Models.ToList();
         }
-        catch (Exception e) { throw new Exception($"Failed GetAllAsync: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Failed GetAllAsync: {E.Message}", E); }
     }
 
     public async Task<List<TMethod>> SelectColumnsAsync<TMethod>(Expression<Func<TMethod, object[]>> Columns, string? Schema = null)
@@ -34,7 +36,7 @@ public partial class RepositoriesSupabase
 
             return result.Models.ToList();
         }
-        catch (Exception e) { throw new Exception($"Failed SelectColumnsAsync: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Failed SelectColumnsAsync: {E.Message}", E); }
     }
 
     public async Task<List<TMethod>> FilterAsync<TMethod>(string ColumnName, Operator Oper, object Value, string? Schema = null)
@@ -47,7 +49,7 @@ public partial class RepositoriesSupabase
 
             return result.Models;
         }
-        catch (Exception e) { throw new Exception($"Failed FilterAsync: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Failed FilterAsync: {E.Message}", E); }
     }
 
     public async Task<List<TMethod>> FilterWithInnerJoinAsync<TMethod>(string JoinString, string FilterColumnName, Operator Oper, object Value, string? Schema = null)
@@ -60,6 +62,41 @@ public partial class RepositoriesSupabase
 
             return result.Models.ToList();
         }
-        catch (Exception e) { throw new Exception($"Failed FilterWithInnerJoinAsync: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Failed FilterWithInnerJoinAsync: {E.Message}", E); }
+    }
+
+    public async Task Insert<TMethod>(TMethod Item, string? Schema = null)
+    where TMethod : BaseModel, new()
+    {
+        try
+        {
+            await ChangeTheSchema(Schema);
+            await SupabaseConnection!.SupabaseClient.From<TMethod>().Insert(Item);
+        }
+        catch (Exception E) { throw new Exception($"Failed to insert: {E.Message}", E); }
+    }
+
+    public async Task Upsert<TMethod>(TMethod Item, string[] ConflictColumns, string? Schema = null)
+        where TMethod : BaseModel, new()
+    {
+        try
+        {
+            await ChangeTheSchema(Schema);
+            var conflictString = string.Join(",", ConflictColumns);
+
+            await SupabaseConnection!.SupabaseClient.From<TMethod>().OnConflict(conflictString).Upsert(Item);
+        }
+        catch (Exception E) { throw new Exception($"Failed to upsert: {E.Message}", E); }
+    }
+
+    public async Task Delete<TMethod>(TMethod item, string? Schema = null)
+        where TMethod : BaseModel, InterfacesModelsWithId, new()
+    {
+        try
+        {
+            await ChangeTheSchema(Schema);
+            await SupabaseConnection!.SupabaseClient.From<TMethod>().Where(provider => provider.Id == item.Id).Delete();
+        }
+        catch (Exception E) { throw new Exception($"Failed to delete: {E.Message}", E); }
     }
 }

@@ -22,7 +22,7 @@ public class RepositoriesGrades : InterfacesRepositoriesGrades
     public async Task<List<ModelsClasses>> GetAllClassesByEducationalInstitution(int EducationalInstitutionId)
     {
         try { return await _repositorySupabase.FilterAsync<ModelsClasses>("EducationalInstitutionId", Operator.Equals, EducationalInstitutionId); }
-        catch (Exception e) { throw new Exception($"Failed to get all classe by educational institution id: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Failed to get all classe by educational institution id: {E.Message}", E); }
     }
 
     public async Task<List<ModelsSubjects>> GetAllSubjectsByEducationalInstitution(bool IsTeacher, int EducationalInstitutionId)
@@ -50,7 +50,7 @@ public class RepositoriesGrades : InterfacesRepositoriesGrades
                 return await _repositorySupabase.FilterAsync<ModelsSubjects>("ClassId", Operator.Equals, classId);
             }
         }
-        catch (Exception e) { throw new Exception($"Failed to get all subjects by educational institution id: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Failed to get all subjects by educational institution id: {E.Message}", E); }
     }
 
     public async Task<List<ModelsUserExtended>> GetAllStudentsByClassId(int ClassId)
@@ -84,7 +84,7 @@ public class RepositoriesGrades : InterfacesRepositoriesGrades
 
             return students;
         }
-        catch (Exception e) { throw new Exception($"Failed to get students by class ID: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Failed to get students by class ID: {E.Message}", E); }
     }
 
     public async Task<List<ModelsGradesExtended>> GetAllGradesByStudentId(int StudentId)
@@ -105,7 +105,7 @@ public class RepositoriesGrades : InterfacesRepositoriesGrades
 
             return extendedGrades;
         }
-        catch (Exception e) { throw new Exception($"Failed to get grades by student ID: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Failed to get grades by student ID: {E.Message}", E); }
     }
 
     public async Task<List<ModelsGradesExtended>> GetAllGradesBySubjectAndStudent(int SubjectId, int StudentId)
@@ -122,6 +122,44 @@ public class RepositoriesGrades : InterfacesRepositoriesGrades
 
             return subjectGrades.Select(gradesProvider => new ModelsGradesExtended(gradesProvider, subject?.Name ?? "Unknown")).ToList();
         }
-        catch (Exception e) { throw new Exception($"Failed to get grades by student and subject: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Failed to get grades by student and subject: {E.Message}", E); }
+    }
+
+    public async Task<List<ModelsSubjects>> GetAllSubjectsByClass(int ClassId)
+    {
+        try { return await _repositorySupabase.FilterAsync<ModelsSubjects>("ClassId", Operator.Equals, ClassId); }
+        catch (Exception E) { throw new Exception($"Failed to get existing grades: {E.Message}", E); }
+    }
+
+    public async Task<List<ModelsGrades>> GetExistingGrades(int StudentId)
+    {
+        try { return await _repositorySupabase.FilterAsync<ModelsGrades>("UserId", Operator.Equals, StudentId); }
+        catch (Exception E) { throw new Exception($"Failed to get existing grades: {E.Message}", E); }
+    }
+
+    public async Task Insert(ModelsGrades Item)
+    {
+        try { await _repositorySupabase.Insert(Item); }
+        catch(Exception E) { throw new Exception($"Failed to insert grades: {E.Message}", E); }
+    }
+    public async Task Update(ModelsGrades Item)
+    {
+        try { await _repositorySupabase.Upsert(Item, new[] { "Date", "UserId", "SubjectId" }); }
+        catch (Exception E) { throw new Exception($"Failed to update grades: {E.Message}", E); }
+    }
+
+    public async Task DeleteGrade(int StudentId, int SubjectId, DateTime Date)
+    {
+        try
+        {
+            var existingGrades = await _repositorySupabase.FilterAsync<ModelsGrades>("UserId", Operator.Equals, StudentId);
+
+            var gradeToDelete = existingGrades.FirstOrDefault(
+                gradesProvider => gradesProvider.SubjectId == SubjectId && gradesProvider.Date.Date == Date.Date
+            );
+
+            if (gradeToDelete != null) { await _repositorySupabase.Delete(gradeToDelete); }
+        }
+        catch (Exception E) { throw new Exception($"Failed to delete grade: {E.Message}", E); }
     }
 }

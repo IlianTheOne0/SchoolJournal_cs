@@ -10,6 +10,7 @@
             <converters:ServicesConvertersInverseBoolean x:Key="InverseBooleanConverter"/>
             <converters:ServicesConvertersInverseBooleanToVisibility x:Key="InverseBooleanToVisibilityConverter"/>
             <converters:ServicesConverterBooleanToBorderBrush x:Key="BooleanToBorderBrushConverter" TrueValue="Transparent" FalseValue="Black"/>
+            <converters:ServicesConvertersGradeValue x:Key="GradeValueConverter"/>
             
             <Cursor x:Key="HandCursor">Hand</Cursor>
             

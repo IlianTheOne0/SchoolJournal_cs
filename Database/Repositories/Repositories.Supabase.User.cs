@@ -1,6 +1,7 @@
 ﻿namespace Database.Repositories.Supabase;
 
 using Models.Tables.Users;
+
 using System.Threading.Tasks;
 
 public partial class RepositoriesSupabase

@@ -12,9 +12,6 @@ public class ModelsAttending : BaseModel
     [Column("Date")]
     public DateTime Date { get; set; }
 
-    [Column("Present")]
-    public bool Present { get; set; }
-
     [Column("UserId")]
     public int UserId { get; set; }
 
