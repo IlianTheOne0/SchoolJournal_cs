@@ -47,7 +47,7 @@ public partial class PagesGradesAssigner : UserControl
             var column = new DataGridTemplateColumn
             {
                 Header = dateColumn.Header,
-                Width = 80
+                Width = 75
             };
 
             var binding = new Binding($"Grades[{dateColumn.Date:yyyy-MM-dd}]")

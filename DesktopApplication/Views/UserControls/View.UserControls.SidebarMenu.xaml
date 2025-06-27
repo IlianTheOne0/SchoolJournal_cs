@@ -16,6 +16,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
@@ -26,8 +27,7 @@
                     Text="Journal" 
                     FontSize="52" FontFamily="{StaticResource Caveat}" FontWeight="Bold"
                     Foreground="White"
-                    Margin="15, 0, 0, 0"
-                    />
+                    Margin="15,0,0,0"/>
             </StackPanel>
 
             <StackPanel Grid.Row="1" Margin="0,0,0,50">
@@ -68,19 +68,11 @@
             </StackPanel>
 
             <Button
-                Content="Log Out"
-                FontSize="20" FontFamily="{StaticResource Roboto}"
-                Command="{Binding CommandLogOut}" Style="{StaticResource MaterialDesignFlatButton}"
-                Foreground="White"
-                Grid.Row="2" HorizontalAlignment="Stretch"
-                Margin="0,0,0,20"/>
-
-            <Button
                 Content="Profile"
                 FontSize="20" FontFamily="{StaticResource Roboto}"
                 Command="{Binding CommandProfile}" Style="{StaticResource MaterialDesignFlatButton}"
                 Foreground="White"
-                Grid.Row="3" HorizontalAlignment="Stretch"
+                Grid.Row="2" HorizontalAlignment="Stretch"
                 Margin="0,0,0,20"/>
 
             <Button
@@ -89,7 +81,7 @@
                 Visibility="{Binding CanManageUsers, Converter={StaticResource BooleanToVisibilityConverter}}"
                 Command="{Binding CommandManageUsers}" Style="{StaticResource MaterialDesignFlatButton}"
                 Foreground="White"
-                Grid.Row="4" HorizontalAlignment="Stretch"
+                Grid.Row="3" HorizontalAlignment="Stretch"
                 Margin="0,0,0,20"/>
 
             <Button
@@ -98,9 +90,18 @@
                 Visibility="{Binding CanGrade, Converter={StaticResource BooleanToVisibilityConverter}}"
                 Command="{Binding CommandGrade}" Style="{StaticResource MaterialDesignFlatButton}"
                 Foreground="White"
-                Grid.Row="5" HorizontalAlignment="Stretch"
+                Grid.Row="4" HorizontalAlignment="Stretch"
                 Margin="0,0,0,20"/>
 
+            <Button
+                Content="Mark absence"
+                FontSize="20" FontFamily="{StaticResource Roboto}"
+                Visibility="{Binding CanMarkAbsences, Converter={StaticResource BooleanToVisibilityConverter}}"
+                Command="{Binding CommandMarkAbsence}" Style="{StaticResource MaterialDesignFlatButton}"
+                Foreground="White"
+                Grid.Row="5" HorizontalAlignment="Stretch"
+                Margin="0,0,0,20"/>
+            
             <Button
                 Content="View Grades"
                 FontSize="20" FontFamily="{StaticResource Roboto}"
@@ -116,7 +117,16 @@
                 Command="{Binding CommandGoToHome}" 
                 Style="{StaticResource MaterialDesignFlatButton}"
                 Foreground="White"
-                Grid.Row="7" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"/>
+                Grid.Row="8" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"
+                Margin="0,0,0,20"/>
+
+            <Button
+                Content="Log Out"
+                FontSize="20" FontFamily="{StaticResource Roboto}"
+                Command="{Binding CommandLogOut}" Style="{StaticResource MaterialDesignFlatButton}"
+                Foreground="White"
+                Grid.Row="9" HorizontalAlignment="Stretch"
+                Margin="0,0,0,10"/>
         </Grid>
     </Border>
 </UserControl>

@@ -16,6 +16,7 @@ using DesktopApplication.Services.Supabase;
 using DesktopApplication.ViewModels.GradesAssigner;
 using DesktopApplication.ViewModels.GradesViewer;
 using DesktopApplication.ViewModels.Login;
+using DesktopApplication.ViewModels.MarkAbsences;
 using DesktopApplication.ViewModels.Profile;
 using DesktopApplication.ViewModels.SidebarMenu;
 
@@ -129,6 +130,11 @@ public partial class App : Application
                 ServiceGrades: provider.GetRequiredService<InterfacesServicesGrades>()
             )
         );
+        Services.AddSingleton<ViewModelsMarkAbsences>(
+            provider => new ViewModelsMarkAbsences(
+                ServiceGrades: provider.GetRequiredService<InterfacesServicesGrades>()
+            )
+        );
     }
 
     private void LoadUserControls(IServiceCollection Services)
@@ -167,6 +173,12 @@ public partial class App : Application
         Services.AddTransient<PagesGradesAssigner>(
             provider => new PagesGradesAssigner(
                 ViewModel: provider.GetRequiredService<ViewModelsGradesAssigner>(),
+                Sidebar: provider.GetRequiredService<UserControlsSidebarMenu>()
+            )
+        );
+        Services.AddTransient<PagesMarkAbsences>(
+            provider => new PagesMarkAbsences(
+                ViewModel: provider.GetRequiredService<ViewModelsMarkAbsences>(),
                 Sidebar: provider.GetRequiredService<UserControlsSidebarMenu>()
             )
         );

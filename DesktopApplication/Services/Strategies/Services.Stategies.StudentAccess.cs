@@ -13,4 +13,5 @@ public class ServicesStrategiesStudentAccess : InterfacesAccessStrategy
     public bool CanGrade() => false;
     public bool CanViewGrades() => true;
     public bool CanManageUsers() => false;
+    public bool CanMarkAbsences() => false;
 }

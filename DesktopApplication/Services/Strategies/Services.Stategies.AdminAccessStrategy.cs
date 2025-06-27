@@ -13,4 +13,5 @@ public class ServicesStrategiesAdminAccess : InterfacesAccessStrategy
     public bool CanGrade() => false;
     public bool CanViewGrades() => false;
     public bool CanManageUsers() => true;
+    public bool CanMarkAbsences() => false;
 }

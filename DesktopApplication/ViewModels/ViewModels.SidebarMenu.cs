@@ -27,8 +27,10 @@ public partial class ViewModelsSidebarMenu : INotifyPropertyChanged
     private bool _canGrade; public bool CanGrade { get => _canGrade; set { _canGrade = value; OnPropertyChanged(); } }
     private bool _canViewGrades; public bool CanViewGrades { get => _canViewGrades; set { _canViewGrades = value; OnPropertyChanged(); } }
     private bool _canManageUsers; public bool CanManageUsers { get => _canManageUsers; set { _canManageUsers = value; OnPropertyChanged(); } }
+    private bool _canMarkAbsences; public bool CanMarkAbsences { get => _canMarkAbsences; set { _canMarkAbsences = value; OnPropertyChanged(); } }
+
     private bool _canGoToHome; public bool CanGoToHome { get => _canGoToHome; private set { if (_canGoToHome != value) { _canGoToHome = value; OnPropertyChanged(); } } }
-    private ModelsUser? _modelUser = null; public ModelsUser ModelUser { get => _modelUser!; set { _modelUser = value; OnPropertyChanged(); OnPropertyChanged("AvatarUrl"); } }
+    private ModelsUser? _modelUser = null; public ModelsUser ModelUser { get => _modelUser!; set { _modelUser = value; OnPropertyChanged(); } }
 
     public ViewModelsSidebarMenu(InterfacesServicesAuth ServiceAuth, InterfacesServicesNavigation ServiceNavigation, InterfacesServicesUser ServiceUser, ViewModelsProfile ViewModelProvider, ViewModelsGradesViewer ViewModelGradesViewer)
     {
@@ -48,11 +50,7 @@ public partial class ViewModelsSidebarMenu : INotifyPropertyChanged
             CanGrade = _serviceUser.AccessStrategy?.CanGrade() ?? false;
             CanViewGrades = _serviceUser.AccessStrategy?.CanViewGrades() ?? false;
             CanManageUsers = _serviceUser.AccessStrategy?.CanManageUsers() ?? false;
-
-            OnPropertyChanged(nameof(ModelUser));
-            OnPropertyChanged(nameof(CanGrade));
-            OnPropertyChanged(nameof(CanViewGrades));
-            OnPropertyChanged(nameof(CanManageUsers));
+            CanMarkAbsences = _serviceUser.AccessStrategy?.CanMarkAbsences() ?? false;
         }
         catch (Exception e)
         {
@@ -64,9 +62,6 @@ public partial class ViewModelsSidebarMenu : INotifyPropertyChanged
     {
         await _serviceAuth.Logout();
         _serviceNavigation.OnPageChanged -= pageType => CurrentPageType = pageType;
-
-        ModelUser = null!;
-        OnPropertyChanged(nameof(ModelUser)); OnPropertyChanged(nameof(CanGrade)); OnPropertyChanged(nameof(CanViewGrades)); OnPropertyChanged(nameof(CanManageUsers));
     }
 
     private void UpdateCanGoToHome() => CanGoToHome = CurrentPageType != typeof(PagesHome);

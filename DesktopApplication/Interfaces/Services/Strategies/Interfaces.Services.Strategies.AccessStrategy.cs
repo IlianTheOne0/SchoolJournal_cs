@@ -9,4 +9,5 @@ public interface InterfacesAccessStrategy
     bool CanGrade();
     bool CanViewGrades();
     bool CanManageUsers();
+    bool CanMarkAbsences();
 }
