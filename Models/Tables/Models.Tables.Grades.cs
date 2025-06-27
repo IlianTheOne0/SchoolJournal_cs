@@ -1,10 +1,11 @@
 ﻿namespace Models.Tables.Grades;
 
+using Models.Supports.SupabaseCommands;
 using Supabase.Postgrest.Models;
 using Supabase.Postgrest.Attributes;
 
 [Table("Grades")]
-public class ModelsGrades : BaseModel
+public class ModelsGrades : BaseModel, InterfacesModelsWithId
 {
     [PrimaryKey("Id")]
     public int Id { get; set; }

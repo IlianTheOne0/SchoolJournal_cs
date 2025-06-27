@@ -124,20 +124,45 @@ public class RepositoriesGrades : InterfacesRepositoriesGrades
         catch (Exception e) { throw new Exception($"Failed to get grades by student and subject: {e.Message}", e); }
     }
 
+    public async Task<List<ModelsSubjects>> GetAllSubjectsByClass(int ClassId)
+    {
+        try { return await _repositorySupabase.FilterAsync<ModelsSubjects>("ClassId", Operator.Equals, ClassId); }
+        catch (Exception e) { throw new Exception($"Failed to get existing grades: {e.Message}", e); }
+    }
+
     public async Task<List<ModelsGrades>> GetExistingGrades(int StudentId)
     {
         try { return await _repositorySupabase.FilterAsync<ModelsGrades>("UserId", Operator.Equals, StudentId); }
         catch (Exception e) { throw new Exception($"Failed to get existing grades: {e.Message}", e); }
     }
 
-    public async Task Insert(ModelsGrades item)
+    public async Task Insert(ModelsGrades Item)
     {
-        try { await _repositorySupabase.Insert(item); }
+        try { await _repositorySupabase.Insert(Item); }
         catch (Exception e) { throw new Exception($"Failed to inesrt grades: {e.Message}", e); }
     }
-    public async Task Update(ModelsGrades item)
+    public async Task Update(ModelsGrades Item)
     {
-        try { await _repositorySupabase.Update(item); }
+        try
+        {
+            await _repositorySupabase.Upsert(Item, new[] { "Date", "UserId", "SubjectId" });
+            //await _repositorySupabase.Upsert(Item, "Date,UserId,SubjectId");
+        }
         catch (Exception e) { throw new Exception($"Failed to update grades: {e.Message}", e); }
+    }
+
+    public async Task DeleteGrade(int StudentId, int SubjectId, DateTime Date)
+    {
+        try
+        {
+            var existingGrades = await _repositorySupabase.FilterAsync<ModelsGrades>("UserId", Operator.Equals, StudentId);
+
+            var gradeToDelete = existingGrades.FirstOrDefault(
+                gradesProvider => gradesProvider.SubjectId == SubjectId && gradesProvider.Date.Date == Date.Date
+            );
+
+            if (gradeToDelete != null) { await _repositorySupabase.Delete(gradeToDelete); }
+        }
+        catch (Exception e) { throw new Exception($"Failed to delete grade: {e.Message}", e); }
     }
 }

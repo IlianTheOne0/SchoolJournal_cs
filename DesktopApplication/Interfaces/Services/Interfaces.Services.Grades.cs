@@ -29,4 +29,5 @@ public interface InterfacesServicesGrades
     Task<List<ModelsSubjects>> GetSubjectsByClass(int ClassId);
     Task<List<StudentGradeAssignment>> GetStudentAssignments(int ClassId, int SubjectId, int Month, int Year);
     Task UpdateGrade(int StudentId, int SubjectId, DateTime Date, int GradeValue, string Description);
+    Task DeleteGrade(int StudentId, int SubjectId, DateTime Date);
 }

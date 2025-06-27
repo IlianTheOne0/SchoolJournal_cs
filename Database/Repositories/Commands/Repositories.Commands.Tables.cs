@@ -1,11 +1,16 @@
 ﻿namespace Database.Repositories.Supabase;
 
+using global::Supabase.Interfaces;
+using global::Supabase.Postgrest;
+using global::Supabase.Postgrest.Interfaces;
 using global::Supabase.Postgrest.Models;
-using static global::Supabase.Postgrest.Constants;
+using Models.Supports.SupabaseCommands;
+using Models.Tables.Grades;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using static global::Supabase.Postgrest.Constants;
 
 public partial class RepositoriesSupabase
 {
@@ -63,25 +68,42 @@ public partial class RepositoriesSupabase
         catch (Exception E) { throw new Exception($"Failed FilterWithInnerJoinAsync: {E.Message}", E); }
     }
 
-    public async Task Insert<TMethod>(TMethod item, string? Schema = null)
+    public async Task Insert<TMethod>(TMethod Item, string? Schema = null)
     where TMethod : BaseModel, new()
     {
         try
         {
             await ChangeTheSchema(Schema);
-            await SupabaseConnection!.SupabaseClient.From<TMethod>().Insert(item);
+            await SupabaseConnection!.SupabaseClient.From<TMethod>().Insert(Item);
         }
         catch (Exception E) { throw new Exception($"Failed to insert: {E.Message}", E); }
     }
 
-    public async Task Update<TMethod>(TMethod item, string? Schema = null)
+    public async Task Upsert<TMethod>(TMethod Item, string[] ConflictColumns, string? Schema = null)
         where TMethod : BaseModel, new()
     {
         try
         {
             await ChangeTheSchema(Schema);
-            await SupabaseConnection!.SupabaseClient.From<TMethod>().Update(item);
+
+            var conflictString = string.Join(",", ConflictColumns);
+
+            await SupabaseConnection!.SupabaseClient
+                .From<TMethod>()
+                .OnConflict(conflictString)
+                .Upsert(Item);
         }
-        catch (Exception E) { throw new Exception($"Failed to update: {E.Message}", E); }
+        catch (Exception e) { throw new Exception($"Failed to upsert: {e.Message}", e); }
+    }
+
+    public async Task Delete<TMethod>(TMethod item, string? Schema = null)
+        where TMethod : BaseModel, InterfacesModelsWithId, new()
+    {
+        try
+        {
+            await ChangeTheSchema(Schema);
+            await SupabaseConnection!.SupabaseClient.From<TMethod>().Where(provider => provider.Id == item.Id).Delete();
+        }
+        catch (Exception E) { throw new Exception($"Failed to delete: {E.Message}", E); }
     }
 }

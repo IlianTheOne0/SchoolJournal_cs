@@ -42,7 +42,7 @@ public partial class ViewModelsProfile
                 Email = ModelUser.Email?.Trim()!,
                 PhoneNumber = ModelUser.PhoneNumber?.Trim()!,
                 Sex = ModelUser.Sex,
-                DateOfBirth = ModelUser.DateOfBirth,
+                DateOfBirth = ModelUser.DateOfBirth.AddDays(1),
                 CreatedAt = ModelUser.CreatedAt,
                 DateOfTheLastVisitToTheJournal = ModelUser.DateOfTheLastVisitToTheJournal,
                 AvatarUrl = ModelUser.AvatarUrl,

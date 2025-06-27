@@ -4,9 +4,11 @@ using CommunityToolkit.Mvvm.Input;
 using DesktopApplication.Interfaces.Services.Grades;
 using Models.Supports.GradesAssigner;
 using Models.Tables.Classes;
+using Models.Tables.Grades;
 using Models.Tables.Subjects;
 using System.ComponentModel;
 using System.Globalization;
+using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Windows;
 
@@ -33,7 +35,7 @@ public partial class ViewModelsGradesAssigner : INotifyPropertyChanged
 
     private DateTime _currentDate; public DateTime CurrentDate { get => _currentDate; set { _currentDate = value; OnPropertyChanged(); } }
     private string _customGradeText = ""; public string CustomGradeText { get => _customGradeText; set { _customGradeText = value; OnPropertyChanged(); } }
-    private string _commentText = ""; public string CommentText { get => _commentText; set { _commentText = value; OnPropertyChanged(); } }
+    private string _descriptionText = ""; public string DescriptionText { get => _descriptionText; set { _descriptionText = value; OnPropertyChanged(); } }
     private bool _isCustomGradeEnabled = false; public bool IsCustomGradeEnabled { get => _isCustomGradeEnabled; set { _isCustomGradeEnabled = value; OnPropertyChanged(); } }
     private bool _isGradeEntryVisible = false; public bool IsGradeEntryVisible { get => _isGradeEntryVisible; set { _isGradeEntryVisible = value; OnPropertyChanged(); } }
     public string StudentDateInfo => CurrentStudent != null ? $"Student: {CurrentStudent.StudentName} | Date: {CurrentDate:dd.MM.yyyy}" : "";
@@ -90,15 +92,28 @@ public partial class ViewModelsGradesAssigner : INotifyPropertyChanged
         catch (Exception E) { MessageBox.Show($"Updating grades failed: {E.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
 
-    private void GenerateDateColumns(int month, int year)
+    public async Task DeleteGrade(int StudentId, DateTime Date)
+    {
+        try
+        {
+            int monthNumber = DateTime.ParseExact(ChosenMonth, "MMMM", CultureInfo.GetCultureInfo("en-US")).Month;
+            var dateWithMonth = new DateTime(ChosenYear, monthNumber, Date.Day);
+
+            await _serviceGrades.DeleteGrade(StudentId, ChosenSubject.Id, dateWithMonth);
+            LoadGrades();
+        }
+        catch (Exception E) { MessageBox.Show($"Deleting grade failed: {E.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+    }
+
+    private void GenerateDateColumns(int Month, int Year)
     {
         var columns = new List<DateColumn>();
-        var daysInMonth = DateTime.DaysInMonth(year, month);
+        var daysInMonth = DateTime.DaysInMonth(Year, Month);
         var culture = CultureInfo.GetCultureInfo("en-US");
 
         for (int day = 1; day <= daysInMonth; day++)
         {
-            var date = new DateTime(year, month, day);
+            var date = new DateTime(Year, Month, day);
             columns.Add(new DateColumn
             {
                 Date = date,
@@ -109,5 +124,9 @@ public partial class ViewModelsGradesAssigner : INotifyPropertyChanged
         DateColumns = columns;
     }
 
-    private void OnPropertyChanged([CallerMemberName] string? PropertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
+    private void OnPropertyChanged([CallerMemberName] string? PropertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
+        if (PropertyName == nameof(CurrentStudent) || PropertyName == nameof(CurrentDate)) { OnPropertyChanged(nameof(StudentDateInfo)); }
+    }
 }

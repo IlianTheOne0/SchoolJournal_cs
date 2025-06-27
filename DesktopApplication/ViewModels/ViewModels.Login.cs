@@ -4,11 +4,8 @@ using DesktopApplication.Interfaces.Services.Auth;
 
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Windows;
-using System.Windows.Input;
-using CommunityToolkit.Mvvm.Input;
 
-public class ViewModelsLogin
+public partial class ViewModelsLogin
 {
     private readonly InterfacesServicesAuth _serviceAuth;
     

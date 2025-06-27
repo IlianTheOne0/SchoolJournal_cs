@@ -13,14 +13,26 @@ public partial class ViewModelsGradesViewer
     public ICommand CommandChosenClass { get; private set; }
     public ICommand CommandChosenStudent { get; private set; }
     public ICommand CommandChosenSubject { get; private set; }
-    public ICommand CommandRefreshButton { get; private set; }
+    public ICommand CommandResetButton { get; private set; }
 
     private void InitializeComamnds()
     {
-        CommandRefreshButton = new RelayCommand(Refresh);
+        CommandResetButton = new RelayCommand(OnReset);
         CommandChosenClass = new RelayCommand<ModelsClasses>(OnClassChoise!);
         CommandChosenStudent = new RelayCommand<ModelsUserExtended>(OnStudentChoise!);
         CommandChosenSubject = new AsyncRelayCommand<ModelsSubjects>(OnSubjectChoise!);
+    }
+
+    public async void OnReset()
+    {
+        try
+        {
+            await _serviceGrades.Refresh(); ApplyChanges();
+
+            ChosenSubject = _allSubjectsOption;
+            await OnSubjectChoise(ChosenSubject);
+        }
+        catch (Exception e) { MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
 
     public async void OnClassChoise(ModelsClasses ModelClass)

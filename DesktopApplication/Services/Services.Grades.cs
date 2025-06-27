@@ -12,6 +12,7 @@ using Models.Tables.Grades;
 using Models.Tables.Subjects;
 using Models.Tables.Users;
 using System.Reactive.Subjects;
+using System.Security.Cryptography;
 using System.Xml.Linq;
 using static global::Supabase.Postgrest.Constants;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -87,7 +88,7 @@ public class ServicesGrades : InterfacesServicesGrades
     }
     public async Task<List<ModelsSubjects>> GetSubjectsByClass(int ClassId)
     {
-        try { return await _repositoryGrades.GetAllSubjectsByEducationalInstitution(IsTeacher: true, _serviceUser.AccessStrategy!.ModelUser.EducationalInstitutionId); }
+        try { return await _repositoryGrades.GetAllSubjectsByClass(ClassId); }
         catch (Exception E) { throw new Exception($"Getting of available classes failed: {E.Message}", E); }
     }
     public async Task<List<StudentGradeAssignment>> GetStudentAssignments(int ClassId, int SubjectId, int Month, int Year)
@@ -142,25 +143,27 @@ public class ServicesGrades : InterfacesServicesGrades
                 gradesProvider => gradesProvider.SubjectId == SubjectId && gradesProvider.Date.Date == Date.Date
             );
 
-            if (existingGrade != null)
+            var newGrade = new ModelsGrades
             {
-                existingGrade.Grade = GradeValue;
-                existingGrade.Description = Description;
-                await _repositoryGrades.Update(existingGrade);
-            }
-            else
-            {
-                var newGrade = new ModelsGrades
-                {
-                    UserId = StudentId,
-                    SubjectId = SubjectId,
-                    Date = Date,
-                    Grade = GradeValue,
-                    Description = Description
-                };
-                await _repositoryGrades.Insert(newGrade);
-            }
+                Id = RandomNumberGenerator.GetInt32(1234567890),
+                UserId = StudentId,
+                SubjectId = SubjectId,
+                Date = Date,
+                Grade = GradeValue,
+                Description = Description
+            };
+            await _repositoryGrades.Update(newGrade);
         }
         catch (Exception E) { throw new Exception($"Updating grade failed: {E.Message}", E); }
+    }
+
+    public async Task DeleteGrade(int StudentId, int SubjectId, DateTime Date)
+    {
+        try
+        {
+            await _repositoryGrades.DeleteGrade(StudentId, SubjectId, Date);
+            await Refresh();
+        }
+        catch (Exception E) { throw new Exception($"Deleting grade failed: {E.Message}", E); }
     }
 }

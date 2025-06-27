@@ -90,16 +90,8 @@ public partial class ViewModelsGradesViewer : INotifyPropertyChanged
         }
         catch (Exception e) { MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
-    public async void Refresh()
-    {
-        try {
-            await _serviceGrades.Refresh(); ApplyChanges();
 
-            ChosenSubject = _allSubjectsOption;
-            await OnSubjectChoise(ChosenSubject);
-        }
-        catch (Exception e) { MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
-    }
+    public void Reset() => OnReset();
 
     private void OnPropertyChanged([CallerMemberName] string? PropertyName = null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName)); }
 }

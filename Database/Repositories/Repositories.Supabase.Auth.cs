@@ -37,6 +37,9 @@ public partial class RepositoriesSupabase
             var educationalInstitution = educationalInstitutionsTableResult.FirstOrDefault()
                 ?? throw new Exception($"Could not retrieve educational institution details for educational institution id: {user.EducationalInstitutionId}");
 
+            user.DateOfTheLastVisitToTheJournal = DateTime.Now;
+            await UpdateUser(user);
+
             ModelUser = new ModelsUserExtended(user, status.Status, educationalInstitution.Name);
         }
         catch (Exception e) { throw new Exception($"Login failed: {e.Message}", e); }

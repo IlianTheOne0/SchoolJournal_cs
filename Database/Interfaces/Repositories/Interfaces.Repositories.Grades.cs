@@ -15,7 +15,9 @@ public interface InterfacesRepositoriesGrades
     Task<List<ModelsGradesExtended>> GetAllGradesByStudentId(int ClassId);
     Task<List<ModelsGradesExtended>> GetAllGradesBySubjectAndStudent(int SubjectId, int StudentId);
 
+    Task<List<ModelsSubjects>> GetAllSubjectsByClass(int ClassId);
     Task<List<ModelsGrades>> GetExistingGrades(int StudentId);
-    Task Insert(ModelsGrades item);
-    Task Update(ModelsGrades item);
+    Task Insert(ModelsGrades Item);
+    Task Update(ModelsGrades Item);
+    Task DeleteGrade(int StudentId, int SubjectId, DateTime Date);
 }

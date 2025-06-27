@@ -93,11 +93,11 @@
 
             <Button
                 Grid.Row="3"
-                Content="Refresh"
+                Content="Reset"
                 Width="200"
                 Height="45"
                 FontSize="20" FontFamily="{StaticResource Roboto}"
-                Command="{Binding CommandRefreshButton}" 
+                Command="{Binding CommandResetButton}" 
                 Style="{StaticResource MaterialDesignRaisedButton}"
                 HorizontalAlignment="Center"
                 Margin="0,15"/>
