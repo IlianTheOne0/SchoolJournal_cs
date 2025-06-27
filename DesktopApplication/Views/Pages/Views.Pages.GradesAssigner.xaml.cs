@@ -3,8 +3,10 @@
 using DesktopApplication.ViewModels.GradesAssigner;
 using DesktopApplication.Views.UserControls;
 using Models.Supports.GradesAssigner;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 
 public partial class PagesGradesAssigner : UserControl
@@ -22,27 +24,54 @@ public partial class PagesGradesAssigner : UserControl
 
             DataContext = _viewModel;
             SidebarHost.Content = Sidebar;
+
+            _viewModel.PropertyChanged += ViewModel_PropertyChanged;
+
+            GenerateDateColumns();
         }
         catch (Exception E) { MessageBox.Show($"Error initializing Grade Viewer: {E.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
 
-    private void GradesDataGrid_PreviewMouseLeftButtonDown(object Sender, MouseButtonEventArgs E)
+    private void GenerateDateColumns()
     {
-        var cell = GetClickedCell(E.OriginalSource as DependencyObject);
+        if (_viewModel?.DateColumns == null) { return; }
+
+        while (GradesDataGrid.Columns.Count > 1) { GradesDataGrid.Columns.RemoveAt(1); }
+
+        foreach (var dateColumn in _viewModel.DateColumns)
+        {
+            var column = new DataGridTemplateColumn
+            {
+                Header = dateColumn.Header,
+                Width = 80
+            };
+
+            var binding = new Binding($"Grades[{dateColumn.Date}]") { Converter = (IValueConverter)FindResource("GradeValueConverter") };
+
+            var factory = new FrameworkElementFactory(typeof(TextBlock));
+            factory.SetValue(TextBlock.TextProperty, binding);
+            factory.SetValue(TextBlock.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+            factory.SetValue(TextBlock.VerticalAlignmentProperty, VerticalAlignment.Center);
+
+            column.CellTemplate = new DataTemplate { VisualTree = factory };
+            GradesDataGrid.Columns.Add(column);
+        }
+    }
+
+    private void GradesDataGrid_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        var cell = GetClickedCell(e.OriginalSource as DependencyObject);
         if (cell == null) { return; }
+
+        var columnIndex = GradesDataGrid.Columns.IndexOf(cell.Column);
+        if (columnIndex == 0) { return; }
 
         var row = GradesDataGrid.ItemContainerGenerator.ItemFromContainer(cell.Parent as DataGridRow) as StudentGradeAssignment;
 
         if (row == null) { return; }
 
-        var columnIndex = GradesDataGrid.Columns.IndexOf(cell.Column);
-        if (columnIndex == 0) { return; }
-
-        var firstDate = _viewModel.AvailableGrades.FirstOrDefault()?.Grades.Keys.OrderBy(dateProvider => dateProvider.Day).FirstOrDefault();
-
-        if (firstDate == null) { return; }
-
-        _currentDate = firstDate.Value.AddDays(columnIndex - 1);
+        var dateColumn = _viewModel.DateColumns[columnIndex - 1];
+        _currentDate = dateColumn.Date;
         _currentStudent = row;
 
         ShowGradeEntryOverlay();
@@ -85,6 +114,7 @@ public partial class PagesGradesAssigner : UserControl
             CommentTextBox.Text = "";
         }
 
+        Panel.SetZIndex(GradeEntryOverlay, 1000);
         GradeEntryOverlay.Visibility = Visibility.Visible;
     }
 
@@ -106,7 +136,16 @@ public partial class PagesGradesAssigner : UserControl
         GradeEntryOverlay.Visibility = Visibility.Collapsed;
     }
 
-    private void CancelGradeButton_Click(object Sender, RoutedEventArgs E) => GradeEntryOverlay.Visibility = Visibility.Collapsed;
+    private void CancelGradeButton_Click(object Sender, RoutedEventArgs E)
+    {
+        Panel.SetZIndex(GradeEntryOverlay, 0);
+        GradeEntryOverlay.Visibility = Visibility.Collapsed;
+    }
     private void CustomGradeCheckBox_Checked(object Sender, RoutedEventArgs E) => CustomGradeTextBox.IsEnabled = true;
     private void CustomGradeCheckBox_Unchecked(object Sender, RoutedEventArgs E) => CustomGradeTextBox.IsEnabled = false;
+
+    private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(ViewModelsGradesAssigner.DateColumns)) { GenerateDateColumns(); }
+    }
 }

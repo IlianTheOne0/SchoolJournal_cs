@@ -5,10 +5,9 @@ using Models.Supports.GradesAssigner;
 using Models.Tables.Classes;
 using Models.Tables.Subjects;
 using System.ComponentModel;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using System.Xml.Linq;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 public class ViewModelsGradesAssigner : INotifyPropertyChanged
 {
@@ -21,6 +20,8 @@ public class ViewModelsGradesAssigner : INotifyPropertyChanged
     private List<string> _availableMonths = new List<string> { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
     public List<string> AvailableMonths { get => _availableMonths; private set { _availableMonths = value; OnPropertyChanged(); } }
     private List<int> _availableYears = Enumerable.Range(DateTime.Now.Year - 5, 10).ToList(); public List<int> AvailableYears { get => _availableYears; private set { _availableYears = value; OnPropertyChanged(); } }
+    private List<DateColumn> _dateColumns = new();
+    public List<DateColumn> DateColumns { get => _dateColumns; private set { _dateColumns = value; OnPropertyChanged(); } }
 
     private ModelsClasses _chosenClass; public ModelsClasses ChosenClass { get => _chosenClass; set { _chosenClass = value; OnPropertyChanged(); LoadSubjects(); } }
     private ModelsSubjects _chosenSubject; public ModelsSubjects ChosenSubject { get => _chosenSubject; set { _chosenSubject = value; OnPropertyChanged(); LoadGrades(); } }
@@ -36,7 +37,7 @@ public class ViewModelsGradesAssigner : INotifyPropertyChanged
         try
         {
             AvailableClasses = await _serviceGrades.GetAvailableClasses();
-            if (AvailableClasses.Any()) { ChosenClass = AvailableClasses.First(); ChosenMonth = DateTime.Now.ToString("MMMM"); ChosenYear = DateTime.Now.Year; }
+            if (AvailableClasses.Any()) { ChosenClass = AvailableClasses.First(); ChosenMonth = DateTime.Now.ToString("MMMM", CultureInfo.GetCultureInfo("en-US")); ChosenYear = DateTime.Now.Year; }
         }
         catch (Exception E) { MessageBox.Show($"Initialization failed: {E.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
@@ -59,8 +60,9 @@ public class ViewModelsGradesAssigner : INotifyPropertyChanged
 
         try
         {
-            int monthNumber = DateTime.ParseExact(ChosenMonth, "MMMM", null).Month;
-            AvailableGrades = await _serviceGrades.GetStudentAssignments(ChosenClass.Id, ChosenSubject.Id, monthNumber, ChosenYear );
+            int monthNumber = DateTime.ParseExact(ChosenMonth, "MMMM", CultureInfo.GetCultureInfo("en-US")).Month;
+            AvailableGrades = await _serviceGrades.GetStudentAssignments(ChosenClass.Id, ChosenSubject.Id, monthNumber, ChosenYear);
+            GenerateDateColumns(monthNumber, ChosenYear);
         }
         catch (Exception E) { MessageBox.Show($"Loading grades failed: {E.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
@@ -69,13 +71,32 @@ public class ViewModelsGradesAssigner : INotifyPropertyChanged
     {
         try
         {
-            int monthNumber = DateTime.ParseExact(ChosenMonth, "MMMM", null).Month;
+            int monthNumber = DateTime.ParseExact(ChosenMonth, "MMMM", CultureInfo.GetCultureInfo("en-US")).Month;
             var dateWithMonth = new DateTime(ChosenYear, monthNumber, Date.Day);
 
             await _serviceGrades.UpdateGrade(StudentId, ChosenSubject.Id, dateWithMonth, Grade, Description);
             LoadGrades();
         }
         catch (Exception E) { MessageBox.Show($"Updating grades failed: {E.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+    }
+
+    private void GenerateDateColumns(int month, int year)
+    {
+        var columns = new List<DateColumn>();
+        var daysInMonth = DateTime.DaysInMonth(year, month);
+        var culture = CultureInfo.GetCultureInfo("en-US");
+
+        for (int day = 1; day <= daysInMonth; day++)
+        {
+            var date = new DateTime(year, month, day);
+            columns.Add(new DateColumn
+            {
+                Date = date,
+                Header = date.ToString("dd MMM", culture)
+            });
+        }
+
+        DateColumns = columns;
     }
 
     private void OnPropertyChanged([CallerMemberName] string? PropertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));

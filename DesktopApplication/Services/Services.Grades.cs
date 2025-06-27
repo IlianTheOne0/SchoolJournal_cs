@@ -113,8 +113,8 @@ public class ServicesGrades : InterfacesServicesGrades
 
                 for (var date = startDate; date <= endDate; date = date.AddDays(1))
                 {
-                    var grade = grades.FirstOrDefault(
-                        gradesProvider => gradesProvider.Date.Month == Month && gradesProvider.Date.Year == Year && gradesProvider.Date.Day == date.Day
+                    var grade = grades.FirstOrDefault(g =>
+                        g.Date.Date == date.Date
                     );
 
                     studentAssignment.Grades[date] = new GradeAssignment
@@ -123,9 +123,9 @@ public class ServicesGrades : InterfacesServicesGrades
                         Description = grade?.Description,
                         Date = date
                     };
-
-                    assignments.Add(studentAssignment);
                 }
+
+                assignments.Add(studentAssignment);
             }
 
             return assignments;

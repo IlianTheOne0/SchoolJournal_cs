@@ -13,3 +13,9 @@ public class GradeAssignment
     public string Description { get; set; }
     public DateTime Date { get; set; }
 }
+
+public class DateColumn
+{
+    public DateTime Date { get; set; }
+    public string Header { get; set; } = string.Empty;
+}
