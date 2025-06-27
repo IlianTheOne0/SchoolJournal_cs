@@ -1,4 +1,4 @@
-﻿namespace DesktopApplication.ViewModels.GradeViewer;
+﻿namespace DesktopApplication.ViewModels.GradesViewer;
 
 using Interfaces.Services.Grades;
 
@@ -14,7 +14,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using CommunityToolkit.Mvvm.Input;
 
-public class ViewModelsGradeViewer : INotifyPropertyChanged
+public class ViewModelsGradesViewer : INotifyPropertyChanged
 {
     private readonly InterfacesServicesGrades _serviceGrades = null!;
 
@@ -45,7 +45,7 @@ public class ViewModelsGradeViewer : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
     
-    public ViewModelsGradeViewer(InterfacesServicesGrades ServiceGrades)
+    public ViewModelsGradesViewer(InterfacesServicesGrades ServiceGrades)
     {
         _serviceGrades = ServiceGrades;
 

@@ -12,6 +12,6 @@ public partial class PagesLogin : UserControl
         InitializeComponent();
 
         try { DataContext = ViewModel; }
-        catch (Exception e) { MessageBox.Show($"Error initializing Login: {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+        catch (Exception E) { MessageBox.Show($"Error initializing Login: {E.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
 }

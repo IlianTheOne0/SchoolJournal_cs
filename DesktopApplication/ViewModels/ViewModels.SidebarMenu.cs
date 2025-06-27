@@ -3,7 +3,7 @@
 using DesktopApplication.Interfaces.Services.Auth;
 using DesktopApplication.Interfaces.Services.Navigation;
 using DesktopApplication.Interfaces.Services.User;
-using DesktopApplication.ViewModels.GradeViewer;
+using DesktopApplication.ViewModels.GradesViewer;
 using DesktopApplication.ViewModels.Profile;
 using DesktopApplication.Views.Pages;
 
@@ -14,6 +14,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
+using DesktopApplication.ViewModels.GradesAssigner;
 
 public class ViewModelsSidebarMenu : INotifyPropertyChanged
 {
@@ -28,7 +29,8 @@ public class ViewModelsSidebarMenu : INotifyPropertyChanged
     private readonly InterfacesServicesNavigation _serviceNavigation;
     private readonly InterfacesServicesUser _serviceUser;
     private readonly ViewModelsProfile _viewModelProfile;
-    private readonly ViewModelsGradeViewer _viewModelGradeViewer;
+    private readonly ViewModelsGradesViewer _viewModelGradesViewer;
+    private readonly ViewModelsGradesAssigner _viewModelGradesAssigner;
     private Type _currentPageType; public Type CurrentPageType { get => _currentPageType; set { if (_currentPageType != value) { _currentPageType = value; OnPropertyChanged(); UpdateCanGoToHome(); } } }
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -39,15 +41,15 @@ public class ViewModelsSidebarMenu : INotifyPropertyChanged
     private bool _canGoToHome; public bool CanGoToHome { get => _canGoToHome; private set { if (_canGoToHome != value) { _canGoToHome = value; OnPropertyChanged(); } } }
     private ModelsUser? _modelUser = null; public ModelsUser ModelUser { get => _modelUser!; set { _modelUser = value; OnPropertyChanged(); OnPropertyChanged("AvatarUrl"); } }
 
-    public ViewModelsSidebarMenu(InterfacesServicesAuth ServiceAuth, InterfacesServicesNavigation ServiceNavigation, InterfacesServicesUser ServiceUser, ViewModelsProfile ViewModelProvider, ViewModelsGradeViewer ViewModelsGradeViewer)
+    public ViewModelsSidebarMenu(InterfacesServicesAuth ServiceAuth, InterfacesServicesNavigation ServiceNavigation, InterfacesServicesUser ServiceUser, ViewModelsProfile ViewModelProvider, ViewModelsGradesViewer ViewModelGradesViewer)
     {
         _serviceAuth = ServiceAuth; _serviceNavigation = ServiceNavigation; _serviceUser = ServiceUser;
-        _viewModelProfile = ViewModelProvider; _viewModelGradeViewer = ViewModelsGradeViewer;
+        _viewModelProfile = ViewModelProvider; _viewModelGradesViewer = ViewModelGradesViewer; // _viewModelGradesAssigner = ViewModelGradesAssigner;
         _serviceNavigation.OnPageChanged += pageType => { CurrentPageType = pageType; };
 
         CommandLogOut = new AsyncRelayCommand(OnLogOut);
         CommandProfile = new RelayCommand(OnProfile);
-        CommandGrade = new RelayCommand(OnGrade);
+        CommandGrade = new RelayCommand(OnAssignGrades);
         CommandViewGrades = new RelayCommand(OnViewGrades);
         CommandManageUsers = new RelayCommand(OnManageUsers);
         CommandGoToHome = new RelayCommand(OnGoToHome);
@@ -84,8 +86,8 @@ public class ViewModelsSidebarMenu : INotifyPropertyChanged
     }
 
     public void OnProfile() { LoadData(); _serviceNavigation.NavigateTo<PagesProfile, ViewModelsProfile>(); }
-    public void OnGrade() => MessageBox.Show($"Grade Page do not implemented", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-    public async void OnViewGrades() { LoadData(); _viewModelGradeViewer.Refresh(); _serviceNavigation.NavigateTo<PagesGradeViewer, ViewModelsGradeViewer>(); }
+    public void OnAssignGrades() { LoadData(); _serviceNavigation.NavigateTo<PagesGradesAssigner, ViewModelsGradesAssigner>(); }
+    public async void OnViewGrades() { LoadData(); _viewModelGradesViewer.Refresh(); _serviceNavigation.NavigateTo<PagesGradesViewer, ViewModelsGradesViewer>(); }
     public void OnManageUsers() => MessageBox.Show($"Manage users Page do not implemented", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
     public void OnGoToHome() { LoadData(); _viewModelProfile.ResetEditingState(); _serviceNavigation.NavigateTo<PagesHome>(); }
 

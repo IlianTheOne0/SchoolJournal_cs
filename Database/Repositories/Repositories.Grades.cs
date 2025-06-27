@@ -2,16 +2,15 @@
 
 using Database.Interfaces.Repositories.Grades;
 using Database.Interfaces.Repositories.Supabase;
-
+using global::Supabase.Postgrest.Models;
 using Models.Tables.Classes;
 using Models.Tables.Enrollments;
 using Models.Tables.Grades;
 using Models.Tables.Statuses;
 using Models.Tables.Subjects;
 using Models.Tables.Users;
-
-using static global::Supabase.Postgrest.Constants;
 using System.Threading.Tasks;
+using static global::Supabase.Postgrest.Constants;
 
 public class RepositoriesGrades : InterfacesRepositoriesGrades
 {
@@ -123,5 +122,22 @@ public class RepositoriesGrades : InterfacesRepositoriesGrades
             return subjectGrades.Select(gradesProvider => new ModelsGradesExtended(gradesProvider, subject?.Name ?? "Unknown")).ToList();
         }
         catch (Exception e) { throw new Exception($"Failed to get grades by student and subject: {e.Message}", e); }
+    }
+
+    public async Task<List<ModelsGrades>> GetExistingGrades(int StudentId)
+    {
+        try { return await _repositorySupabase.FilterAsync<ModelsGrades>("UserId", Operator.Equals, StudentId); }
+        catch (Exception e) { throw new Exception($"Failed to get existing grades: {e.Message}", e); }
+    }
+
+    public async Task Insert(ModelsGrades item)
+    {
+        try { await _repositorySupabase.Insert(item); }
+        catch (Exception e) { throw new Exception($"Failed to inesrt grades: {e.Message}", e); }
+    }
+    public async Task Update(ModelsGrades item)
+    {
+        try { await _repositorySupabase.Update(item); }
+        catch (Exception e) { throw new Exception($"Failed to update grades: {e.Message}", e); }
     }
 }

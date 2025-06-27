@@ -20,6 +20,11 @@ public interface InterfacesRepositoriesSupabase
     Task<List<TMethod>> FilterWithInnerJoinAsync<TMethod>(string JoinString, string FilterColumnName, Operator Oper, object Value, string? Schema = null)
         where TMethod : BaseModel, new();
 
+    Task Insert<TMethod>(TMethod item, string? Schema = null)
+        where TMethod : BaseModel, new();
+    Task Update<TMethod>(TMethod item, string? Schema = null)
+        where TMethod : BaseModel, new();
+
     Task Login(string Username, string Password);
     Task Logout();
 

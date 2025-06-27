@@ -1,17 +1,20 @@
 ﻿namespace DesktopApplication.Services.Grades;
 
+using Database.Interfaces.Repositories.Grades;
+using Database.Repositories.Grades;
 using DesktopApplication.Interfaces.Services.Grades;
 using DesktopApplication.Interfaces.Services.Supabase;
 using DesktopApplication.Interfaces.Services.User;
 using DesktopApplication.Services.Strategies.TeacherAccess;
-
-using Database.Interfaces.Repositories.Grades;
-using Database.Repositories.Grades;
-
+using Models.Supports.GradesAssigner;
 using Models.Tables.Classes;
 using Models.Tables.Grades;
 using Models.Tables.Subjects;
 using Models.Tables.Users;
+using System.Reactive.Subjects;
+using System.Xml.Linq;
+using static global::Supabase.Postgrest.Constants;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 public class ServicesGrades : InterfacesServicesGrades
 {
@@ -53,27 +56,111 @@ public class ServicesGrades : InterfacesServicesGrades
             }
             AvailableSubjects = await _repositoryGrades.GetAllSubjectsByEducationalInstitution(_isTeacherMode, _serviceUser.AccessStrategy!.ModelUser.EducationalInstitutionId);
         }
-        catch (Exception e) { throw new Exception($"Grades initialize failed: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Grades initialize failed: {E.Message}", E); }
     }
     public async Task Refresh()
     {
         try { await Initialize(); }
-        catch (Exception e) { throw new Exception($"Grades refreshment failed: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Grades refreshment failed: {E.Message}", E); }
     }
 
     public async Task<List<ModelsUserExtended>> GetAllStudentsByClassId(int ClassId)
     {
         try { AvailableStudents = await _repositoryGrades.GetAllStudentsByClassId(ClassId); return AvailableStudents; }
-        catch (Exception e) { throw new Exception($"Getting students by class failed: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Getting students by class failed: {E.Message}", E); }
     }
     public async Task<List<ModelsGradesExtended>> GetAllGradesByStudentId(int ClassId)
     {
         try { AvailableGrades = await _repositoryGrades.GetAllGradesByStudentId(ClassId); return AvailableGrades; }
-        catch (Exception e) { throw new Exception($"Grades refreshment failed: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Grades refreshment failed: {E.Message}", E); }
     }
     public async Task<List<ModelsGradesExtended>> GetAllGradesBySubjectAndStudent(int SubjectId, int StudentId)
     {
         try { AvailableGrades = await _repositoryGrades.GetAllGradesBySubjectAndStudent(SubjectId, StudentId); return AvailableGrades; }
-        catch (Exception e) { throw new Exception($"Grades refreshment failed: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Grades refreshment failed: {E.Message}", E); }
+    }
+
+    public async Task<List<ModelsClasses>> GetAvailableClasses()
+    {
+        try { return await _repositoryGrades.GetAllClassesByEducationalInstitution(_serviceUser.AccessStrategy!.ModelUser.EducationalInstitutionId); }
+        catch (Exception E) { throw new Exception($"Getting of available classes failed: {E.Message}", E); }
+    }
+    public async Task<List<ModelsSubjects>> GetSubjectsByClass(int ClassId)
+    {
+        try { return await _repositoryGrades.GetAllSubjectsByEducationalInstitution(IsTeacher: true, _serviceUser.AccessStrategy!.ModelUser.EducationalInstitutionId); }
+        catch (Exception E) { throw new Exception($"Getting of available classes failed: {E.Message}", E); }
+    }
+    public async Task<List<StudentGradeAssignment>> GetStudentAssignments(int ClassId, int SubjectId, int Month, int Year)
+    {
+        try
+        {
+            var students = await _repositoryGrades.GetAllStudentsByClassId(ClassId);
+
+            var startDate = new DateTime(Year, Month, 1);
+            var endDate = startDate.AddMonths(1).AddDays(-1);
+
+            var assignments = new List<StudentGradeAssignment>();
+
+            foreach (var student in students)
+            {
+                var grades = await _repositoryGrades.GetAllGradesBySubjectAndStudent(SubjectId, student.Id);
+                var studentAssignment = new StudentGradeAssignment
+                {
+                    StudentId = student.Id,
+                    StudentName = student.FullName,
+                    Grades = new Dictionary<DateTime, GradeAssignment>()
+                };
+
+                for (var date = startDate; date <= endDate; date = date.AddDays(1))
+                {
+                    var grade = grades.FirstOrDefault(
+                        gradesProvider => gradesProvider.Date.Month == Month && gradesProvider.Date.Year == Year && gradesProvider.Date.Day == date.Day
+                    );
+
+                    studentAssignment.Grades[date] = new GradeAssignment
+                    {
+                        Grade = grade?.Grade,
+                        Description = grade?.Description,
+                        Date = date
+                    };
+
+                    assignments.Add(studentAssignment);
+                }
+            }
+
+            return assignments;
+        }
+        catch (Exception E) { throw new Exception($"Getting of available classes failed: {E.Message}", E); }
+    }
+    public async Task UpdateGrade(int StudentId, int SubjectId, DateTime Date, int GradeValue, string Description)
+    {
+        try
+        {
+            var existingGrades = await _repositoryGrades.GetExistingGrades(StudentId);
+
+            var existingGrade = existingGrades.FirstOrDefault(
+                gradesProvider => gradesProvider.SubjectId == SubjectId && gradesProvider.Date.Date == Date.Date
+            );
+
+            if (existingGrade != null)
+            {
+                existingGrade.Grade = GradeValue;
+                existingGrade.Description = Description;
+                await _repositoryGrades.Update(existingGrade);
+            }
+            else
+            {
+                var newGrade = new ModelsGrades
+                {
+                    UserId = StudentId,
+                    SubjectId = SubjectId,
+                    Date = Date,
+                    Grade = GradeValue,
+                    Description = Description
+                };
+                await _repositoryGrades.Insert(newGrade);
+            }
+        }
+        catch (Exception E) { throw new Exception($"Updating grade failed: {E.Message}", E); }
     }
 }

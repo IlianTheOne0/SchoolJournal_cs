@@ -2,8 +2,6 @@
 
 using DesktopApplication.Interfaces.Services.Auth;
 using DesktopApplication.Interfaces.Services.Navigation;
-using DesktopApplication.Services.Auth;
-using DesktopApplication.Services.Navigation;
 using DesktopApplication.ViewModels.Login;
 using DesktopApplication.Views.Pages;
 
@@ -16,7 +14,7 @@ public partial class MainWindow : Window
     private readonly InterfacesServicesNavigation _serviceNavigation;
     private readonly InterfacesServicesAuth _serviceAuth;
 
-    public MainWindow(ServicesNavigation ServicesNavigation, ServicesAuth authService)
+    public MainWindow(InterfacesServicesNavigation ServicesNavigation, InterfacesServicesAuth authService)
     {
         InitializeComponent();
         
