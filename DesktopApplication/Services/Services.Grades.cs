@@ -1,21 +1,20 @@
 ﻿namespace DesktopApplication.Services.Grades;
 
-using Database.Interfaces.Repositories.Grades;
-using Database.Repositories.Grades;
 using DesktopApplication.Interfaces.Services.Grades;
 using DesktopApplication.Interfaces.Services.Supabase;
 using DesktopApplication.Interfaces.Services.User;
 using DesktopApplication.Services.Strategies.TeacherAccess;
+
+using Database.Interfaces.Repositories.Grades;
+using Database.Repositories.Grades;
+
 using Models.Supports.GradesAssigner;
 using Models.Tables.Classes;
 using Models.Tables.Grades;
 using Models.Tables.Subjects;
 using Models.Tables.Users;
-using System.Reactive.Subjects;
+
 using System.Security.Cryptography;
-using System.Xml.Linq;
-using static global::Supabase.Postgrest.Constants;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 public class ServicesGrades : InterfacesServicesGrades
 {

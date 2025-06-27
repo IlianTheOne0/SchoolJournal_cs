@@ -8,8 +8,6 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
-using CommunityToolkit.Mvvm.Input;
 
 public partial class ViewModelsProfile : INotifyPropertyChanged
 {

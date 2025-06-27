@@ -2,7 +2,9 @@
 
 using DesktopApplication.ViewModels.GradesAssigner;
 using DesktopApplication.Views.UserControls;
+
 using Models.Supports.GradesAssigner;
+
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -189,9 +191,9 @@ public partial class PagesGradesAssigner : UserControl
         CustomGradeTextBox.Visibility = Visibility.Collapsed;
     }
 
-    private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    private void ViewModel_PropertyChanged(object Sender, PropertyChangedEventArgs E)
     {
-        if (e.PropertyName == nameof(ViewModelsGradesAssigner.DateColumns)) { GenerateDateColumns(); }
+        if (E.PropertyName == nameof(ViewModelsGradesAssigner.DateColumns)) { GenerateDateColumns(); }
     }
 
     private DataGridRow GetContainingRow(DependencyObject Element)

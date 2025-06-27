@@ -12,8 +12,6 @@ using Models.Tables.Users;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using System.Windows.Input;
-using DesktopApplication.ViewModels.GradesAssigner;
 
 public partial class ViewModelsSidebarMenu : INotifyPropertyChanged
 {

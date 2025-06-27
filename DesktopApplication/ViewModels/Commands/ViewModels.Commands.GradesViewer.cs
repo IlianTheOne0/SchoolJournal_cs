@@ -1,12 +1,13 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿namespace DesktopApplication.ViewModels.GradesViewer;
+
 using Models.Tables.Classes;
 using Models.Tables.Grades;
 using Models.Tables.Subjects;
 using Models.Tables.Users;
+
+using CommunityToolkit.Mvvm.Input;
 using System.Windows;
 using System.Windows.Input;
-
-namespace DesktopApplication.ViewModels.GradesViewer;
 
 public partial class ViewModelsGradesViewer
 {

@@ -1,10 +1,11 @@
 ﻿namespace DesktopApplication.ViewModels.SidebarMenu;
 
-using CommunityToolkit.Mvvm.Input;
 using DesktopApplication.ViewModels.GradesAssigner;
 using DesktopApplication.ViewModels.GradesViewer;
 using DesktopApplication.ViewModels.Profile;
 using DesktopApplication.Views.Pages;
+
+using CommunityToolkit.Mvvm.Input;
 using System.Windows;
 using System.Windows.Input;
 

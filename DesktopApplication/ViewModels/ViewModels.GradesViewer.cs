@@ -7,12 +7,9 @@ using Models.Tables.Users;
 using Models.Tables.Subjects;
 using Models.Tables.Grades;
 
-using System.Windows.Input;
 using System.Windows;
-using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using CommunityToolkit.Mvvm.Input;
 
 public partial class ViewModelsGradesViewer : INotifyPropertyChanged
 {
@@ -71,7 +68,7 @@ public partial class ViewModelsGradesViewer : INotifyPropertyChanged
         
             IsTeacherMode = _serviceGrades.GetIsTeacherMode();
         }
-        catch (Exception e) { throw new Exception($"Applying changes failed: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Applying changes failed: {E.Message}", E); }
     }
 
     public async void Initialize()
@@ -88,7 +85,7 @@ public partial class ViewModelsGradesViewer : INotifyPropertyChanged
 
             ApplyChanges();
         }
-        catch (Exception e) { MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+        catch (Exception E) { MessageBox.Show(E.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
 
     public void Reset() => OnReset();

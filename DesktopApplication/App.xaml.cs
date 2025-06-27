@@ -5,19 +5,23 @@ using DesktopApplication.Interfaces.Services.Grades;
 using DesktopApplication.Interfaces.Services.Navigation;
 using DesktopApplication.Interfaces.Services.Supabase;
 using DesktopApplication.Interfaces.Services.User;
+
 using DesktopApplication.Services;
 using DesktopApplication.Services.Auth;
 using DesktopApplication.Services.Converters;
 using DesktopApplication.Services.Grades;
 using DesktopApplication.Services.Navigation;
 using DesktopApplication.Services.Supabase;
+
 using DesktopApplication.ViewModels.GradesAssigner;
 using DesktopApplication.ViewModels.GradesViewer;
 using DesktopApplication.ViewModels.Login;
 using DesktopApplication.ViewModels.Profile;
 using DesktopApplication.ViewModels.SidebarMenu;
+
 using DesktopApplication.Views.Pages;
 using DesktopApplication.Views.UserControls;
+
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 

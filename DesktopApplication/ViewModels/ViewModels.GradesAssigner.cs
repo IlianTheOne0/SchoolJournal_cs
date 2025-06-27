@@ -1,14 +1,11 @@
 ﻿namespace DesktopApplication.ViewModels.GradesAssigner;
 
-using CommunityToolkit.Mvvm.Input;
 using DesktopApplication.Interfaces.Services.Grades;
 using Models.Supports.GradesAssigner;
 using Models.Tables.Classes;
-using Models.Tables.Grades;
 using Models.Tables.Subjects;
 using System.ComponentModel;
 using System.Globalization;
-using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Windows;
 

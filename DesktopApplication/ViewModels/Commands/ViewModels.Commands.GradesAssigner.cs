@@ -1,10 +1,10 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿namespace DesktopApplication.ViewModels.GradesAssigner;
+
 using Models.Supports.GradesAssigner;
-using System.Threading.Tasks;
+
+using CommunityToolkit.Mvvm.Input;
 using System.Windows;
 using System.Windows.Input;
-
-namespace DesktopApplication.ViewModels.GradesAssigner;
 
 public partial class ViewModelsGradesAssigner
 {

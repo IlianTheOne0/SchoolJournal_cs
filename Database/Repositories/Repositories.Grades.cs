@@ -2,15 +2,16 @@
 
 using Database.Interfaces.Repositories.Grades;
 using Database.Interfaces.Repositories.Supabase;
-using global::Supabase.Postgrest.Models;
+
 using Models.Tables.Classes;
 using Models.Tables.Enrollments;
 using Models.Tables.Grades;
 using Models.Tables.Statuses;
 using Models.Tables.Subjects;
 using Models.Tables.Users;
-using System.Threading.Tasks;
+
 using static global::Supabase.Postgrest.Constants;
+using System.Threading.Tasks;
 
 public class RepositoriesGrades : InterfacesRepositoriesGrades
 {
@@ -21,7 +22,7 @@ public class RepositoriesGrades : InterfacesRepositoriesGrades
     public async Task<List<ModelsClasses>> GetAllClassesByEducationalInstitution(int EducationalInstitutionId)
     {
         try { return await _repositorySupabase.FilterAsync<ModelsClasses>("EducationalInstitutionId", Operator.Equals, EducationalInstitutionId); }
-        catch (Exception e) { throw new Exception($"Failed to get all classe by educational institution id: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Failed to get all classe by educational institution id: {E.Message}", E); }
     }
 
     public async Task<List<ModelsSubjects>> GetAllSubjectsByEducationalInstitution(bool IsTeacher, int EducationalInstitutionId)
@@ -49,7 +50,7 @@ public class RepositoriesGrades : InterfacesRepositoriesGrades
                 return await _repositorySupabase.FilterAsync<ModelsSubjects>("ClassId", Operator.Equals, classId);
             }
         }
-        catch (Exception e) { throw new Exception($"Failed to get all subjects by educational institution id: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Failed to get all subjects by educational institution id: {E.Message}", E); }
     }
 
     public async Task<List<ModelsUserExtended>> GetAllStudentsByClassId(int ClassId)
@@ -83,7 +84,7 @@ public class RepositoriesGrades : InterfacesRepositoriesGrades
 
             return students;
         }
-        catch (Exception e) { throw new Exception($"Failed to get students by class ID: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Failed to get students by class ID: {E.Message}", E); }
     }
 
     public async Task<List<ModelsGradesExtended>> GetAllGradesByStudentId(int StudentId)
@@ -104,7 +105,7 @@ public class RepositoriesGrades : InterfacesRepositoriesGrades
 
             return extendedGrades;
         }
-        catch (Exception e) { throw new Exception($"Failed to get grades by student ID: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Failed to get grades by student ID: {E.Message}", E); }
     }
 
     public async Task<List<ModelsGradesExtended>> GetAllGradesBySubjectAndStudent(int SubjectId, int StudentId)
@@ -121,34 +122,30 @@ public class RepositoriesGrades : InterfacesRepositoriesGrades
 
             return subjectGrades.Select(gradesProvider => new ModelsGradesExtended(gradesProvider, subject?.Name ?? "Unknown")).ToList();
         }
-        catch (Exception e) { throw new Exception($"Failed to get grades by student and subject: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Failed to get grades by student and subject: {E.Message}", E); }
     }
 
     public async Task<List<ModelsSubjects>> GetAllSubjectsByClass(int ClassId)
     {
         try { return await _repositorySupabase.FilterAsync<ModelsSubjects>("ClassId", Operator.Equals, ClassId); }
-        catch (Exception e) { throw new Exception($"Failed to get existing grades: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Failed to get existing grades: {E.Message}", E); }
     }
 
     public async Task<List<ModelsGrades>> GetExistingGrades(int StudentId)
     {
         try { return await _repositorySupabase.FilterAsync<ModelsGrades>("UserId", Operator.Equals, StudentId); }
-        catch (Exception e) { throw new Exception($"Failed to get existing grades: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Failed to get existing grades: {E.Message}", E); }
     }
 
     public async Task Insert(ModelsGrades Item)
     {
         try { await _repositorySupabase.Insert(Item); }
-        catch (Exception e) { throw new Exception($"Failed to inesrt grades: {e.Message}", e); }
+        catch(Exception E) { throw new Exception($"Failed to insert grades: {E.Message}", E); }
     }
     public async Task Update(ModelsGrades Item)
     {
-        try
-        {
-            await _repositorySupabase.Upsert(Item, new[] { "Date", "UserId", "SubjectId" });
-            //await _repositorySupabase.Upsert(Item, "Date,UserId,SubjectId");
-        }
-        catch (Exception e) { throw new Exception($"Failed to update grades: {e.Message}", e); }
+        try { await _repositorySupabase.Upsert(Item, new[] { "Date", "UserId", "SubjectId" }); }
+        catch (Exception E) { throw new Exception($"Failed to update grades: {E.Message}", E); }
     }
 
     public async Task DeleteGrade(int StudentId, int SubjectId, DateTime Date)
@@ -163,6 +160,6 @@ public class RepositoriesGrades : InterfacesRepositoriesGrades
 
             if (gradeToDelete != null) { await _repositorySupabase.Delete(gradeToDelete); }
         }
-        catch (Exception e) { throw new Exception($"Failed to delete grade: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Failed to delete grade: {E.Message}", E); }
     }
 }

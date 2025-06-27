@@ -1,7 +1,5 @@
 ﻿namespace Database.Interfaces.Repositories.Grades;
 
-using global::Supabase.Postgrest.Models;
-using Models.Supports.GradesAssigner;
 using Models.Tables.Classes;
 using Models.Tables.Grades;
 using Models.Tables.Subjects;

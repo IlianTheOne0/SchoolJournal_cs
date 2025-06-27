@@ -1,10 +1,10 @@
 ﻿namespace Database.Interfaces.Repositories.Supabase;
 
-using global::Supabase.Postgrest.Models;
 using Models.Supports.SupabaseCommands;
+using static global::Supabase.Postgrest.Constants;
+using global::Supabase.Postgrest.Models;
 using Models.Tables.Users;
 using System.Linq.Expressions;
-using static global::Supabase.Postgrest.Constants;
 
 public interface InterfacesRepositoriesSupabase
 {

@@ -1,16 +1,13 @@
 ﻿namespace Database.Repositories.Supabase;
 
-using global::Supabase.Interfaces;
-using global::Supabase.Postgrest;
-using global::Supabase.Postgrest.Interfaces;
-using global::Supabase.Postgrest.Models;
 using Models.Supports.SupabaseCommands;
-using Models.Tables.Grades;
+
+using global::Supabase.Postgrest.Models;
+using static global::Supabase.Postgrest.Constants;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using static global::Supabase.Postgrest.Constants;
 
 public partial class RepositoriesSupabase
 {
@@ -85,15 +82,11 @@ public partial class RepositoriesSupabase
         try
         {
             await ChangeTheSchema(Schema);
-
             var conflictString = string.Join(",", ConflictColumns);
 
-            await SupabaseConnection!.SupabaseClient
-                .From<TMethod>()
-                .OnConflict(conflictString)
-                .Upsert(Item);
+            await SupabaseConnection!.SupabaseClient.From<TMethod>().OnConflict(conflictString).Upsert(Item);
         }
-        catch (Exception e) { throw new Exception($"Failed to upsert: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Failed to upsert: {E.Message}", E); }
     }
 
     public async Task Delete<TMethod>(TMethod item, string? Schema = null)
