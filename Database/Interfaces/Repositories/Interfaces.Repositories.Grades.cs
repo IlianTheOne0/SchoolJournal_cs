@@ -12,4 +12,5 @@ public interface InterfacesRepositoriesGrades
     Task<List<ModelsUserExtended>> GetAllStudentsByClassId(int ClassId);
     Task<List<ModelsGradesExtended>> GetAllGradesByStudentId(int ClassId);
     Task<List<ModelsGradesExtended>> GetAllGradesBySubjectAndStudent(int SubjectId, int StudentId);
+    Task AddGrade(ModelsGrades Grade);
 }

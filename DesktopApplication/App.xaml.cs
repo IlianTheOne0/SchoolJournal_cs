@@ -1,8 +1,11 @@
 ﻿namespace DesktopApplication;
 
+using Database.Interfaces.Repositories.Database;
+using Database.Interfaces.Repositories.Supabase;
 using DesktopApplication.Interfaces.Services.Auth;
 using DesktopApplication.Interfaces.Services.Grades;
 using DesktopApplication.Interfaces.Services.Navigation;
+using DesktopApplication.Interfaces.Services.Supabase;
 using DesktopApplication.Interfaces.Services.User;
 
 using DesktopApplication.Services;
@@ -11,7 +14,7 @@ using DesktopApplication.Services.Converters;
 using DesktopApplication.Services.Grades;
 using DesktopApplication.Services.Navigation;
 using DesktopApplication.Services.Supabase;
-
+using DesktopApplication.ViewModels.GradesAssigner;
 using DesktopApplication.ViewModels.GradeViewer;
 using DesktopApplication.ViewModels.Login;
 using DesktopApplication.ViewModels.Profile;
@@ -54,8 +57,8 @@ public partial class App : Application
         Services.AddSingleton<MainWindow>(
             provider =>
             {
-                ServicesNavigation serviceNavigation = (ServicesNavigation)provider.GetRequiredService<InterfacesServicesNavigation>();
-                ServicesAuth serviceAuth = (ServicesAuth)provider.GetRequiredService<InterfacesServicesAuth>();
+                InterfacesServicesNavigation serviceNavigation = provider.GetRequiredService<InterfacesServicesNavigation>();
+                InterfacesServicesAuth serviceAuth = provider.GetRequiredService<InterfacesServicesAuth>();
                 return new MainWindow(serviceNavigation, serviceAuth);
             }
         );
@@ -68,26 +71,26 @@ public partial class App : Application
 
     private void LoadServices(IServiceCollection Services)
     {
-        Services.AddSingleton<ServicesSupabase>();
+        Services.AddSingleton<InterfacesServicesSupabase, ServicesSupabase>();
         Services.AddSingleton<InterfacesServicesUser, ServicesUser>(
             provider =>
             {
-                ServicesSupabase serviceSupabase = provider.GetRequiredService<ServicesSupabase>();
+                InterfacesServicesSupabase serviceSupabase = provider.GetRequiredService<InterfacesServicesSupabase>();
                 return new ServicesUser(serviceSupabase.RepositorySupabase);
             }
         );
         Services.AddSingleton<InterfacesServicesAuth, ServicesAuth>(
             provider =>
             {
-                ServicesSupabase serviceSupabase = provider.GetRequiredService<ServicesSupabase>();
-                ServicesUser servicesUser = (ServicesUser)provider.GetRequiredService<InterfacesServicesUser>();
+                InterfacesServicesSupabase serviceSupabase = provider.GetRequiredService<InterfacesServicesSupabase>();
+                InterfacesServicesUser servicesUser = provider.GetRequiredService<InterfacesServicesUser>();
                 return new ServicesAuth(serviceSupabase.RepositorySupabase, servicesUser);
             }
         );
         Services.AddSingleton<InterfacesServicesGrades, ServicesGrades>(
             provider => new ServicesGrades(
-                ServiceSupabase: provider.GetRequiredService<ServicesSupabase>(),
-                ServiceUser: (ServicesUser)provider.GetRequiredService<InterfacesServicesUser>()
+                ServiceSupabase: provider.GetRequiredService<InterfacesServicesSupabase>(),
+                ServiceUser: provider.GetRequiredService<InterfacesServicesUser>()
             )
         );
         Services.AddSingleton<ServicesConverterBooleanToBorderBrush>();
@@ -100,26 +103,32 @@ public partial class App : Application
     {
         Services.AddSingleton<ViewModelsLogin>(
             provider => new ViewModelsLogin(
-                ServiceAuth: (ServicesAuth)provider.GetRequiredService<InterfacesServicesAuth>()
+                ServiceAuth: provider.GetRequiredService<InterfacesServicesAuth>()
             )
         );
         Services.AddSingleton<ViewModelsProfile>(
             provider => new ViewModelsProfile(
-                ServiceUser: (ServicesUser)provider.GetRequiredService<InterfacesServicesUser>()
+                ServiceUser: provider.GetRequiredService<InterfacesServicesUser>()
             )
         );
         Services.AddSingleton<ViewModelsSidebarMenu>(
             provider => new ViewModelsSidebarMenu(
-                ServiceAuth: (ServicesAuth)provider.GetRequiredService<InterfacesServicesAuth>(),
-                ServiceNavigation: (ServicesNavigation)provider.GetRequiredService<InterfacesServicesNavigation>(),
-                ServiceUser: (ServicesUser)provider.GetRequiredService<InterfacesServicesUser>(),
+                ServiceAuth: provider.GetRequiredService<InterfacesServicesAuth>(),
+                ServiceNavigation: provider.GetRequiredService<InterfacesServicesNavigation>(),
+                ServiceUser: provider.GetRequiredService<InterfacesServicesUser>(),
                 ViewModelProvider: provider.GetRequiredService<ViewModelsProfile>(),
-                ViewModelsGradeViewer: provider.GetRequiredService<ViewModelsGradeViewer>()
+                ViewModelGradesViewer: provider.GetRequiredService<ViewModelsGradesViewer>(),
+                ViewModelGradesAssigner: provider.GetRequiredService<ViewModelsGradesAssigner>()
             )
         );
-        Services.AddSingleton<ViewModelsGradeViewer>(
-            provider => new ViewModelsGradeViewer(
-                ServiceGrades: (ServicesGrades)provider.GetRequiredService<InterfacesServicesGrades>()
+        Services.AddSingleton<ViewModelsGradesViewer>(
+            provider => new ViewModelsGradesViewer(
+                ServiceGrades: provider.GetRequiredService<InterfacesServicesGrades>()
+            )
+        );
+        Services.AddSingleton<ViewModelsGradesAssigner>(
+            provider => new ViewModelsGradesAssigner(
+                ServiceGrades: provider.GetRequiredService<InterfacesServicesGrades>()
             )
         );
     }
@@ -151,10 +160,16 @@ public partial class App : Application
                 Sidebar: provider.GetRequiredService<UserControlsSidebarMenu>()
             )
         );
-        Services.AddTransient<PagesGradeViewer>(
-            provider => new PagesGradeViewer(
-                ViewModel: provider.GetRequiredService<ViewModelsGradeViewer>(),
-                UserControlSidebarMenu: provider.GetRequiredService<UserControlsSidebarMenu>()
+        Services.AddTransient<PagesGradesViewer>(
+            provider => new PagesGradesViewer(
+                ViewModel: provider.GetRequiredService<ViewModelsGradesViewer>(),
+                Sidebar: provider.GetRequiredService<UserControlsSidebarMenu>()
+            )
+        );
+        Services.AddTransient<PagesGradesAssigner>(
+            provider => new PagesGradesAssigner(
+                ViewModel: provider.GetRequiredService<ViewModelsGradesAssigner>(),
+                Sidebar: provider.GetRequiredService<UserControlsSidebarMenu>()
             )
         );
     }

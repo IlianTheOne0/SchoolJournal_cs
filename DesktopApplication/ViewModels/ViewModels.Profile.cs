@@ -75,7 +75,7 @@ public class ViewModelsProfile : INotifyPropertyChanged
             _originalModelUser = currentUser;
             ModelUser = CloneUser(currentUser);
         }
-        catch (Exception e) { MessageBox.Show($"Load data failed: {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+        catch (Exception E) { MessageBox.Show($"Load data failed: {E.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
 
     private void OnEditButton() => IsEditing = true;
@@ -167,5 +167,5 @@ public class ViewModelsProfile : INotifyPropertyChanged
         EducationalInstitutionName = User.EducationalInstitutionName
     };
 
-    protected virtual void OnPropertyChanged([CallerMemberName] string? PropertyName = null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName)); }
+    private void OnPropertyChanged([CallerMemberName] string? PropertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
 }

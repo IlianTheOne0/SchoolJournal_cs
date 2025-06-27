@@ -37,7 +37,7 @@ public class ServicesUser : InterfacesServicesUser
 
             return new ModelsUserExtended(user, status?.Status!, institution?.Name!);
         }
-        catch (Exception e) { throw new Exception($"Failed to get user by ID: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Failed to get user by ID: {E.Message}", E); }
     }
 
     public async Task UpdateUser(ModelsUser User) => await _repositorySupabase.UpdateUser(User);
@@ -56,7 +56,7 @@ public class ServicesUser : InterfacesServicesUser
                 _ => throw new Exception("SetupAccessStrategy failed: Unknown status")
             };
         }
-        catch (Exception e) { throw new Exception($"SetupAccessStrategy failed: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"SetupAccessStrategy failed: {E.Message}", E); }
     }
 
     public async Task UpdateAvatar(int UserId, string FilePath)
@@ -65,7 +65,7 @@ public class ServicesUser : InterfacesServicesUser
             await _repositorySupabase.UpdateAvatar(UserId, FilePath);
             if (AccessStrategy != null) { AccessStrategy.ModelUser = await GetUserById(UserId); }
         }
-        catch (Exception e) { throw new Exception($"Update avatar failed: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Update avatar failed: {E.Message}", E); }
     }
 
     public void ClearAccessStrategy() => _accessStrategy = null;

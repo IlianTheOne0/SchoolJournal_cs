@@ -22,7 +22,7 @@ public class RepositoriesGrades : InterfacesRepositoriesGrades
     public async Task<List<ModelsClasses>> GetAllClassesByEducationalInstitution(int EducationalInstitutionId)
     {
         try { return await _repositorySupabase.FilterAsync<ModelsClasses>("EducationalInstitutionId", Operator.Equals, EducationalInstitutionId); }
-        catch (Exception e) { throw new Exception($"Failed to get all classe by educational institution id: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Failed to get all classe by educational institution id: {E.Message}", E); }
     }
 
     public async Task<List<ModelsSubjects>> GetAllSubjectsByEducationalInstitution(bool IsTeacher, int EducationalInstitutionId)
@@ -50,7 +50,7 @@ public class RepositoriesGrades : InterfacesRepositoriesGrades
                 return await _repositorySupabase.FilterAsync<ModelsSubjects>("ClassId", Operator.Equals, classId);
             }
         }
-        catch (Exception e) { throw new Exception($"Failed to get all subjects by educational institution id: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Failed to get all subjects by educational institution id: {E.Message}", E); }
     }
 
     public async Task<List<ModelsUserExtended>> GetAllStudentsByClassId(int ClassId)
@@ -61,7 +61,7 @@ public class RepositoriesGrades : InterfacesRepositoriesGrades
 
             if (enrollments == null || enrollments.Count == 0) { return new List<ModelsUserExtended>(); }
 
-            var studentIds = enrollments.Select(e => e.UserId).ToList();
+            var studentIds = enrollments.Select(enrollmentsProvider => enrollmentsProvider.UserId).ToList();
             var students = new List<ModelsUserExtended>();
 
             foreach (var studentId in studentIds)
@@ -84,7 +84,7 @@ public class RepositoriesGrades : InterfacesRepositoriesGrades
 
             return students;
         }
-        catch (Exception e) { throw new Exception($"Failed to get students by class ID: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Failed to get students by class ID: {E.Message}", E); }
     }
 
     public async Task<List<ModelsGradesExtended>> GetAllGradesByStudentId(int StudentId)
@@ -105,7 +105,7 @@ public class RepositoriesGrades : InterfacesRepositoriesGrades
 
             return extendedGrades;
         }
-        catch (Exception e) { throw new Exception($"Failed to get grades by student ID: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Failed to get grades by student ID: {E.Message}", E); }
     }
 
     public async Task<List<ModelsGradesExtended>> GetAllGradesBySubjectAndStudent(int SubjectId, int StudentId)
@@ -122,6 +122,12 @@ public class RepositoriesGrades : InterfacesRepositoriesGrades
 
             return subjectGrades.Select(gradesProvider => new ModelsGradesExtended(gradesProvider, subject?.Name ?? "Unknown")).ToList();
         }
-        catch (Exception e) { throw new Exception($"Failed to get grades by student and subject: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Failed to get grades by student and subject: {E.Message}", E); }
+    }
+
+    public async Task AddGrade(ModelsGrades Grade)
+    {
+        try { await _repositorySupabase.Insert(Grade); }
+        catch (Exception E) { throw new Exception($"Failed to add grades: {E.Message}", E); }
     }
 }

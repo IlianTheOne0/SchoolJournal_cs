@@ -15,7 +15,7 @@ public partial class UserControlsSidebarMenu : UserControl
         _viewModel = ViewModel;
 
         try { DataContext = ViewModel; Loaded += UserControlSidebarMenu_Loaded; }
-        catch (Exception e) { MessageBox.Show($"Error initializing Home: {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+        catch (Exception E) { MessageBox.Show($"Error initializing Home: {E.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
 
     public void LoadData() => _viewModel?.LoadData();

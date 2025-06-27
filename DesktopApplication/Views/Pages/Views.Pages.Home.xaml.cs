@@ -11,18 +11,22 @@ public partial class PagesHome : UserControl
 
     public PagesHome(UserControlsSidebarMenu Sidebar)
     {
-        InitializeComponent();
-        _sidebar = Sidebar;
-        LoadSidebar();
-        Loaded += (s, e) => LoadSidebar();
+        try
+        {
+            InitializeComponent();
+            _sidebar = Sidebar;
 
-        try { SidebarHost.Content = _sidebar; }
-        catch (Exception e) { MessageBox.Show($"Error initializing Home: {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+            LoadSidebar();
+            Loaded += (s, E) => LoadSidebar();
+
+            SidebarHost.Content = _sidebar;
+        }
+        catch (Exception E) { MessageBox.Show($"Error initializing Home: {E.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
 
     private void LoadSidebar()
     {
         try { SidebarHost.Content = _sidebar; _sidebar.LoadData(); }
-        catch (Exception e) { MessageBox.Show($"Error loading sidebar: {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+        catch (Exception E) { MessageBox.Show($"Error loading sidebar: {E.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
 }

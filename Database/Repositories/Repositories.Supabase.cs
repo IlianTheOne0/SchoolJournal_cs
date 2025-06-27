@@ -28,7 +28,7 @@ public partial class RepositoriesSupabase : InterfacesRepositoriesDatabase, Inte
             if (string.IsNullOrEmpty(filePath)) { throw new ArgumentException("File path cannot be null or empty!"); }
             InitDatabase(filePath);
         }
-        catch (Exception e) { throw new Exception("Error initializing DatabaseRepository!", e); }
+        catch (Exception E) { throw new Exception("Error initializing DatabaseRepository!", E); }
     }
 
     public async void InitDatabase(string FilePath)
@@ -42,6 +42,6 @@ public partial class RepositoriesSupabase : InterfacesRepositoriesDatabase, Inte
             _defaultSchema = supbaseConfig.DefaultSchema!;
             SupabaseConnection = new DataSourcesSupabase(supbaseConfig.Url, supbaseConfig.Key);
         }
-        catch (Exception e) { throw new Exception("Error initializing Supabase client!", e); }
+        catch (Exception E) { throw new Exception("Error initializing Supabase client!", E); }
     }
 }

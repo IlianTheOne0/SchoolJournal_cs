@@ -39,7 +39,7 @@ public partial class RepositoriesSupabase
 
             ModelUser = new ModelsUserExtended(user, status.Status, educationalInstitution.Name);
         }
-        catch (Exception e) { throw new Exception($"Login failed: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Login failed: {E.Message}", E); }
     }
 
     public async Task Logout()

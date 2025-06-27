@@ -12,7 +12,7 @@ public partial class RepositoriesSupabase
             var result = await FilterAsync<ModelsUser>("Id", global::Supabase.Postgrest.Constants.Operator.Equals, UserId);
             return result?.FirstOrDefault();
         }
-        catch (Exception e) { throw new Exception($"Failed to get user by ID: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Failed to get user by ID: {E.Message}", E); }
     }
 
     public async Task UpdateUser(ModelsUser User)
@@ -66,7 +66,7 @@ public partial class RepositoriesSupabase
 
             if (response.ResponseMessage?.IsSuccessStatusCode != true) { throw new Exception("Failed to update user in database"); }
         }
-        catch (Exception e) { throw new Exception($"Failed to update user: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Failed to update user: {E.Message}", E); }
     }
 
     public async Task UpdateAvatar(int UserId, string FilePath)
@@ -107,7 +107,7 @@ public partial class RepositoriesSupabase
                 .Set(user => user.AvatarUrl!, url)
                 .Update()!;
         }
-        catch (Exception e) { throw new Exception($"Update avatar failed: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Update avatar failed: {E.Message}", E); }
     }
 
     private string GetContentType(string fileExtension)

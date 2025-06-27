@@ -19,6 +19,6 @@ public class RepositoriesJson(string FilePath) : InterfacesRepositoriesJson
 
             return model;
         }
-        catch (Exception e) { throw new Exception("Error reading JSON file!", e); }
+        catch (Exception E) { throw new Exception("Error reading JSON file!", E); }
     }
 }

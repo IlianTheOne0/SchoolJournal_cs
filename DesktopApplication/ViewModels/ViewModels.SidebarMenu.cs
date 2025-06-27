@@ -5,6 +5,7 @@ using DesktopApplication.Interfaces.Services.Navigation;
 using DesktopApplication.Interfaces.Services.User;
 using DesktopApplication.ViewModels.GradeViewer;
 using DesktopApplication.ViewModels.Profile;
+using DesktopApplication.ViewModels.GradesAssigner;
 using DesktopApplication.Views.Pages;
 
 using Models.Tables.Users;
@@ -28,7 +29,8 @@ public class ViewModelsSidebarMenu : INotifyPropertyChanged
     private readonly InterfacesServicesNavigation _serviceNavigation;
     private readonly InterfacesServicesUser _serviceUser;
     private readonly ViewModelsProfile _viewModelProfile;
-    private readonly ViewModelsGradeViewer _viewModelGradeViewer;
+    private readonly ViewModelsGradesViewer _viewModelGradeViewer;
+    private readonly ViewModelsGradesAssigner _viewModelGradeAssigner;
     private Type _currentPageType; public Type CurrentPageType { get => _currentPageType; set { if (_currentPageType != value) { _currentPageType = value; OnPropertyChanged(); UpdateCanGoToHome(); } } }
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -39,10 +41,10 @@ public class ViewModelsSidebarMenu : INotifyPropertyChanged
     private bool _canGoToHome; public bool CanGoToHome { get => _canGoToHome; private set { if (_canGoToHome != value) { _canGoToHome = value; OnPropertyChanged(); } } }
     private ModelsUser? _modelUser = null; public ModelsUser ModelUser { get => _modelUser!; set { _modelUser = value; OnPropertyChanged(); OnPropertyChanged("AvatarUrl"); } }
 
-    public ViewModelsSidebarMenu(InterfacesServicesAuth ServiceAuth, InterfacesServicesNavigation ServiceNavigation, InterfacesServicesUser ServiceUser, ViewModelsProfile ViewModelProvider, ViewModelsGradeViewer ViewModelsGradeViewer)
+    public ViewModelsSidebarMenu(InterfacesServicesAuth ServiceAuth, InterfacesServicesNavigation ServiceNavigation, InterfacesServicesUser ServiceUser, ViewModelsProfile ViewModelProvider, ViewModelsGradesViewer ViewModelGradesViewer, ViewModelsGradesAssigner ViewModelGradesAssigner)
     {
         _serviceAuth = ServiceAuth; _serviceNavigation = ServiceNavigation; _serviceUser = ServiceUser;
-        _viewModelProfile = ViewModelProvider; _viewModelGradeViewer = ViewModelsGradeViewer;
+        _viewModelProfile = ViewModelProvider; _viewModelGradeViewer = ViewModelGradesViewer; _viewModelGradeAssigner = ViewModelGradesAssigner;
         _serviceNavigation.OnPageChanged += pageType => { CurrentPageType = pageType; };
 
         CommandLogOut = new AsyncRelayCommand(OnLogOut);
@@ -68,9 +70,9 @@ public class ViewModelsSidebarMenu : INotifyPropertyChanged
             OnPropertyChanged(nameof(CanViewGrades));
             OnPropertyChanged(nameof(CanManageUsers));
         }
-        catch (Exception e)
+        catch (Exception E)
         {
-            MessageBox.Show($"Load data failed: {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show($"Load data failed: {E.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
@@ -84,11 +86,11 @@ public class ViewModelsSidebarMenu : INotifyPropertyChanged
     }
 
     public void OnProfile() { LoadData(); _serviceNavigation.NavigateTo<PagesProfile, ViewModelsProfile>(); }
-    public void OnGrade() => MessageBox.Show($"Grade Page do not implemented", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-    public async void OnViewGrades() { LoadData(); _viewModelGradeViewer.Refresh(); _serviceNavigation.NavigateTo<PagesGradeViewer, ViewModelsGradeViewer>(); }
+    public void OnGrade() { LoadData(); _viewModelGradeAssigner.Refresh(); _serviceNavigation.NavigateTo<PagesGradesAssigner, ViewModelsGradesAssigner>(); }
+    public async void OnViewGrades() { LoadData(); _viewModelGradeViewer.Refresh(); _serviceNavigation.NavigateTo<PagesGradesViewer, ViewModelsGradesViewer>(); }
     public void OnManageUsers() => MessageBox.Show($"Manage users Page do not implemented", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
     public void OnGoToHome() { LoadData(); _viewModelProfile.ResetEditingState(); _serviceNavigation.NavigateTo<PagesHome>(); }
 
     private void UpdateCanGoToHome() => CanGoToHome = CurrentPageType != typeof(PagesHome);
-    protected void OnPropertyChanged([CallerMemberName] string? PropertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
+    private void OnPropertyChanged([CallerMemberName] string? PropertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
 }

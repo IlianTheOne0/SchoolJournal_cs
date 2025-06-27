@@ -53,27 +53,42 @@ public class ServicesGrades : InterfacesServicesGrades
             }
             AvailableSubjects = await _repositoryGrades.GetAllSubjectsByEducationalInstitution(_isTeacherMode, _serviceUser.AccessStrategy!.ModelUser.EducationalInstitutionId);
         }
-        catch (Exception e) { throw new Exception($"Grades initialize failed: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Grades initialize failed: {E.Message}", E); }
     }
     public async Task Refresh()
     {
         try { await Initialize(); }
-        catch (Exception e) { throw new Exception($"Grades refreshment failed: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Grades refreshment failed: {E.Message}", E); }
     }
 
     public async Task<List<ModelsUserExtended>> GetAllStudentsByClassId(int ClassId)
     {
         try { AvailableStudents = await _repositoryGrades.GetAllStudentsByClassId(ClassId); return AvailableStudents; }
-        catch (Exception e) { throw new Exception($"Getting students by class failed: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Getting students by class failed: {E.Message}", E); }
     }
     public async Task<List<ModelsGradesExtended>> GetAllGradesByStudentId(int ClassId)
     {
         try { AvailableGrades = await _repositoryGrades.GetAllGradesByStudentId(ClassId); return AvailableGrades; }
-        catch (Exception e) { throw new Exception($"Grades refreshment failed: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Grades refreshment failed: {E.Message}", E); }
     }
     public async Task<List<ModelsGradesExtended>> GetAllGradesBySubjectAndStudent(int SubjectId, int StudentId)
     {
         try { AvailableGrades = await _repositoryGrades.GetAllGradesBySubjectAndStudent(SubjectId, StudentId); return AvailableGrades; }
-        catch (Exception e) { throw new Exception($"Grades refreshment failed: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Grades refreshment failed: {E.Message}", E); }
+    }
+
+    public async Task AddGrade(ModelsGrades Grade)
+    {
+        try { await _repositoryGrades.AddGrade(Grade); }
+        catch (Exception E) { throw new Exception($"Grades refreshment failed: {E.Message}", E); }
+    }
+
+    public async Task AddGrades(List<ModelsGrades> grades)
+    {
+        try
+        {
+            foreach (var grade in grades) { await _repositoryGrades.AddGrade(grade); }
+        }
+        catch (Exception E) { throw new Exception($"Bulk grade addition failed: {E.Message}", E); }
     }
 }

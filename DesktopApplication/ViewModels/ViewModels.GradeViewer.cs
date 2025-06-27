@@ -14,7 +14,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using CommunityToolkit.Mvvm.Input;
 
-public class ViewModelsGradeViewer : INotifyPropertyChanged
+public class ViewModelsGradesViewer : INotifyPropertyChanged
 {
     private readonly InterfacesServicesGrades _serviceGrades = null!;
 
@@ -45,7 +45,7 @@ public class ViewModelsGradeViewer : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
     
-    public ViewModelsGradeViewer(InterfacesServicesGrades ServiceGrades)
+    public ViewModelsGradesViewer(InterfacesServicesGrades ServiceGrades)
     {
         _serviceGrades = ServiceGrades;
 
@@ -80,7 +80,7 @@ public class ViewModelsGradeViewer : INotifyPropertyChanged
         
             IsTeacherMode = _serviceGrades.GetIsTeacherMode();
         }
-        catch (Exception e) { throw new Exception($"Applying changes failed: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Applying changes failed: {E.Message}", E); }
     }
 
     public async void Initialize()
@@ -97,8 +97,9 @@ public class ViewModelsGradeViewer : INotifyPropertyChanged
 
             ApplyChanges();
         }
-        catch (Exception e) { MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+        catch (Exception E) { MessageBox.Show($"Initializing of grades viewer's view model failed: {E.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
+
     public async void Refresh()
     {
         try {
@@ -107,7 +108,7 @@ public class ViewModelsGradeViewer : INotifyPropertyChanged
             ChosenSubject = _allSubjectsOption;
             await OnSubjectChoise(ChosenSubject);
         }
-        catch (Exception e) { MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+        catch (Exception E) { MessageBox.Show($"Refreshing in grade viewer failed: {E.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
 
     public async void OnClassChoise(ModelsClasses ModelClass)
@@ -123,15 +124,16 @@ public class ViewModelsGradeViewer : INotifyPropertyChanged
             }
             else { AvailableStudents = new List<ModelsUserExtended>(); }
         }
-        catch (Exception e) { MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+        catch (Exception E) { MessageBox.Show($"Command execution failed: {E.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
+
     public async void OnStudentChoise(ModelsUserExtended ModelUser)
     {
         try
         {
             if (ModelUser != null) { await _serviceGrades.GetAllGradesByStudentId(ModelUser.Id); AvailableGrades = await _serviceGrades.GetAllGradesByStudentId(ModelUser.Id); }
         }
-        catch (Exception e) { MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+        catch (Exception E) { MessageBox.Show($"Command execution failed: {E.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
     public async Task OnSubjectChoise(ModelsSubjects ModelSubject)
     {
@@ -154,7 +156,7 @@ public class ViewModelsGradeViewer : INotifyPropertyChanged
             else { studentGrades = await _serviceGrades.GetAllGradesBySubjectAndStudent(ModelSubject.Id, ChosenStudent.Id); }
             AvailableGrades = studentGrades;
         }
-        catch (Exception e) { MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+        catch (Exception E) { MessageBox.Show($"Command execution failed: {E.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
 
     private void OnPropertyChanged([CallerMemberName] string? PropertyName = null) { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName)); }

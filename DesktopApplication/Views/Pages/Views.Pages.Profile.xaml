@@ -330,7 +330,7 @@
                                     Margin="0,10,-50,10"/>
                             </Grid>
                         </Border>
-                        
+
                         <Border BorderBrush="Gray" BorderThickness="0,0,0,1">
                             <Grid Width="650">
                                 <Grid.ColumnDefinitions>
@@ -389,7 +389,7 @@
                         </Border>
                     </StackPanel>
                 </ScrollViewer>
-                
+
                 <Grid Width="500" Margin="0,50,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
