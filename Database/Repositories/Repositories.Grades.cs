@@ -180,7 +180,7 @@ public class RepositoriesGrades : InterfacesRepositoriesGrades
     public async Task InsertAttendance(ModelsAttending Attendance)
     {
         try { await _repositorySupabase.Upsert(Attendance, new[] { "Date", "UserId", "SubjectId" }); }
-        catch (Exception E) { throw new Exception($"Failed to delete attendance: {E.Message}", E); }
+        catch (Exception E) { throw new Exception($"Failed to insert attendance: {E.Message}", E); }
     }
 
     public async Task<List<ModelsAttending>> GetAttendanceByClass(int ClassId, int SubjectId, int Month, int Year)
