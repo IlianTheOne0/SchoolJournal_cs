@@ -1,6 +1,7 @@
 ﻿namespace DesktopApplication.Interfaces.Services.Grades;
 
 using Models.Supports.GradesAssigner;
+using Models.Tables.Attending;
 using Models.Tables.Classes;
 using Models.Tables.Grades;
 using Models.Tables.Subjects;
@@ -30,4 +31,8 @@ public interface InterfacesServicesGrades
     Task<List<StudentGradeAssignment>> GetStudentAssignments(int ClassId, int SubjectId, int Month, int Year);
     Task UpdateGrade(int StudentId, int SubjectId, DateTime Date, int GradeValue, string Description);
     Task DeleteGrade(int StudentId, int SubjectId, DateTime Date);
+
+    Task DeleteAttendance(int StudentId, int SubjectId, DateTime Date);
+    Task InsertAttendance(ModelsAttending Attendance);
+    Task<List<ModelsAttending>> GetAttendanceByClass(int ClassId, int SubjectId, int Month, int Year);
 }

@@ -153,6 +153,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Services\Converters\Services.Converters.AttendanceStatus.cs">
+      <Generator>MSBuild:Compile</Generator>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
     <Page Update="Assets\Fonts\Fonts.Caveat.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

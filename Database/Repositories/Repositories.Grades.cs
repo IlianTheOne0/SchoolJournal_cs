@@ -2,16 +2,15 @@
 
 using Database.Interfaces.Repositories.Grades;
 using Database.Interfaces.Repositories.Supabase;
-
+using Models.Tables.Attending;
 using Models.Tables.Classes;
 using Models.Tables.Enrollments;
 using Models.Tables.Grades;
 using Models.Tables.Statuses;
 using Models.Tables.Subjects;
 using Models.Tables.Users;
-
-using static global::Supabase.Postgrest.Constants;
 using System.Threading.Tasks;
+using static global::Supabase.Postgrest.Constants;
 
 public class RepositoriesGrades : InterfacesRepositoriesGrades
 {
@@ -161,5 +160,47 @@ public class RepositoriesGrades : InterfacesRepositoriesGrades
             if (gradeToDelete != null) { await _repositorySupabase.Delete(gradeToDelete); }
         }
         catch (Exception E) { throw new Exception($"Failed to delete grade: {E.Message}", E); }
+    }
+
+    public async Task DeleteAttendance(int StudentId, int SubjectId, DateTime Date)
+    {
+        try
+        {
+            var conditions = new List<(string, Operator, object)>
+            {
+                ("UserId", Operator.Equals, StudentId),
+                ("SubjectId", Operator.Equals, SubjectId),
+                ("Date", Operator.Equals, Date.Date.ToString("yyyy-MM-dd"))
+            };
+
+            var existing = await _repositorySupabase.FilterAsync<ModelsAttending>(conditions);
+            if (existing != null && existing.Count > 0) { await _repositorySupabase.Delete(existing.First()); }
+        }
+        catch (Exception E) { throw new Exception($"Failed to delete attendance: {E.Message}", E); }
+    }
+
+    public async Task InsertAttendance(ModelsAttending Attendance)
+    {
+        try { await _repositorySupabase.Upsert(Attendance, new[] { "Date", "UserId", "SubjectId" }); }
+        catch (Exception E) { throw new Exception($"Failed to delete attendance: {E.Message}", E); }
+    }
+
+    public async Task<List<ModelsAttending>> GetAttendanceByClass(int ClassId, int SubjectId, int Month, int Year)
+    {
+        try
+        {
+            var startDate = new DateTime(Year, Month, 1);
+            var endDate = startDate.AddMonths(1).AddDays(-1);
+
+            var conditions = new List<(string, Operator, object)>
+            {
+                ("SubjectId", Operator.Equals, SubjectId),
+                ("Date", Operator.GreaterThanOrEqual, startDate.ToString("yyyy-MM-dd")),
+                ("Date", Operator.LessThanOrEqual, endDate.ToString("yyyy-MM-dd"))
+            };
+
+            return await _repositorySupabase.FilterAsync<ModelsAttending>(conditions);
+        }
+        catch (Exception E) { throw new Exception($"Failed to get attendance: {E.Message}", E); }
     }
 }

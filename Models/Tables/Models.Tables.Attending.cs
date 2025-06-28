@@ -1,13 +1,18 @@
 ﻿namespace Models.Tables.Attending;
 
-using Supabase.Postgrest.Models;
+using Models.Supports.SupabaseCommands;
+
 using Supabase.Postgrest.Attributes;
+using Supabase.Postgrest.Models;
 
 [Table("Attending")]
-public class ModelsAttending : BaseModel
+public class ModelsAttending : BaseModel, InterfacesModelsWithId
 {
     [PrimaryKey("Id")]
     public int Id { get; set; }
+    
+    [Column("Sickness")]
+    public bool Sickness { get; set; }
 
     [Column("Date")]
     public DateTime Date { get; set; }

@@ -11,6 +11,7 @@
             <converters:ServicesConvertersInverseBooleanToVisibility x:Key="InverseBooleanToVisibilityConverter"/>
             <converters:ServicesConverterBooleanToBorderBrush x:Key="BooleanToBorderBrushConverter" TrueValue="Transparent" FalseValue="Black"/>
             <converters:ServicesConvertersGradeValue x:Key="GradeValueConverter"/>
+            <converters:ServicesConvertersAttendanceStatus x:Key="AttendanceStatusConverter"/>
             
             <Cursor x:Key="HandCursor">Hand</Cursor>
             

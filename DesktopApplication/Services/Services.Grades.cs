@@ -1,20 +1,22 @@
 ﻿namespace DesktopApplication.Services.Grades;
 
+using Database.Interfaces.Repositories.Grades;
+using Database.Repositories.Grades;
 using DesktopApplication.Interfaces.Services.Grades;
 using DesktopApplication.Interfaces.Services.Supabase;
 using DesktopApplication.Interfaces.Services.User;
 using DesktopApplication.Services.Strategies.TeacherAccess;
-
-using Database.Interfaces.Repositories.Grades;
-using Database.Repositories.Grades;
-
 using Models.Supports.GradesAssigner;
+using Models.Tables.Attending;
 using Models.Tables.Classes;
 using Models.Tables.Grades;
 using Models.Tables.Subjects;
 using Models.Tables.Users;
-
+using System.Globalization;
+using System.Reactive.Subjects;
 using System.Security.Cryptography;
+using static global::Supabase.Postgrest.Constants;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 public class ServicesGrades : InterfacesServicesGrades
 {
@@ -164,5 +166,22 @@ public class ServicesGrades : InterfacesServicesGrades
             await Refresh();
         }
         catch (Exception E) { throw new Exception($"Deleting grade failed: {E.Message}", E); }
+    }
+
+    public async Task DeleteAttendance(int StudentId, int SubjectId, DateTime Date)
+    {
+        try{ await _repositoryGrades.DeleteAttendance(StudentId, SubjectId, Date); }
+        catch (Exception E) { throw new Exception($"Deleting attendance failed: {E.Message}", E); }
+    }
+    public async Task InsertAttendance(ModelsAttending Attendance)
+    {
+        try { Attendance.Id = RandomNumberGenerator.GetInt32(1234567890); await _repositoryGrades.InsertAttendance(Attendance); }
+        catch (Exception E) { throw new Exception($"Inserting attendance failed: {E.Message}", E); }
+    }
+
+    public async Task<List<ModelsAttending>> GetAttendanceByClass(int ClassId, int SubjectId, int Month, int Year)
+    {
+        try { return await _repositoryGrades.GetAttendanceByClass(ClassId, SubjectId, Month, Year); }
+        catch (Exception E) { throw new Exception($"Failed to get attendance: {E.Message}", E); }
     }
 }
