@@ -180,6 +180,7 @@ public class ServicesGrades : InterfacesServicesGrades
         try{ await _repositoryGrades.DeleteAttendance(StudentId, SubjectId, Date); }
         catch (Exception E) { throw new Exception($"Deleting attendance failed: {E.Message}", E); }
     }
+
     public async Task InsertAttendance(ModelsAttending Attendance)
     {
         try { Attendance.Id = RandomNumberGenerator.GetInt32(1234567890); await _repositoryGrades.InsertAttendance(Attendance); }
