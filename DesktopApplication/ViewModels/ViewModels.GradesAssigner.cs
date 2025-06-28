@@ -2,8 +2,10 @@
 
 using DesktopApplication.Interfaces.Services.Grades;
 using Models.Supports.GradesAssigner;
+using Models.Tables.Attending;
 using Models.Tables.Classes;
 using Models.Tables.Subjects;
+
 using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.CompilerServices;
@@ -20,8 +22,7 @@ public partial class ViewModelsGradesAssigner : INotifyPropertyChanged
     private List<string> _availableMonths = new List<string> { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
     public List<string> AvailableMonths { get => _availableMonths; private set { _availableMonths = value; OnPropertyChanged(); } }
     private List<int> _availableYears = Enumerable.Range(DateTime.Now.Year - 5, 10).ToList(); public List<int> AvailableYears { get => _availableYears; private set { _availableYears = value; OnPropertyChanged(); } }
-    private List<DateColumn> _dateColumns = new();
-    public List<DateColumn> DateColumns { get => _dateColumns; private set { _dateColumns = value; OnPropertyChanged(); } }
+    private List<DateColumn> _dateColumns = new(); public List<DateColumn> DateColumns { get => _dateColumns; private set { _dateColumns = value; OnPropertyChanged(); } }
 
     private ModelsClasses _chosenClass; public ModelsClasses ChosenClass { get => _chosenClass; set { _chosenClass = value; OnPropertyChanged(); LoadSubjects(); } }
     private ModelsSubjects _chosenSubject; public ModelsSubjects ChosenSubject { get => _chosenSubject; set { _chosenSubject = value; OnPropertyChanged(); LoadGrades(); } }
@@ -39,7 +40,7 @@ public partial class ViewModelsGradesAssigner : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler PropertyChanged;
 
-    public ViewModelsGradesAssigner(InterfacesServicesGrades ServiceGrades) { _serviceGrades = ServiceGrades; InitializeComamnds(); Initialize(); }
+    public ViewModelsGradesAssigner(InterfacesServicesGrades ServiceGrades) { _serviceGrades = ServiceGrades; Initialize(); }
 
     private async void Initialize()
     {
@@ -72,6 +73,20 @@ public partial class ViewModelsGradesAssigner : INotifyPropertyChanged
             int monthNumber = DateTime.ParseExact(ChosenMonth, "MMMM", CultureInfo.GetCultureInfo("en-US")).Month;
             AvailableGrades = await _serviceGrades.GetStudentAssignments(ChosenClass.Id, ChosenSubject.Id, monthNumber, ChosenYear);
             GenerateDateColumns(monthNumber, ChosenYear);
+
+            var attendanceRecords = await _serviceGrades.GetAttendanceByClass(
+                ChosenClass.Id,
+                ChosenSubject.Id,
+                monthNumber,
+                ChosenYear
+            );
+
+            foreach (var student in AvailableGrades)
+            {
+                student.Attendances = attendanceRecords
+                    .Where(attendancesProvider => attendancesProvider.UserId == student.StudentId)
+                    .ToDictionary(attendancesProvider => attendancesProvider.Date.Date, a => a);
+            }
         }
         catch (Exception E) { MessageBox.Show($"Loading grades failed: {E.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
@@ -100,6 +115,42 @@ public partial class ViewModelsGradesAssigner : INotifyPropertyChanged
             LoadGrades();
         }
         catch (Exception E) { MessageBox.Show($"Deleting grade failed: {E.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+    }
+
+    public async Task MarkAttendance(int StudentId, DateTime Date, bool IsSick)
+    {
+        try
+        {
+            int monthNumber = DateTime.ParseExact(ChosenMonth, "MMMM", CultureInfo.GetCultureInfo("en-US")).Month;
+            var dateWithMonth = new DateTime(ChosenYear, monthNumber, Date.Day);
+
+            await _serviceGrades.DeleteAttendance(StudentId, ChosenSubject.Id, dateWithMonth);
+
+            var attendance = new ModelsAttending
+            {
+                UserId = StudentId,
+                SubjectId = ChosenSubject.Id,
+                Date = dateWithMonth,
+                Sickness = IsSick
+            };
+            await _serviceGrades.InsertAttendance(attendance);
+
+            LoadGrades();
+        }
+        catch (Exception E) { MessageBox.Show($"Attendance update failed: {E.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+    }
+
+    public async Task DeleteAttendance(int StudentId, DateTime Date)
+    {
+        try
+        {
+            int monthNumber = DateTime.ParseExact(ChosenMonth, "MMMM", CultureInfo.GetCultureInfo("en-US")).Month;
+            var dateWithMonth = new DateTime(ChosenYear, monthNumber, Date.Day);
+
+            await _serviceGrades.DeleteAttendance(StudentId, ChosenSubject.Id, dateWithMonth);
+            LoadGrades();
+        }
+        catch (Exception E) { MessageBox.Show($"Attendance deletion failed: {E.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
 
     private void GenerateDateColumns(int Month, int Year)

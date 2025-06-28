@@ -1,7 +1,8 @@
 ﻿namespace DesktopApplication.ViewModels.Profile;
 
-using CommunityToolkit.Mvvm.Input;
 using Models.Tables.Users;
+
+using CommunityToolkit.Mvvm.Input;
 using System.Windows;
 using System.Windows.Input;
 

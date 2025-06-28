@@ -11,9 +11,9 @@ using Database.Interfaces.Repositories.Supabase;
 using Models.Tables.Classes;
 using Models.Tables.Statuses;
 using Models.Tables.Users;
-using System.Threading.Tasks;
 
 using global::Supabase.Postgrest;
+using System.Threading.Tasks;
 
 public class ServicesUser : InterfacesServicesUser
 {

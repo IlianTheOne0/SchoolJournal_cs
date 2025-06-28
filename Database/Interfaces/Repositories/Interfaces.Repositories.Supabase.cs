@@ -1,9 +1,10 @@
 ﻿namespace Database.Interfaces.Repositories.Supabase;
 
+using Models.Tables.Users;
 using Models.Supports.SupabaseCommands;
+
 using static global::Supabase.Postgrest.Constants;
 using global::Supabase.Postgrest.Models;
-using Models.Tables.Users;
 using System.Linq.Expressions;
 
 public interface InterfacesRepositoriesSupabase
@@ -16,6 +17,8 @@ public interface InterfacesRepositoriesSupabase
     Task<List<TMethod>> SelectColumnsAsync<TMethod>(Expression<Func<TMethod, object[]>> Columns, string? Schema = null)
         where TMethod : BaseModel, new();
     Task<List<TMethod>> FilterAsync<TMethod>(string ColumnName, Operator Oper, object Value, string? Schema = null)
+        where TMethod : BaseModel, new();
+    Task<List<TMethod>> FilterAsync<TMethod>(IEnumerable<(string ColumnName, Operator Operator, object Value)> Conditions, string? Schema = null)
         where TMethod : BaseModel, new();
     Task<List<TMethod>> FilterWithInnerJoinAsync<TMethod>(string JoinString, string FilterColumnName, Operator Oper, object Value, string? Schema = null)
         where TMethod : BaseModel, new();

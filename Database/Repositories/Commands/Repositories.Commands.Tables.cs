@@ -1,5 +1,6 @@
 ﻿namespace Database.Repositories.Supabase;
 
+using Database.Repositories.Supabase.Extensions;
 using Models.Supports.SupabaseCommands;
 
 using global::Supabase.Postgrest.Models;
@@ -50,6 +51,24 @@ public partial class RepositoriesSupabase
             return result.Models;
         }
         catch (Exception E) { throw new Exception($"Failed FilterAsync: {E.Message}", E); }
+    }
+
+    public async Task<List<TMethod>> FilterAsync<TMethod>(IEnumerable<(string ColumnName, Operator Operator, object Value)> Conditions, string? Schema = null)
+        where TMethod : BaseModel, new()
+    {
+        try
+        {
+            await ChangeTheSchema(Schema);
+
+            var result = await SupabaseConnection!
+                .SupabaseClient
+                .From<TMethod>()
+                .ApplyConditions(Conditions)
+                .Get();
+
+            return result.Models;
+        }
+        catch (Exception E) { throw new Exception($"Failed FilterAsync (multiple): {E.Message}", E); }
     }
 
     public async Task<List<TMethod>> FilterWithInnerJoinAsync<TMethod>(string JoinString, string FilterColumnName, Operator Oper, object Value, string? Schema = null)

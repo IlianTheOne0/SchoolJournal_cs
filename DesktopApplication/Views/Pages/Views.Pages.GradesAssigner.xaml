@@ -144,7 +144,7 @@
             <StackPanel Background="Black" Opacity="0.25"/>
 
             <Border CornerRadius="25" Background="LightGray" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <StackPanel Width="400" Height="450" Margin="30">
+                <StackPanel Width="400" Height="495" Margin="30">
                     <TextBlock
                         Text="Enter Grade"
                         FontSize="20" FontWeight="Bold" FontFamily="{StaticResource Roboto}"
@@ -166,7 +166,21 @@
                     <UniformGrid
                         x:Name="GradeButtons"
                         Rows="2" Columns="6"
-                        Margin="0,0,0,20"/>
+                        Margin="0,0,0,5"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
+                        <Button
+                            Content="Absent"
+                            Width="170" Height="35"
+                            FontSize="16" FontFamily="{StaticResource Roboto}"
+                            Click="AbsentButton_Click" Style="{StaticResource MaterialDesignRaisedButton}"
+                            Margin="0,0,15,0"/>
+                        <Button
+                            Content="Sick"
+                            Width="170" Height="35"
+                            FontSize="16" FontFamily="{StaticResource Roboto}"
+                            Click="SickButton_Click" Style="{StaticResource MaterialDesignRaisedButton}"
+                            Margin="0,0,15,0"/>
+                    </StackPanel>
 
                     <CheckBox
                         x:Name="CustomGradeCheckBox"
@@ -202,7 +216,7 @@
                             Content="Save"
                             Width="100" Height="35"
                             FontSize="16" FontFamily="{StaticResource Roboto}"
-                            Click="SaveGradeButton_Click" Command="{Binding SaveGradeCommand}" Style="{StaticResource MaterialDesignRaisedButton}"
+                            Click="SaveGradeButton_Click" Style="{StaticResource MaterialDesignRaisedButton}"
                             Margin="0,0,15,0"/>
                         <Button
                             Content="Delete"
@@ -214,7 +228,7 @@
                             Content="Cancel"
                             Width="100" Height="35"
                             FontSize="16" FontFamily="{StaticResource Roboto}"
-                            Click="CancelGradeButton_Click" Command="{Binding CancelGradeCommand}" Style="{StaticResource MaterialDesignRaisedButton}"
+                            Click="CancelGradeButton_Click" Style="{StaticResource MaterialDesignRaisedButton}"
                             Margin="15,0,0,0"/>
                     </StackPanel>
                 </StackPanel>

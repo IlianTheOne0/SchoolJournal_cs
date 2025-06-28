@@ -2,16 +2,15 @@
 
 using Database.Interfaces.Repositories.Grades;
 using Database.Interfaces.Repositories.Supabase;
-
+using Models.Tables.Attending;
 using Models.Tables.Classes;
 using Models.Tables.Enrollments;
 using Models.Tables.Grades;
 using Models.Tables.Statuses;
 using Models.Tables.Subjects;
 using Models.Tables.Users;
-
-using static global::Supabase.Postgrest.Constants;
 using System.Threading.Tasks;
+using static global::Supabase.Postgrest.Constants;
 
 public class RepositoriesGrades : InterfacesRepositoriesGrades
 {
@@ -155,11 +154,57 @@ public class RepositoriesGrades : InterfacesRepositoriesGrades
             var existingGrades = await _repositorySupabase.FilterAsync<ModelsGrades>("UserId", Operator.Equals, StudentId);
 
             var gradeToDelete = existingGrades.FirstOrDefault(
-                gradesProvider => gradesProvider.SubjectId == SubjectId && gradesProvider.Date.Date == Date.Date
+                gradesProvider => gradesProvider.UserId == StudentId && gradesProvider.Date.Date == Date.Date && gradesProvider.SubjectId == SubjectId
             );
 
             if (gradeToDelete != null) { await _repositorySupabase.Delete(gradeToDelete); }
         }
         catch (Exception E) { throw new Exception($"Failed to delete grade: {E.Message}", E); }
+    }
+
+    public async Task DeleteAttendance(int StudentId, int SubjectId, DateTime Date)
+    {
+        try
+        {
+            var existing = await _repositorySupabase.FilterAsync<ModelsAttending>("UserId", Operator.Equals, StudentId);
+
+            var attendanceToDelete = existing.FirstOrDefault(
+                attendaceProvider => attendaceProvider.UserId == StudentId && attendaceProvider.Date.Date == Date.Date && attendaceProvider.SubjectId == SubjectId
+            );
+
+            if (attendanceToDelete != null) { await _repositorySupabase.Delete(attendanceToDelete); }
+        }
+        catch (Exception E) { throw new Exception($"Failed to delete attendance: {E.Message}", E); }
+    }
+
+    public async Task InsertAttendance(ModelsAttending Attendance)
+    {
+        try { await _repositorySupabase.Upsert(Attendance, new[] { "Date", "UserId", "SubjectId" }); }
+        catch (Exception E) { throw new Exception($"Failed to delete attendance: {E.Message}", E); }
+    }
+
+    public async Task<List<ModelsAttending>> GetAttendanceByClass(int ClassId, int SubjectId, int Month, int Year)
+    {
+        try
+        {
+            var startDate = new DateTime(Year, Month, 1);
+            var endDate = startDate.AddMonths(1).AddDays(-1);
+
+            var conditions = new List<(string, Operator, object)>
+            {
+                ("SubjectId", Operator.Equals, SubjectId),
+                ("Date", Operator.GreaterThanOrEqual, startDate.ToString("yyyy-MM-dd")),
+                ("Date", Operator.LessThanOrEqual, endDate.ToString("yyyy-MM-dd"))
+            };
+
+            return await _repositorySupabase.FilterAsync<ModelsAttending>(conditions);
+        }
+        catch (Exception E) { throw new Exception($"Failed to get attendance: {E.Message}", E); }
+    }
+
+    public async Task<List<ModelsAttending>> GetAttendanceByStudent(int StudentId)
+    {
+        try { return await _repositorySupabase.FilterAsync<ModelsAttending>("UserId", Operator.Equals, StudentId); }
+        catch (Exception E) { throw new Exception($"Failed to get attendance by student: {E.Message}", E); }
     }
 }
