@@ -67,19 +67,42 @@ public partial class ViewModelsGradesViewer
 
             if (!IsTeacherMode)
             {
-                List<ModelsGradesExtended> grades;
-                if (ModelSubject.Id == -1) { grades = await _serviceGrades.GetAllGradesByStudentId(_serviceGrades.CurrentUserId); }
-                else { grades = await _serviceGrades.GetAllGradesBySubjectAndStudent(ModelSubject.Id, _serviceGrades.CurrentUserId); }
-                AvailableGrades = grades;
+                if (ModelSubject.Id == -2)
+                {
+                    var attendances = await _serviceGrades.GetAttendanceByStudent(_serviceGrades.CurrentUserId);
+                    AvailableGrades = attendances.Select(attendancesProvider => new ModelsGradesExtended(attendancesProvider, _serviceGrades.AvailableSubjects.FirstOrDefault(subjectsProvider => subjectsProvider.Id == attendancesProvider.SubjectId)?.Name ?? "Unknown")).ToList();
+                }
+                else if (ModelSubject.Id == -1)
+                {
+                    var grades = await _serviceGrades.GetAllGradesByStudentId(_serviceGrades.CurrentUserId);
+                    AvailableGrades = grades.Select(gradesProvider => new ModelsGradesExtended(gradesProvider, _serviceGrades.AvailableSubjects.FirstOrDefault(subjectsProvider => subjectsProvider.Id == gradesProvider.SubjectId)?.Name ?? "Unknown")).ToList();
+                }
+                else
+                {
+                    var grades = await _serviceGrades.GetAllGradesBySubjectAndStudent(ModelSubject.Id, _serviceGrades.CurrentUserId);
+                    AvailableGrades = grades.Select(gradesProvider => new ModelsGradesExtended(gradesProvider, ModelSubject.Name)).ToList();
+                }
                 return;
             }
+
             if (ChosenStudent == null) { AvailableGrades = new List<ModelsGradesExtended>(); return; }
 
-            List<ModelsGradesExtended> studentGrades;
-            if (ModelSubject.Id == -1) { studentGrades = await _serviceGrades.GetAllGradesByStudentId(ChosenStudent.Id); }
-            else { studentGrades = await _serviceGrades.GetAllGradesBySubjectAndStudent(ModelSubject.Id, ChosenStudent.Id); }
-            AvailableGrades = studentGrades;
+            if (ModelSubject.Id == -2)
+            {
+                var attendances = await _serviceGrades.GetAttendanceByStudent(ChosenStudent.Id);
+                AvailableGrades = attendances.Select(attendancesProvider => new ModelsGradesExtended(attendancesProvider, _serviceGrades.AvailableSubjects.FirstOrDefault(subjectsProvider => subjectsProvider.Id == attendancesProvider.SubjectId)?.Name ?? "Unknown")).ToList();
+            }
+            else if (ModelSubject.Id == -1)
+            {
+                var grades = await _serviceGrades.GetAllGradesByStudentId(ChosenStudent.Id);
+                AvailableGrades = grades.Select(gradesProvider => new ModelsGradesExtended(gradesProvider, _serviceGrades.AvailableSubjects.FirstOrDefault(subjectsProvider => subjectsProvider.Id == gradesProvider.SubjectId)?.Name ?? "Unknown")).ToList();
+            }
+            else
+            {
+                var grades = await _serviceGrades.GetAllGradesBySubjectAndStudent(ModelSubject.Id, ChosenStudent.Id);
+                AvailableGrades = grades.Select(gradesProvider => new ModelsGradesExtended(gradesProvider, ModelSubject.Name)).ToList();
+            }
         }
-        catch (Exception e) { MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+        catch (Exception E) { MessageBox.Show(E.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
 }

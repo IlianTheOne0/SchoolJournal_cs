@@ -1,15 +1,14 @@
 ﻿namespace DesktopApplication.ViewModels.GradesViewer;
 
-using Interfaces.Services.Grades;
-
+using DesktopApplication.Interfaces.Services.Grades;
 using Models.Tables.Classes;
-using Models.Tables.Users;
-using Models.Tables.Subjects;
 using Models.Tables.Grades;
+using Models.Tables.Subjects;
+using Models.Tables.Users;
 
-using System.Windows;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
 
 public partial class ViewModelsGradesViewer : INotifyPropertyChanged
 {
@@ -18,9 +17,16 @@ public partial class ViewModelsGradesViewer : INotifyPropertyChanged
     private List<ModelsClasses> _availableClasses; public List<ModelsClasses> AvailableClasses { get => _availableClasses; private set { _availableClasses = value; OnPropertyChanged(); } }
     private List<ModelsUserExtended> _availableStudents; public List<ModelsUserExtended> AvailableStudents {get => _availableStudents; private set { _availableStudents = value; OnPropertyChanged(); } }
     private List<ModelsSubjects> _availableSubjects; public List<ModelsSubjects> AvailableSubjects {get => _availableSubjects; private set { _availableSubjects = value; OnPropertyChanged(); } }
-    private List<ModelsGradesExtended> _availableGrades; public List<ModelsGradesExtended> AvailableGrades {get => _availableGrades; private set { _availableGrades = value; OnPropertyChanged(); } }
+    private List<ModelsGradesExtended> _availableGrades; public List<ModelsGradesExtended> AvailableGrades { get => _availableGrades; private set { _availableGrades = value; OnPropertyChanged(); } }
 
-    
+    private readonly ModelsSubjects _absenceOption = new ModelsSubjects
+    {
+        Id = -2,
+        Name = "Absence",
+        TeacherId = -1,
+        ClassId = -1
+    };
+
     private readonly ModelsSubjects _allSubjectsOption = new ModelsSubjects
     {
         Id = -1,
@@ -54,7 +60,7 @@ public partial class ViewModelsGradesViewer : INotifyPropertyChanged
 
             var currentSelectedSubject = ChosenSubject;
             var subjects = _serviceGrades.AvailableSubjects.ToList();
-            subjects.Insert(0, _allSubjectsOption);
+            subjects.Insert(0, _allSubjectsOption); subjects.Insert(1, _absenceOption);
             AvailableSubjects = subjects;
 
             if (currentSelectedSubject != null)

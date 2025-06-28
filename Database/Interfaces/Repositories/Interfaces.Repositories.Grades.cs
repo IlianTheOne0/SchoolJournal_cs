@@ -5,7 +5,6 @@ using Models.Tables.Classes;
 using Models.Tables.Grades;
 using Models.Tables.Subjects;
 using Models.Tables.Users;
-using static global::Supabase.Postgrest.Constants;
 
 public interface InterfacesRepositoriesGrades
 {
@@ -24,4 +23,5 @@ public interface InterfacesRepositoriesGrades
     Task DeleteAttendance(int StudentId, int SubjectId, DateTime Date);
     Task InsertAttendance(ModelsAttending Attendance);
     Task<List<ModelsAttending>> GetAttendanceByClass(int ClassId, int SubjectId, int Month, int Year);
+    Task<List<ModelsAttending>> GetAttendanceByStudent(int StudentId);
 }

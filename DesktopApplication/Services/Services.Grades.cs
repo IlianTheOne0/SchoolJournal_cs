@@ -1,22 +1,20 @@
 ﻿namespace DesktopApplication.Services.Grades;
 
-using Database.Interfaces.Repositories.Grades;
-using Database.Repositories.Grades;
 using DesktopApplication.Interfaces.Services.Grades;
 using DesktopApplication.Interfaces.Services.Supabase;
 using DesktopApplication.Interfaces.Services.User;
 using DesktopApplication.Services.Strategies.TeacherAccess;
-using Models.Supports.GradesAssigner;
+
+using Database.Interfaces.Repositories.Grades;
+using Database.Repositories.Grades;
+
 using Models.Tables.Attending;
 using Models.Tables.Classes;
 using Models.Tables.Grades;
 using Models.Tables.Subjects;
 using Models.Tables.Users;
-using System.Globalization;
-using System.Reactive.Subjects;
+using Models.Supports.GradesAssigner;
 using System.Security.Cryptography;
-using static global::Supabase.Postgrest.Constants;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 public class ServicesGrades : InterfacesServicesGrades
 {
@@ -101,30 +99,38 @@ public class ServicesGrades : InterfacesServicesGrades
             var startDate = new DateTime(Year, Month, 1);
             var endDate = startDate.AddMonths(1).AddDays(-1);
 
+            var attendanceRecords = await _repositoryGrades.GetAttendanceByClass(ClassId, SubjectId, Month, Year);
+
             var assignments = new List<StudentGradeAssignment>();
 
             foreach (var student in students)
             {
                 var grades = await _repositoryGrades.GetAllGradesBySubjectAndStudent(SubjectId, student.Id);
+
                 var studentAssignment = new StudentGradeAssignment
                 {
                     StudentId = student.Id,
                     StudentName = student.FullName,
-                    Grades = new Dictionary<DateTime, GradeAssignment>()
+                    Grades = new Dictionary<DateTime, GradeAssignment>(),
+                    Attendances = new Dictionary<DateTime, ModelsAttending>()
                 };
+
+                var studentAttendances = attendanceRecords
+                    .Where(attendanceProvider => attendanceProvider.UserId == student.Id)
+                    .GroupBy(attendanceProvider => attendanceProvider.Date.Date)
+                    .ToDictionary(gradeProvider => gradeProvider.Key, gradeProvider => gradeProvider.First());
 
                 for (var date = startDate; date <= endDate; date = date.AddDays(1))
                 {
-                    var grade = grades.FirstOrDefault(g =>
-                        g.Date.Date == date.Date
-                    );
-
+                    var grade = grades.FirstOrDefault(gradeProvider => gradeProvider.Date.Date == date.Date);
                     studentAssignment.Grades[date] = new GradeAssignment
                     {
                         Grade = grade?.Grade,
                         Description = grade?.Description,
                         Date = date
                     };
+
+                    if (studentAttendances.TryGetValue(date.Date, out var attendance)) { studentAssignment.Attendances[date.Date] = attendance; }
                 }
 
                 assignments.Add(studentAssignment);
@@ -134,6 +140,7 @@ public class ServicesGrades : InterfacesServicesGrades
         }
         catch (Exception E) { throw new Exception($"Getting of available classes failed: {E.Message}", E); }
     }
+
     public async Task UpdateGrade(int StudentId, int SubjectId, DateTime Date, int GradeValue, string Description)
     {
         try
@@ -182,6 +189,12 @@ public class ServicesGrades : InterfacesServicesGrades
     public async Task<List<ModelsAttending>> GetAttendanceByClass(int ClassId, int SubjectId, int Month, int Year)
     {
         try { return await _repositoryGrades.GetAttendanceByClass(ClassId, SubjectId, Month, Year); }
-        catch (Exception E) { throw new Exception($"Failed to get attendance: {E.Message}", E); }
+        catch (Exception E) { throw new Exception($"Failed to get attendance by class: {E.Message}", E); }
+    }
+
+    public async Task<List<ModelsAttending>> GetAttendanceByStudent(int StudentId)
+    {
+        try { return await _repositoryGrades.GetAttendanceByStudent(StudentId); }
+        catch (Exception E) { throw new Exception($"Failed to get attendance by student: {E.Message}", E); }
     }
 }

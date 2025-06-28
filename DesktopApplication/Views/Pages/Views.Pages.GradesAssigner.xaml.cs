@@ -1,6 +1,5 @@
 ﻿namespace DesktopApplication.Views.Pages;
 
-using DesktopApplication.Services.Converters;
 using DesktopApplication.ViewModels.GradesAssigner;
 using DesktopApplication.Views.UserControls;
 
@@ -54,8 +53,8 @@ public partial class PagesGradesAssigner : UserControl
             var gradesBinding = new Binding($"Grades[{dateColumn.Date:yyyy-MM-dd}]")
             {
                 Converter = (IValueConverter)FindResource("GradeValueConverter"),
-                TargetNullValue = "NErr",
-                FallbackValue = "FErr"
+                TargetNullValue = "GNErr",
+                FallbackValue = "GFErr"
             };
 
             var gradesFactory = new FrameworkElementFactory(typeof(TextBlock));
@@ -65,21 +64,21 @@ public partial class PagesGradesAssigner : UserControl
 
             var attendanceBinding = new Binding($"Attendances[{dateColumn.Date:yyyy-MM-dd}]")
             {
-                Converter = new ServicesConvertersAttendanceStatus()
+                Converter = (IValueConverter)FindResource("AttendanceStatusConverter"),
+                TargetNullValue = "ANErr",
+                FallbackValue = ""
             };
 
             var attendanceFactory = new FrameworkElementFactory(typeof(TextBlock));
             attendanceFactory.SetValue(TextBlock.TextProperty, attendanceBinding);
-            attendanceFactory.SetValue(TextBlock.FontWeightProperty, FontWeights.Bold);
-            attendanceFactory.SetValue(TextBlock.MarginProperty, new Thickness(5, 0, 0, 0));
 
             var stackFactory = new FrameworkElementFactory(typeof(StackPanel));
             stackFactory.SetValue(StackPanel.OrientationProperty, Orientation.Horizontal);
             stackFactory.SetValue(StackPanel.HorizontalAlignmentProperty, HorizontalAlignment.Center);
             stackFactory.SetValue(StackPanel.VerticalAlignmentProperty, VerticalAlignment.Center);
 
-            stackFactory.AppendChild(gradesFactory);
             stackFactory.AppendChild(attendanceFactory);
+            stackFactory.AppendChild(gradesFactory);
 
             column.CellTemplate = new DataTemplate { VisualTree = stackFactory };
             GradesDataGrid.Columns.Add(column);
@@ -158,7 +157,7 @@ public partial class PagesGradesAssigner : UserControl
         {
             if (_currentStudent.Grades.ContainsKey(_currentDate)) { await _viewModel.DeleteGrade(_currentStudent.StudentId, _currentDate); }
 
-            await _viewModel.MarkAttendance(_currentStudent.StudentId, _currentDate, IsSick: false);
+            await _viewModel.MarkAttendance(_currentStudent.StudentId, _currentDate.AddDays(1), IsSick: false);
 
             GradeEntryOverlay.Visibility = Visibility.Collapsed;
         }
@@ -173,7 +172,7 @@ public partial class PagesGradesAssigner : UserControl
         {
             if (_currentStudent.Grades.ContainsKey(_currentDate)) { await _viewModel.DeleteGrade(_currentStudent.StudentId, _currentDate); }
 
-            await _viewModel.MarkAttendance(_currentStudent.StudentId, _currentDate, IsSick: true);
+            await _viewModel.MarkAttendance(_currentStudent.StudentId, _currentDate.AddDays(1), IsSick: true);
 
             GradeEntryOverlay.Visibility = Visibility.Collapsed;
         }
@@ -189,8 +188,9 @@ public partial class PagesGradesAssigner : UserControl
     {
         int gradeToSave = _pendingGrade;
 
+        if (_currentStudent.Grades.ContainsKey(_currentDate)) { await _viewModel.DeleteAttendance(_currentStudent.StudentId, _currentDate); }
         if (int.TryParse(CustomGradeTextBox.Text, out int customGrade)) { gradeToSave = customGrade; }
-
+        if (gradeToSave == 0) { GradeEntryOverlay.Visibility = Visibility.Collapsed; return; }
         await SaveGrade(gradeToSave);
     }
 
@@ -198,12 +198,11 @@ public partial class PagesGradesAssigner : UserControl
     {
         if (_currentStudent == null) return;
 
+        var result = MessageBox.Show($"Delete grade/absence for {_currentStudent.StudentName} on {_currentDate:dd.MM.yyyy}?", "Delete Grade", MessageBoxButton.YesNo, MessageBoxImage.Question);
+        if (result == MessageBoxResult.No) { return; }
+        
         if (_currentStudent.Attendances.ContainsKey(_currentDate)) { await _viewModel.DeleteAttendance(_currentStudent.StudentId, _currentDate); }
-        else if (_currentStudent.Grades.ContainsKey(_currentDate))
-        {
-            var result = MessageBox.Show($"Delete grade for {_currentStudent.StudentName} on {_currentDate:dd.MM.yyyy}?", "Delete Grade", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            if (result == MessageBoxResult.Yes) { await _viewModel.DeleteGrade(_currentStudent.StudentId, _currentDate); }
-        }
+        else if (_currentStudent.Grades.ContainsKey(_currentDate)) { await _viewModel.DeleteGrade(_currentStudent.StudentId, _currentDate); }
 
         GradeEntryOverlay.Visibility = Visibility.Collapsed;
     }

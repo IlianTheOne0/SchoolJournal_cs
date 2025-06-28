@@ -5,6 +5,7 @@ using Models.Supports.GradesAssigner;
 using Models.Tables.Attending;
 using Models.Tables.Classes;
 using Models.Tables.Subjects;
+
 using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.CompilerServices;
@@ -21,8 +22,7 @@ public partial class ViewModelsGradesAssigner : INotifyPropertyChanged
     private List<string> _availableMonths = new List<string> { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
     public List<string> AvailableMonths { get => _availableMonths; private set { _availableMonths = value; OnPropertyChanged(); } }
     private List<int> _availableYears = Enumerable.Range(DateTime.Now.Year - 5, 10).ToList(); public List<int> AvailableYears { get => _availableYears; private set { _availableYears = value; OnPropertyChanged(); } }
-    private List<DateColumn> _dateColumns = new();
-    public List<DateColumn> DateColumns { get => _dateColumns; private set { _dateColumns = value; OnPropertyChanged(); } }
+    private List<DateColumn> _dateColumns = new(); public List<DateColumn> DateColumns { get => _dateColumns; private set { _dateColumns = value; OnPropertyChanged(); } }
 
     private ModelsClasses _chosenClass; public ModelsClasses ChosenClass { get => _chosenClass; set { _chosenClass = value; OnPropertyChanged(); LoadSubjects(); } }
     private ModelsSubjects _chosenSubject; public ModelsSubjects ChosenSubject { get => _chosenSubject; set { _chosenSubject = value; OnPropertyChanged(); LoadGrades(); } }

@@ -154,7 +154,7 @@ public class RepositoriesGrades : InterfacesRepositoriesGrades
             var existingGrades = await _repositorySupabase.FilterAsync<ModelsGrades>("UserId", Operator.Equals, StudentId);
 
             var gradeToDelete = existingGrades.FirstOrDefault(
-                gradesProvider => gradesProvider.SubjectId == SubjectId && gradesProvider.Date.Date == Date.Date
+                gradesProvider => gradesProvider.UserId == StudentId && gradesProvider.Date.Date == Date.Date && gradesProvider.SubjectId == SubjectId
             );
 
             if (gradeToDelete != null) { await _repositorySupabase.Delete(gradeToDelete); }
@@ -166,15 +166,13 @@ public class RepositoriesGrades : InterfacesRepositoriesGrades
     {
         try
         {
-            var conditions = new List<(string, Operator, object)>
-            {
-                ("UserId", Operator.Equals, StudentId),
-                ("SubjectId", Operator.Equals, SubjectId),
-                ("Date", Operator.Equals, Date.Date.ToString("yyyy-MM-dd"))
-            };
+            var existing = await _repositorySupabase.FilterAsync<ModelsAttending>("UserId", Operator.Equals, StudentId);
 
-            var existing = await _repositorySupabase.FilterAsync<ModelsAttending>(conditions);
-            if (existing != null && existing.Count > 0) { await _repositorySupabase.Delete(existing.First()); }
+            var attendanceToDelete = existing.FirstOrDefault(
+                attendaceProvider => attendaceProvider.UserId == StudentId && attendaceProvider.Date.Date == Date.Date && attendaceProvider.SubjectId == SubjectId
+            );
+
+            if (attendanceToDelete != null) { await _repositorySupabase.Delete(attendanceToDelete); }
         }
         catch (Exception E) { throw new Exception($"Failed to delete attendance: {E.Message}", E); }
     }
@@ -202,5 +200,11 @@ public class RepositoriesGrades : InterfacesRepositoriesGrades
             return await _repositorySupabase.FilterAsync<ModelsAttending>(conditions);
         }
         catch (Exception E) { throw new Exception($"Failed to get attendance: {E.Message}", E); }
+    }
+
+    public async Task<List<ModelsAttending>> GetAttendanceByStudent(int StudentId)
+    {
+        try { return await _repositorySupabase.FilterAsync<ModelsAttending>("UserId", Operator.Equals, StudentId); }
+        catch (Exception E) { throw new Exception($"Failed to get attendance by student: {E.Message}", E); }
     }
 }

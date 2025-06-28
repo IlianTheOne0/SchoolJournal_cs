@@ -1,13 +1,14 @@
 ﻿namespace Database.Repositories.Supabase;
 
 using Database.Repositories.Supabase.Extensions;
-using global::Supabase.Postgrest.Models;
 using Models.Supports.SupabaseCommands;
+
+using global::Supabase.Postgrest.Models;
+using static global::Supabase.Postgrest.Constants;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using static global::Supabase.Postgrest.Constants;
 
 public partial class RepositoriesSupabase
 {
