@@ -69,7 +69,6 @@
     <None Remove="Assets\Fonts\Roboto\Roboto_SemiCondensed-ThinItalic.ttf" />
     <None Remove="Assets\Icons\DefaultAvatar.png" />
     <None Remove="Assets\Icons\Logo.ico" />
-    <None Remove="Views\Pages\Management\j4dyxuwy.wzt~" />
   </ItemGroup>
 	
 	<ItemGroup>

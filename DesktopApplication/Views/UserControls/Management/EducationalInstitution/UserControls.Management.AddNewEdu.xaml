@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="DesktopApplication.Views.UserControls.UserControlsManagementAddNewEdu"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DesktopApplication.Views.Pages"
+             mc:Ignorable="d" 
+             MinHeight="450" MinWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel HorizontalAlignment="Center">
+            <TextBlock
+                Text="Educational Institution Name"
+                FontSize="24" FontWeight="Heavy" FontFamily="{StaticResource Roboto}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

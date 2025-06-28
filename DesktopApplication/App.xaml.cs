@@ -159,6 +159,7 @@ public partial class App : Application
                 ViewModel: provider.GetRequiredService<ViewModelsManagement>()
             )
         );
+        Services.AddTransient<UserControlsManagementNoneSelected>();
     }
 
     private void LoadPages(IServiceCollection Services)

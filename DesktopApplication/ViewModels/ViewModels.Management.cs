@@ -1,6 +1,7 @@
 ﻿namespace DesktopApplication.ViewModels.Management;
 
 using DesktopApplication.Interfaces.Services.Management;
+using Models.Supports.Management;
 using Models.Tables.Classes;
 using Models.Tables.Users;
 using System.Collections.Generic;
@@ -30,11 +31,18 @@ public class ViewModelsManagement : INotifyPropertyChanged
     private bool _isChosenEdu; public bool IsChosenEdu { get => _isChosenEdu; set { _isChosenEdu = value; OnPropertyChanged(); } }
     private bool _isChosenClass; public bool IsChosenClass { get => _isChosenClass; set { _isChosenClass = value; OnPropertyChanged(); } }
 
-    private ModelsEducationalInstitutions _chosenEdu; public ModelsEducationalInstitutions ChosenEdu { get => _chosenEdu; set { _chosenEdu = value; OnPropertyChanged(); OnEduChoise(value); } }
-    private ModelsClasses _chosenClass; public ModelsClasses ChosenClass { get => _chosenClass; set { _chosenClass = value; OnPropertyChanged(); OnClassChoise(value); } }
-    private ModelsUserExtended _chosenUser; public ModelsUserExtended ChosenUser { get => _chosenUser; set { _chosenUser = value; OnPropertyChanged(); OnStudentChoise(value); } }
+    private ModelsEducationalInstitutions _chosenEdu; public ModelsEducationalInstitutions ChosenEdu { get => _chosenEdu; set { _chosenEdu = value; OnPropertyChanged(); OnEduChoise(value); UpdateState(); } }
+    private ModelsClasses _chosenClass; public ModelsClasses ChosenClass { get => _chosenClass; set { _chosenClass = value; OnPropertyChanged(); OnClassChoise(value); UpdateState(); } }
+    private ModelsUserExtended _chosenUser; public ModelsUserExtended ChosenUser { get => _chosenUser; set { _chosenUser = value; OnPropertyChanged(); OnStudentChoise(value); UpdateState(); } }
 
     public event PropertyChangedEventHandler? PropertyChanged;
+
+    private ManagementState _currentState; public ManagementState CurrentState { get => _currentState; set { _currentState = value; OnPropertyChanged(); } }
+    private readonly List<ManagementRule> _rules = new()
+    {
+        new((edu, cls, usr) => edu == -1 && cls == -1 && usr == -1,     ManagementState.NoneSelected),
+        new((edu, cls, usr) => edu == -2 && cls == -1 && usr == -1,     ManagementState.AddNewEdu)
+    };
 
     public ViewModelsManagement(InterfacesServicesManagement ServiceGrades) { _servicesManagement = ServiceGrades; LoadData(); }
 
@@ -74,6 +82,12 @@ public class ViewModelsManagement : INotifyPropertyChanged
         users.Insert(0, _addNewUser);
         users.Insert(0, _nothingUser);
         AvailableUsers = users;
+    }
+
+    private void UpdateState()
+    {
+        var eduId = ChosenEdu?.Id ?? -1; var classId = ChosenClass?.Id ?? -1; var userId = ChosenUser?.Id ?? -1;
+        CurrentState = _rules.FirstOrDefault(rule => rule.Condition(eduId, classId, userId))?.State ?? ManagementState.NoneSelected;
     }
 
     private async void OnEduChoise(ModelsEducationalInstitutions ModelEdu)

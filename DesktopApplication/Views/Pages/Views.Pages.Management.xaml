@@ -4,9 +4,24 @@
          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
          xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
          xmlns:local="clr-namespace:DesktopApplication.Views.Pages"
+         xmlns:ucontrols="clr-namespace:DesktopApplication.Views.UserControls"
+         xmlns:services="clr-namespace:DesktopApplication.Services.Management"
          xmlns:converters="clr-namespace:DesktopApplication.Services.Converters"
          mc:Ignorable="d" 
          MinHeight="450" MinWidth="800">
+    <UserControl.Resources>
+        <DataTemplate x:Key="TemplateNoneSelected">
+            <ucontrols:UserControlsManagementNoneSelected/>
+        </DataTemplate>
+        <DataTemplate x:Key="TemplateAddNewEdu">
+            <ucontrols:UserControlsManagementAddNewEdu/>
+        </DataTemplate>
+
+        <services:ServicesManagementStateTemplateSelector x:Key="ManagementStateTemplateSelector"
+            NoneSelectedTemplate="{StaticResource TemplateNoneSelected}"
+            AddNewEduTemplate="{StaticResource TemplateAddNewEdu}"/>
+    </UserControl.Resources>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250"/>
@@ -18,9 +33,16 @@
         <Grid Grid.Column="1" Background="{StaticResource MaterialDesignDarkSeparatorBackground}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
             <ContentControl x:Name="ManagementComboboxesHost" Grid.Row="0"/>
+
+            <ContentControl
+                Content="{Binding CurrentState}"
+                ContentTemplateSelector="{StaticResource ManagementStateTemplateSelector}"
+                Grid.Row="1"
+                HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
         </Grid>
     </Grid>
 </UserControl>

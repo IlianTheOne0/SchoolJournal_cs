@@ -1,8 +1,6 @@
 ﻿namespace DesktopApplication.Services.Management;
 
-using Database.Interfaces.Repositories.Grades;
 using Database.Interfaces.Repositories.Management;
-using Database.Repositories.Grades;
 using Database.Repositories.Management;
 using DesktopApplication.Interfaces.Services.Management;
 using DesktopApplication.Interfaces.Services.Supabase;
@@ -14,7 +12,7 @@ using System;
 public class ServicesManagement : InterfacesServicesManagement
 {
     private readonly InterfacesRepositoriesManagement _repositoryManagement;
-    private readonly InterfacesServicesUser _serviceUser;
+    // private readonly InterfacesServicesUser _serviceUser;
 
     public List<ModelsEducationalInstitutions> AvailableEdu { get; private set; } = new();
     public List<ModelsClasses> AvailableClasses { get; private set; } = new();
@@ -23,7 +21,7 @@ public class ServicesManagement : InterfacesServicesManagement
     public ServicesManagement(InterfacesServicesSupabase ServiceSupabase, InterfacesServicesUser ServiceUser)
     {
         _repositoryManagement = new RepositoriesManagement(ServiceSupabase.RepositorySupabase);
-        _serviceUser = ServiceUser;
+        // _serviceUser = ServiceUser;
     }
 
     public async Task Load()

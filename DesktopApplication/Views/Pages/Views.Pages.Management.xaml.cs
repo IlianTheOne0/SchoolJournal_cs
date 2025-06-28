@@ -6,12 +6,12 @@ using System.Windows.Controls;
 
 public partial class PagesManagement : UserControl
 {
-    public PagesManagement(ViewModelsManagement ViewModel, UserControlsSidebarMenu Sidebar, UserControlsManagementComboBoxes Comboboxes)
+    public PagesManagement(ViewModelsManagement ViewModel, UserControlsSidebarMenu Sidebar, UserControlsManagementComboBoxes Comboboxes )
     {
         InitializeComponent();
 
         DataContext = ViewModel;
-        SidebarHost.Content = Sidebar;
-        ManagementComboboxesHost.Content = Comboboxes;
+
+        SidebarHost.Content = Sidebar; ManagementComboboxesHost.Content = Comboboxes;
     }
 }

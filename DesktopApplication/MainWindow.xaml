@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         
         Title="Journal" Icon="Assets/Icons/Logo.ico"
-        MinHeight="700" MinWidth="1150"
+        MinHeight="700" MinWidth="1175"
         WindowState="Maximized" WindowStartupLocation="CenterScreen"
         Loaded="MainWindow_OnLoaded">
 </Window>
