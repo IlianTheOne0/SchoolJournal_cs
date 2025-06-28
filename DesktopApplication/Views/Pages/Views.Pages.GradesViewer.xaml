@@ -85,24 +85,33 @@
                 Margin="5">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Subject" Binding="{Binding SubjectName}" Width="200"/>
-                    <DataGridTextColumn Header="Grade" Binding="{Binding Grade}" Width="200">
-                        <DataGridTextColumn.ElementStyle>
-                            <Style TargetType="TextBlock">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsAbsence}" Value="True">
-                                        <Setter Property="Text" Value="ABSENCE"/>
-                                        <Setter Property="Foreground" Value="Red"/>
-                                        <Setter Property="FontWeight" Value="Bold"/>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding Sickness}" Value="True">
-                                        <Setter Property="Text" Value="SICKNESS"/>
-                                        <Setter Property="Foreground" Value="Orange"/>
-                                        <Setter Property="FontWeight" Value="Bold"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </DataGridTextColumn.ElementStyle>
-                    </DataGridTextColumn>
+                    <DataGridTemplateColumn Header="Grade" Width="200">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock FontWeight="Normal">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Text" Value="{Binding Grade}"/>
+                                            <Setter Property="Background" Value="Transparent"/>
+
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsAbsence}" Value="True">
+                                                    <Setter Property="Text" Value=""/>
+                                                    <Setter Property="Background" Value="Red"/>
+                                                    <Setter Property="FontWeight" Value="Bold"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Sickness}" Value="True">
+                                                    <Setter Property="Text" Value=""/>
+                                                    <Setter Property="Background" Value="Orange"/>
+                                                    <Setter Property="FontWeight" Value="Bold"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                     <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat={}{0:dd.MM.yyyy}}" Width="200"/>
                     <DataGridTextColumn Header="Comment" Binding="{Binding Description, FallbackValue='no comment', TargetNullValue='no comment'}" Width="*"/>
                 </DataGrid.Columns>
@@ -114,8 +123,7 @@
                 Width="200"
                 Height="45"
                 FontSize="20" FontFamily="{StaticResource Roboto}"
-                Command="{Binding CommandResetButton}" 
-                Style="{StaticResource MaterialDesignRaisedButton}"
+                Command="{Binding CommandResetButton}"  Style="{StaticResource MaterialDesignRaisedButton}"
                 HorizontalAlignment="Center"
                 Margin="0,15"/>
         </Grid>
