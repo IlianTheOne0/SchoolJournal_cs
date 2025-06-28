@@ -42,7 +42,7 @@
                 Content="{Binding CurrentState}"
                 ContentTemplateSelector="{StaticResource ManagementStateTemplateSelector}"
                 Grid.Row="1"
-                HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                HorizontalAlignment="Center" VerticalAlignment="Center"/>
         </Grid>
     </Grid>
 </UserControl>

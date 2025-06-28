@@ -10,14 +10,28 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <StackPanel HorizontalAlignment="Center">
-            <TextBlock
-                Text="Educational Institution Name"
-                FontSize="24" FontWeight="Heavy" FontFamily="{StaticResource Roboto}"/>
-        </StackPanel>
+        <TextBlock
+            Text="Educational Institution Name"
+            FontSize="20" FontWeight="Heavy" FontFamily="{StaticResource Roboto}"
+            HorizontalAlignment="Center"
+            Grid.Row="0"
+            Margin="0,0,0,50"/>
+        <TextBox
+            Width="350" Height="50"
+            FontSize="32" FontWeight="Medium" FontFamily="{StaticResource Roboto}"
+            TextAlignment="Center" HorizontalAlignment="Center"
+            Grid.Row="1"
+            Margin="0,0,0,75"/>
+
+        <Button
+            Content="Create"
+            Width="200" Height="45"
+            FontSize="20"  FontFamily="{StaticResource Roboto}"
+            Style="{StaticResource MaterialDesignRaisedButton}"
+            HorizontalAlignment="Center"
+            Grid.Row="2"/>
     </Grid>
 </UserControl>
