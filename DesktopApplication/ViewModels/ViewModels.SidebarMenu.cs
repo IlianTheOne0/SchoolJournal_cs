@@ -4,6 +4,7 @@ using DesktopApplication.Interfaces.Services.Auth;
 using DesktopApplication.Interfaces.Services.Navigation;
 using DesktopApplication.Interfaces.Services.User;
 using DesktopApplication.ViewModels.GradesViewer;
+using DesktopApplication.ViewModels.Management;
 using DesktopApplication.ViewModels.Profile;
 using DesktopApplication.Views.Pages;
 
@@ -20,6 +21,7 @@ public partial class ViewModelsSidebarMenu : INotifyPropertyChanged
     private readonly InterfacesServicesUser _serviceUser;
     private readonly ViewModelsProfile _viewModelProfile;
     private readonly ViewModelsGradesViewer _viewModelGradesViewer;
+    private readonly ViewModelsManagement _viewModelManagement;
     private Type _currentPageType; public Type CurrentPageType { get => _currentPageType; set { if (_currentPageType != value) { _currentPageType = value; OnPropertyChanged(); UpdateCanGoToHome(); } } }
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -30,10 +32,13 @@ public partial class ViewModelsSidebarMenu : INotifyPropertyChanged
     private bool _canGoToHome; public bool CanGoToHome { get => _canGoToHome; private set { if (_canGoToHome != value) { _canGoToHome = value; OnPropertyChanged(); } } }
     private ModelsUser? _modelUser = null; public ModelsUser ModelUser { get => _modelUser!; set { _modelUser = value; OnPropertyChanged(); OnPropertyChanged("AvatarUrl"); } }
 
-    public ViewModelsSidebarMenu(InterfacesServicesAuth ServiceAuth, InterfacesServicesNavigation ServiceNavigation, InterfacesServicesUser ServiceUser, ViewModelsProfile ViewModelProvider, ViewModelsGradesViewer ViewModelGradesViewer)
+    public ViewModelsSidebarMenu(
+        InterfacesServicesAuth ServiceAuth, InterfacesServicesNavigation ServiceNavigation, InterfacesServicesUser ServiceUser,
+        ViewModelsProfile ViewModelProvider, ViewModelsGradesViewer ViewModelGradesViewer, ViewModelsManagement ViewModelManagement
+    )
     {
         _serviceAuth = ServiceAuth; _serviceNavigation = ServiceNavigation; _serviceUser = ServiceUser;
-        _viewModelProfile = ViewModelProvider; _viewModelGradesViewer = ViewModelGradesViewer;
+        _viewModelProfile = ViewModelProvider; _viewModelGradesViewer = ViewModelGradesViewer; _viewModelManagement = ViewModelManagement;
 
         _serviceNavigation.OnPageChanged += pageType => { CurrentPageType = pageType; };
         InitializeComamnds();

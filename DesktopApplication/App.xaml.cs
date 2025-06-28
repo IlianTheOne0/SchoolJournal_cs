@@ -2,6 +2,7 @@
 
 using DesktopApplication.Interfaces.Services.Auth;
 using DesktopApplication.Interfaces.Services.Grades;
+using DesktopApplication.Interfaces.Services.Management;
 using DesktopApplication.Interfaces.Services.Navigation;
 using DesktopApplication.Interfaces.Services.Supabase;
 using DesktopApplication.Interfaces.Services.User;
@@ -10,12 +11,14 @@ using DesktopApplication.Services;
 using DesktopApplication.Services.Auth;
 using DesktopApplication.Services.Converters;
 using DesktopApplication.Services.Grades;
+using DesktopApplication.Services.Management;
 using DesktopApplication.Services.Navigation;
 using DesktopApplication.Services.Supabase;
 
 using DesktopApplication.ViewModels.GradesAssigner;
 using DesktopApplication.ViewModels.GradesViewer;
 using DesktopApplication.ViewModels.Login;
+using DesktopApplication.ViewModels.Management;
 using DesktopApplication.ViewModels.Profile;
 using DesktopApplication.ViewModels.SidebarMenu;
 
@@ -24,6 +27,7 @@ using DesktopApplication.Views.UserControls;
 
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
+using static Supabase.Gotrue.Constants;
 
 public partial class App : Application
 {
@@ -92,6 +96,12 @@ public partial class App : Application
                 ServiceUser: provider.GetRequiredService<InterfacesServicesUser>()
             )
         );
+        Services.AddSingleton<InterfacesServicesManagement, ServicesManagement>(
+            provider => new ServicesManagement(
+                ServiceSupabase: provider.GetRequiredService<InterfacesServicesSupabase>(),
+                ServiceUser: provider.GetRequiredService<InterfacesServicesUser>()
+            )
+        );
         Services.AddSingleton<ServicesConverterBooleanToBorderBrush>();
         Services.AddSingleton<ServicesConvertersBooleanToVisibility>();
         Services.AddSingleton<ServicesConvertersBoolToGender>();
@@ -116,7 +126,8 @@ public partial class App : Application
                 ServiceNavigation: provider.GetRequiredService<InterfacesServicesNavigation>(),
                 ServiceUser: provider.GetRequiredService<InterfacesServicesUser>(),
                 ViewModelProvider: provider.GetRequiredService<ViewModelsProfile>(),
-                ViewModelGradesViewer: provider.GetRequiredService<ViewModelsGradesViewer>()
+                ViewModelGradesViewer: provider.GetRequiredService<ViewModelsGradesViewer>(),
+                ViewModelManagement: provider.GetRequiredService<ViewModelsManagement>()
             )
         );
         Services.AddSingleton<ViewModelsGradesViewer>(
@@ -129,6 +140,11 @@ public partial class App : Application
                 ServiceGrades: provider.GetRequiredService<InterfacesServicesGrades>()
             )
         );
+        Services.AddSingleton<ViewModelsManagement>(
+            provider => new ViewModelsManagement(
+                ServiceGrades: provider.GetRequiredService<InterfacesServicesManagement>()
+            )
+        );
     }
 
     private void LoadUserControls(IServiceCollection Services)
@@ -136,6 +152,11 @@ public partial class App : Application
         Services.AddTransient<UserControlsSidebarMenu>(
             provider => new UserControlsSidebarMenu(
                 ViewModel: provider.GetRequiredService<ViewModelsSidebarMenu>()
+            )
+        );
+        Services.AddTransient<UserControlsManagementComboBoxes>(
+            provider => new UserControlsManagementComboBoxes(
+                ViewModel: provider.GetRequiredService<ViewModelsManagement>()
             )
         );
     }
@@ -168,6 +189,13 @@ public partial class App : Application
             provider => new PagesGradesAssigner(
                 ViewModel: provider.GetRequiredService<ViewModelsGradesAssigner>(),
                 Sidebar: provider.GetRequiredService<UserControlsSidebarMenu>()
+            )
+        );
+        Services.AddTransient<PagesManagement>(
+            provider => new PagesManagement(
+                ViewModel: provider.GetRequiredService<ViewModelsManagement>(),
+                Sidebar: provider.GetRequiredService<UserControlsSidebarMenu>(),
+                Comboboxes: provider.GetRequiredService<UserControlsManagementComboBoxes>()
             )
         );
     }

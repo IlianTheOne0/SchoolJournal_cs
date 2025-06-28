@@ -1,7 +1,7 @@
 ﻿namespace Models.Tables.Users;
 
-using Supabase.Postgrest.Models;
 using Supabase.Postgrest.Attributes;
+using Supabase.Postgrest.Models;
 
 [Table("Users")]
 public class ModelsUser : BaseModel

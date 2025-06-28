@@ -76,10 +76,10 @@
                 Margin="0,0,0,20"/>
 
             <Button
-                Content="Manage Users"
+                Content="Management"
                 FontSize="20" FontFamily="{StaticResource Roboto}"
                 Visibility="{Binding CanManageUsers, Converter={StaticResource BooleanToVisibilityConverter}}"
-                Command="{Binding CommandManageUsers}" Style="{StaticResource MaterialDesignFlatButton}"
+                Command="{Binding CommandManage}" Style="{StaticResource MaterialDesignFlatButton}"
                 Foreground="White"
                 Grid.Row="3" HorizontalAlignment="Stretch"
                 Margin="0,0,0,20"/>
