@@ -217,10 +217,7 @@ public partial class ViewModelsManagement : INotifyPropertyChanged
     public async Task OperationsWithUsers(string? EduName = null, string? ClassName = null, string? UserName = null)
     {
         await OperationsWithClasses(EduName, ClassName);
-        
-        await _servicesManagement.GetAllUsersByClassId(ChosenClass.Id);
-        InsertIntoUsers();
-
+        await Task.Delay(700);
         if (UserName != null) { ChosenUser = AvailableUsers.FirstOrDefault(usersProvider => usersProvider.FullName == UserName); }
     }
 

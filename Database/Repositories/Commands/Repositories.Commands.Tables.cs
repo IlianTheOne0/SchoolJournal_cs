@@ -90,7 +90,7 @@ public partial class RepositoriesSupabase
         {
             var session = await SupabaseConnection!.SupabaseClient.Auth.SignUp(User.Email, Password);
             User.ProfileId = session?.User?.Id!;
-            await Insert(User);
+            await Upsert(User, new string[] {});
         }
         catch (Exception E) { throw new Exception($"Failed AddUser: {E.Message}", E); }
     }
