@@ -95,3 +95,23 @@ public class ServicesConvertersUriValidationConverter : IValueConverter
 
     public object ConvertBack(object Value, Type TargetType, object Parameter, CultureInfo Culture) => throw new NotImplementedException();
 }
+
+public class ServicesConvertersNotAddNewOrNone : IValueConverter
+{
+    public object Convert(object Value, Type TargetType, object Parameter, CultureInfo Culture)
+    {
+        if (Value is int id) { return id > 0; }
+        return false;
+    }
+    public object ConvertBack(object Value, Type TargetType, object Parameter, CultureInfo Culture) => throw new NotImplementedException();
+}
+
+public class ServicesConvertersAddNewOrNone : IValueConverter
+{
+    public object Convert(object Value, Type TargetType, object Parameter, CultureInfo Culture)
+    {
+        if (Value is int id) { return id <= 0; }
+        return false;
+    }
+    public object ConvertBack(object Value, Type TargetType, object Parameter, CultureInfo Culture) => throw new NotImplementedException();
+}

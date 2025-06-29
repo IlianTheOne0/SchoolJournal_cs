@@ -27,7 +27,6 @@ using DesktopApplication.Views.UserControls;
 
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
-using static Supabase.Gotrue.Constants;
 
 public partial class App : Application
 {
@@ -160,6 +159,8 @@ public partial class App : Application
             )
         );
         Services.AddTransient<UserControlsManagementNoneSelected>();
+        Services.AddTransient<UserControlsManagementAddNewEdu>();
+        Services.AddTransient<UserControlsManagementExistingEdu>();
     }
 
     private void LoadPages(IServiceCollection Services)

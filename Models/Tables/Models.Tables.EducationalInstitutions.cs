@@ -1,10 +1,11 @@
-﻿namespace Models.Tables.Classes;
+﻿namespace Models.Tables.EducationalInstitutions;
 
+using Models.Supports.SupabaseCommands;
 using Supabase.Postgrest.Attributes;
 using Supabase.Postgrest.Models;
 
 [Table("EducationalInstitutions")]
-public class ModelsEducationalInstitutions : BaseModel
+public class ModelsEducationalInstitutions : BaseModel, InterfacesModelsWithId
 {
     [PrimaryKey("Id")]
     public int Id { get; set; }

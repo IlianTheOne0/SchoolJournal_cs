@@ -1,18 +1,16 @@
 ﻿namespace DesktopApplication.Services;
 
+using Database.Interfaces.Repositories.Supabase;
 using DesktopApplication.Interfaces.Services.Strategies.AccessStrategy;
 using DesktopApplication.Interfaces.Services.User;
 using DesktopApplication.Services.Strategies.AdminAccess;
 using DesktopApplication.Services.Strategies.StudentAccess;
 using DesktopApplication.Services.Strategies.TeacherAccess;
-
-using Database.Interfaces.Repositories.Supabase;
-
+using global::Supabase.Postgrest;
 using Models.Tables.Classes;
+using Models.Tables.EducationalInstitutions;
 using Models.Tables.Statuses;
 using Models.Tables.Users;
-
-using global::Supabase.Postgrest;
 using System.Threading.Tasks;
 
 public class ServicesUser : InterfacesServicesUser

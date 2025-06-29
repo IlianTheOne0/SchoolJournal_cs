@@ -12,6 +12,8 @@
             <converters:ServicesConverterBooleanToBorderBrush x:Key="BooleanToBorderBrushConverter" TrueValue="Transparent" FalseValue="Black"/>
             <converters:ServicesConvertersGradeValue x:Key="GradeValueConverter"/>
             <converters:ServicesConvertersAttendanceStatus x:Key="AttendanceStatusConverter"/>
+            <converters:ServicesConvertersAddNewOrNone x:Key="AddNewOrNoneConverter"/>
+            <converters:ServicesConvertersNotAddNewOrNone x:Key="NotAddNewOrNoneConverter"/>
 
             <Cursor x:Key="HandCursor">Hand</Cursor>
             

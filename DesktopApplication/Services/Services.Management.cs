@@ -5,7 +5,10 @@ using Database.Repositories.Management;
 using DesktopApplication.Interfaces.Services.Management;
 using DesktopApplication.Interfaces.Services.Supabase;
 using DesktopApplication.Interfaces.Services.User;
+using global::Supabase.Postgrest.Models;
+using Models.Supports.SupabaseCommands;
 using Models.Tables.Classes;
+using Models.Tables.EducationalInstitutions;
 using Models.Tables.Users;
 using System;
 
@@ -40,5 +43,26 @@ public class ServicesManagement : InterfacesServicesManagement
     {
         try { AvailableUsers = await _repositoryManagement.GetAllUsersByClassId(ClassId); return AvailableUsers; }
         catch (Exception E) { throw new Exception($"Getting users by class id failed: {E.Message}", E); }
+    }
+
+    public async Task Add<TModel>(TModel Model)
+        where TModel : BaseModel, InterfacesModelsWithId, new()
+    {
+        try { await _repositoryManagement.Add(Model); }
+        catch (Exception E) { throw new Exception($"Adding the new educational institution failed: {E.Message}", E); }
+    }
+
+    public async Task Edit<TModel>(TModel Model, string[] ConflictColumns)
+        where TModel : BaseModel, new()
+    {
+        try { await _repositoryManagement.Edit(Model, ConflictColumns); }
+        catch (Exception E) { throw new Exception($"Edit the new name of the educational institution failed: {E.Message}", E); }
+    }
+
+    public async Task Delete<TModel>(TModel Model)
+    where TModel : BaseModel, InterfacesModelsWithId, new()
+    {
+        try { await _repositoryManagement.Delete(Model); }
+        catch (Exception E) { throw new Exception($"Deleting the educational institution failed: {E.Message}", E); }
     }
 }

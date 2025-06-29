@@ -7,7 +7,7 @@ using System.Windows.Controls;
 
 public partial class UserControlsSidebarMenu : UserControl
 {
-    public ViewModelsSidebarMenu _viewModel;
+    private readonly ViewModelsSidebarMenu _viewModel;
 
     public UserControlsSidebarMenu(ViewModelsSidebarMenu ViewModel)
     {

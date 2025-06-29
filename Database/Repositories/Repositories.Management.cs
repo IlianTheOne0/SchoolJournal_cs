@@ -2,11 +2,15 @@
 
 using Database.Interfaces.Repositories.Management;
 using Database.Interfaces.Repositories.Supabase;
+using global::Supabase.Postgrest.Models;
+using Models.Supports.SupabaseCommands;
 using Models.Tables.Classes;
+using Models.Tables.EducationalInstitutions;
 using Models.Tables.Enrollments;
 using Models.Tables.Statuses;
 using Models.Tables.Users;
 using System;
+using System.Security.Cryptography;
 using static global::Supabase.Postgrest.Constants;
 
 public class RepositoriesManagement : InterfacesRepositoriesManagement
@@ -27,11 +31,11 @@ public class RepositoriesManagement : InterfacesRepositoriesManagement
         catch (Exception E) { throw new Exception($"Failed to get all classe by educational institution id: {E.Message}", E); }
     }
 
-    public async Task<List<ModelsUserExtended>> GetAllUsersByClassId(int classId)
+    public async Task<List<ModelsUserExtended>> GetAllUsersByClassId(int ClassId)
     {
         try
         {
-            var enrollments = await _repositorySupabase.FilterAsync<ModelsEnrollments>("ClassId", Operator.Equals, classId);
+            var enrollments = await _repositorySupabase.FilterAsync<ModelsEnrollments>("ClassId", Operator.Equals, ClassId);
             if (enrollments == null || enrollments.Count == 0) { return new List<ModelsUserExtended>(); }
 
             var studentIds = enrollments.Select(enrollmentsProvider => enrollmentsProvider.UserId).Distinct().ToList();
@@ -51,6 +55,27 @@ public class RepositoriesManagement : InterfacesRepositoriesManagement
 
             return result;
         }
-        catch (Exception e) { throw new Exception($"Failed to get users by class ID: {e.Message}", e); }
+        catch (Exception E) { throw new Exception($"Failed to get users by class ID: {E.Message}", E); }
+    }
+
+    public async Task Add<TModel>(TModel Model)
+        where TModel : BaseModel, InterfacesModelsWithId, new()
+    {
+        try { Model.Id = RandomNumberGenerator.GetInt32(1234567890); await _repositorySupabase.Insert(Model); }
+        catch (Exception E) { throw new Exception($"Failed to add: {E.Message}", E); }
+    }
+
+    public async Task Edit<TModel>(TModel Model, string[] ConflictColumns)
+        where TModel : BaseModel, new()
+    {
+        try { await _repositorySupabase.Upsert(Model, ConflictColumns); }
+        catch (Exception E) { throw new Exception($"Failed to edit: {E.Message}", E); }
+    }
+
+    public async Task Delete<TModel>(TModel Model)
+        where TModel : BaseModel, InterfacesModelsWithId, new()
+    {
+        try { await _repositorySupabase.Delete(Model); }
+        catch (Exception E) { throw new Exception($"Failed to delete: {E.Message}", E); }
     }
 }

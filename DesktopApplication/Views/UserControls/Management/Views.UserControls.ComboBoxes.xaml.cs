@@ -6,7 +6,7 @@ using System.Windows.Controls;
 
 public partial class UserControlsManagementComboBoxes : UserControl
 {
-    public ViewModelsManagement _viewModel;
+    private readonly ViewModelsManagement _viewModel;
 
     public UserControlsManagementComboBoxes(ViewModelsManagement ViewModel)
     {

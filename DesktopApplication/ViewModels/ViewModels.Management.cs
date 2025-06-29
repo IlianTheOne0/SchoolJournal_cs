@@ -2,16 +2,18 @@
 
 using DesktopApplication.Interfaces.Services.Management;
 using Models.Supports.Management;
+using Models.Supports.SupabaseCommands;
 using Models.Tables.Classes;
+using Models.Tables.EducationalInstitutions;
 using Models.Tables.Users;
+using Supabase.Postgrest.Models;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using System.Windows.Media.Media3D;
 
-public class ViewModelsManagement : INotifyPropertyChanged
+public partial class ViewModelsManagement : INotifyPropertyChanged
 {
     private readonly InterfacesServicesManagement _servicesManagement = null!;
 
@@ -31,36 +33,43 @@ public class ViewModelsManagement : INotifyPropertyChanged
     private bool _isChosenEdu; public bool IsChosenEdu { get => _isChosenEdu; set { _isChosenEdu = value; OnPropertyChanged(); } }
     private bool _isChosenClass; public bool IsChosenClass { get => _isChosenClass; set { _isChosenClass = value; OnPropertyChanged(); } }
 
-    private ModelsEducationalInstitutions _chosenEdu; public ModelsEducationalInstitutions ChosenEdu { get => _chosenEdu; set { _chosenEdu = value; OnPropertyChanged(); OnEduChoise(value); UpdateState(); } }
-    private ModelsClasses _chosenClass; public ModelsClasses ChosenClass { get => _chosenClass; set { _chosenClass = value; OnPropertyChanged(); OnClassChoise(value); UpdateState(); } }
+    private ModelsEducationalInstitutions _chosenEdu; public ModelsEducationalInstitutions ChosenEdu { get => _chosenEdu; set { _chosenEdu = value; OnPropertyChanged(); OnEduChoise(value); UpdateState(); ChosenClass = _nothingClass; ChosenUser = _nothingUser; } }
+    private ModelsClasses _chosenClass; public ModelsClasses ChosenClass { get => _chosenClass; set { _chosenClass = value; OnPropertyChanged(); OnClassChoise(value); UpdateState(); ChosenUser = _nothingUser; } }
     private ModelsUserExtended _chosenUser; public ModelsUserExtended ChosenUser { get => _chosenUser; set { _chosenUser = value; OnPropertyChanged(); OnStudentChoise(value); UpdateState(); } }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
+    private bool _isEditing0 = false; public bool IsEditing0 { get => _isEditing0; set { _isEditing0 = value; OnPropertyChanged(); } }
     private ManagementState _currentState; public ManagementState CurrentState { get => _currentState; set { _currentState = value; OnPropertyChanged(); } }
     private readonly List<ManagementRule> _rules = new()
     {
         new((edu, cls, usr) => edu == -1 && cls == -1 && usr == -1,     ManagementState.NoneSelected),
-        new((edu, cls, usr) => edu == -2 && cls == -1 && usr == -1,     ManagementState.AddNewEdu)
+        new((edu, cls, usr) => edu == -2 && cls == -1 && usr == -1,     ManagementState.AddNewEdu),
+        new((edu, cls, usr) => edu > 0   && cls == -1 && usr == -1,     ManagementState.ExistingEdu),
+        new((edu, cls, usr) => edu > 0   && cls == -2 && usr == -1,     ManagementState.AddNewClass)
     };
 
-    public ViewModelsManagement(InterfacesServicesManagement ServiceGrades) { _servicesManagement = ServiceGrades; LoadData(); }
+    public ViewModelsManagement(InterfacesServicesManagement ServiceGrades) { _servicesManagement = ServiceGrades; HardReset(); CommandInitialize(); }
 
-    public void LoadData()
+    public async Task LoadData()
     {
         try
         {
-            _servicesManagement.Load();
+            await _servicesManagement.Load();
+            IsEditing0 = false;
 
             InsertIntoEdu(); InsertIntoClasses(); InsertIntoUsers();
-
-            _isChosenEdu = false; _isChosenClass = false;
-            ChosenEdu = _nothingEdu; ChosenClass = _nothingClass; ChosenUser = _nothingUser;
         }
         catch (Exception e) { MessageBox.Show($"Load data failed: {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
 
-    private void InsertIntoEdu()
+    private void HardReset()
+    {
+        _isChosenEdu = false; _isChosenClass = false;
+        ChosenEdu = _nothingEdu; ChosenClass = _nothingClass; ChosenUser = _nothingUser;
+    }
+
+    public void InsertIntoEdu()
     {
         var edu = _servicesManagement.AvailableEdu.ToList();
         edu.Insert(0, _addNewEdu);
@@ -68,7 +77,7 @@ public class ViewModelsManagement : INotifyPropertyChanged
         AvailableEdu = edu;
     }
 
-    private void InsertIntoClasses()
+    public void InsertIntoClasses()
     {
         var classes = _servicesManagement.AvailableClasses.ToList();
         classes.Insert(0, _addNewClass);
@@ -76,7 +85,7 @@ public class ViewModelsManagement : INotifyPropertyChanged
         AvailableClasses = classes;
     }
 
-    private void InsertIntoUsers()
+    public void InsertIntoUsers()
     {
         var users = _servicesManagement.AvailableUsers.ToList();
         users.Insert(0, _addNewUser);
@@ -96,11 +105,11 @@ public class ViewModelsManagement : INotifyPropertyChanged
         {
             IsChosenEdu = false;
             if (ModelEdu == null || ModelEdu.Id <= 0) { return; }
-            
+
             IsChosenEdu = true;
             await _servicesManagement.GetAllClassesByEduId(ModelEdu.Id); InsertIntoClasses();
         }
-        catch (Exception e) { MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+        catch (Exception E) { MessageBox.Show($"OnEduChoise failed: {E.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
 
     private async void OnClassChoise(ModelsClasses ModelClass)
@@ -113,12 +122,46 @@ public class ViewModelsManagement : INotifyPropertyChanged
             IsChosenClass = true;
             await _servicesManagement.GetAllUsersByClassId(ModelClass.Id); InsertIntoUsers();
         }
-        catch (Exception e) { MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+        catch (Exception E) { MessageBox.Show($"OnClassChoise failed: {E.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
 
     private void OnStudentChoise(ModelsUserExtended Student)
     {
 
+    }
+
+    public async Task Add<TModel>(TModel Model)
+        where TModel : BaseModel, InterfacesModelsWithId, new()
+    {
+        try { await _servicesManagement.Add(Model); }
+        catch (Exception E) { MessageBox.Show($"Adding failed: {E.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+    }
+
+    public async Task Edit<TModel>(TModel Model, string[] ConflictColumns)
+        where TModel : BaseModel, InterfacesModelsWithId, new()
+    {
+        try { await _servicesManagement.Edit(Model, ConflictColumns); }
+        catch (Exception E) { MessageBox.Show($"Edititng failed: {E.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+    }
+
+    public async Task Delete<TModel>(TModel Model)
+    where TModel : BaseModel, InterfacesModelsWithId, new()
+    {
+        try { await _servicesManagement.Delete(Model); HardReset(); }
+        catch (Exception E) { MessageBox.Show($"Deleting failed: {E.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+    }
+
+    public async Task OperationsWithEdu(string? EduName = null)
+    { 
+        await LoadData();
+        
+        if (EduName != null) { ChosenEdu = AvailableEdu.FirstOrDefault(eduProvider => eduProvider.Name == EduName); }
+    }
+    public async Task OperationsWithClasses(string? ClassName = null)
+    {
+        await LoadData();
+        
+        if (ClassName != null) { ChosenClass = AvailableClasses.FirstOrDefault(classesProvider => classesProvider.Name == ClassName); }
     }
 
     private void OnPropertyChanged([CallerMemberName] string? PropertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));

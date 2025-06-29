@@ -3,7 +3,6 @@
 using CommunityToolkit.Mvvm.Input;
 using DesktopApplication.ViewModels.GradesAssigner;
 using DesktopApplication.ViewModels.GradesViewer;
-using DesktopApplication.ViewModels.Management;
 using DesktopApplication.ViewModels.Profile;
 using DesktopApplication.Views.Pages;
 using System.Windows.Input;
@@ -30,6 +29,6 @@ public partial class ViewModelsSidebarMenu
     private void OnProfile() { LoadData(); _serviceNavigation.NavigateTo<PagesProfile, ViewModelsProfile>(); }
     private void OnAssignGrades() { LoadData(); _serviceNavigation.NavigateTo<PagesGradesAssigner, ViewModelsGradesAssigner>(); }
     private void OnViewGrades() { LoadData(); _viewModelGradesViewer.Reset(); _serviceNavigation.NavigateTo<PagesGradesViewer, ViewModelsGradesViewer>(); }
-    private void OnManage() { LoadData(); _viewModelManagement.LoadData(); _serviceNavigation.NavigateTo<PagesManagement>(); }
+    private async void OnManage() { LoadData(); await _viewModelManagement.LoadData(); _serviceNavigation.NavigateTo<PagesManagement>(); }
     private void OnGoToHome() { LoadData(); _viewModelProfile.ResetEditingState(); _serviceNavigation.NavigateTo<PagesHome>(); }
 }

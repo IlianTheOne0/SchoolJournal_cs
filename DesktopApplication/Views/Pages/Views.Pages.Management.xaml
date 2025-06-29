@@ -13,13 +13,24 @@
         <DataTemplate x:Key="TemplateNoneSelected">
             <ucontrols:UserControlsManagementNoneSelected/>
         </DataTemplate>
+        
         <DataTemplate x:Key="TemplateAddNewEdu">
-            <ucontrols:UserControlsManagementAddNewEdu/>
+            <ucontrols:UserControlsManagementAddNewEdu DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext}"/>
+        </DataTemplate>
+
+        <DataTemplate x:Key="TemplateExistingEdu">
+            <ucontrols:UserControlsManagementExistingEdu DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext}"/>
+        </DataTemplate>
+
+        <DataTemplate x:Key="TemplateAddNewClass">
+            <ucontrols:UserControlsManagementAddNewClass DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext}"/>
         </DataTemplate>
 
         <services:ServicesManagementStateTemplateSelector x:Key="ManagementStateTemplateSelector"
             NoneSelectedTemplate="{StaticResource TemplateNoneSelected}"
-            AddNewEduTemplate="{StaticResource TemplateAddNewEdu}"/>
+            AddNewEduTemplate="{StaticResource TemplateAddNewEdu}"
+            ExistingEduTemplate="{StaticResource TemplateExistingEdu}"
+            AddNewClassTemplate="{StaticResource TemplateAddNewClass}"/>
     </UserControl.Resources>
 
     <Grid>
@@ -34,15 +45,27 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <ContentControl x:Name="ManagementComboboxesHost" Grid.Row="0"/>
 
             <ContentControl
-                Content="{Binding CurrentState}"
-                ContentTemplateSelector="{StaticResource ManagementStateTemplateSelector}"
-                Grid.Row="1"
-                HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                 Content="{Binding CurrentState}"
+                 ContentTemplateSelector="{StaticResource ManagementStateTemplateSelector}"
+                 Grid.Row="2"
+                 HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+            <Button
+                Content="Reset"
+                Width="200" Height="45"
+                FontSize="20" FontFamily="{StaticResource Roboto}"
+                Command="{Binding CommandReset}" Style="{StaticResource MaterialDesignRaisedButton}"
+                HorizontalAlignment="Center"
+                Grid.Row="4"
+                Margin="0,0,0,50"/>
         </Grid>
     </Grid>
 </UserControl>
