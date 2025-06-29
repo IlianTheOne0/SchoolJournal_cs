@@ -11,7 +11,7 @@ public partial class UserControlsManagementAddNewEdu : UserControl
 {
     public UserControlsManagementAddNewEdu() => InitializeComponent();
 
-    public async void AddNewEdu_Click(object Sender, EventArgs E)
+    private async void AddNewEdu_Click(object Sender, EventArgs E)
     {
         try
         {

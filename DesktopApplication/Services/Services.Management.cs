@@ -9,6 +9,7 @@ using global::Supabase.Postgrest.Models;
 using Models.Supports.SupabaseCommands;
 using Models.Tables.Classes;
 using Models.Tables.EducationalInstitutions;
+using Models.Tables.Statuses;
 using Models.Tables.Subjects;
 using Models.Tables.Users;
 using System;
@@ -23,6 +24,7 @@ public class ServicesManagement : InterfacesServicesManagement
     public List<ModelsUserExtended> AvailableUsers { get; private set; } = new();
     public List<ModelsSubjectsExtended> AvailableSubjects { get; private set; } = new();
     public List<ModelsUserExtended> AvailableTeachers { get; private set; } = new();
+    public List<ModelsStatuses> AvailableStatuses { get; private set; } = new();
 
     public ServicesManagement(InterfacesServicesSupabase ServiceSupabase, InterfacesServicesUser ServiceUser)
     {
@@ -60,11 +62,23 @@ public class ServicesManagement : InterfacesServicesManagement
         catch (Exception E) { throw new Exception($"Getting subjects by class id failed: {E.Message}", E); }
     }
 
+    public async Task<List<ModelsStatuses>> GetAllStatuses()
+    {
+        try { AvailableStatuses = await _repositoryManagement.GetAllStatuses(); return AvailableStatuses; }
+        catch (Exception E) { throw new Exception($"Getting subjects by class id failed: {E.Message}", E); }
+    }
+
     public async Task Add<TModel>(TModel Model)
         where TModel : BaseModel, InterfacesModelsWithId, new()
     {
         try { await _repositoryManagement.Add(Model); }
         catch (Exception E) { throw new Exception($"Adding the new educational institution failed: {E.Message}", E); }
+    }
+
+    public async Task AddUser(ModelsUser User, string Password, int ClassId)
+    {
+        try { await _repositoryManagement.AddUser(User, Password, ClassId); }
+        catch (Exception E) { throw new Exception($"Adding the new user failed: {E.Message}", E); }
     }
 
     public async Task Edit<TModel>(TModel Model, string[] ConflictColumns)

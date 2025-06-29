@@ -11,7 +11,7 @@ public partial class UserControlsManagementAddNewClass : UserControl
 {
     public UserControlsManagementAddNewClass() => InitializeComponent();
 
-    public async void AddNewClass_Click(object Sender, EventArgs E)
+    private async void AddNewClass_Click(object Sender, EventArgs E)
     {
         try
         {
@@ -19,7 +19,7 @@ public partial class UserControlsManagementAddNewClass : UserControl
             if (!int.TryParse(NewClassYearTextBox.Text, out int year)) { throw new Exception("The year of study must be a number"); }
 
             if (DataContext is ViewModelsManagement vm) { await vm.Add(new ModelsClasses { Name = NewClassNameTextBox.Text, Year = year, EducationalInstitutionId = vm.ChosenEdu.Id }); await vm.OperationsWithClasses(vm.ChosenEdu.Name, NewClassNameTextBox.Text); }
-            MessageBox.Show($"Saving of new class successful!", "Successful", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show($"Saving of new class successful!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception Ex) { MessageBox.Show($"Failed to save the new class: {Ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }

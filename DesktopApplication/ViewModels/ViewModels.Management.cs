@@ -5,6 +5,7 @@ using Models.Supports.Management;
 using Models.Supports.SupabaseCommands;
 using Models.Tables.Classes;
 using Models.Tables.EducationalInstitutions;
+using Models.Tables.Statuses;
 using Models.Tables.Subjects;
 using Models.Tables.Users;
 using Supabase.Postgrest.Models;
@@ -32,13 +33,14 @@ public partial class ViewModelsManagement : INotifyPropertyChanged
     private List<ModelsUserExtended> _availableUsers = new(); public List<ModelsUserExtended> AvailableUsers { get => _availableUsers; private set { _availableUsers = value; OnPropertyChanged(); } }
     private List<ModelsUserExtended> _availableTeachers = new(); public List<ModelsUserExtended> AvailableTeachers { get => _availableTeachers; set { _availableTeachers = value; OnPropertyChanged(); } }
     private List<ModelsSubjectsExtended> _availableSubjects = new(); public List<ModelsSubjectsExtended> AvailableSubjects { get => _availableSubjects; set { _availableSubjects = value; OnPropertyChanged(); } }
-
+    private List<ModelsStatuses> _availableStatuses = new(); public List<ModelsStatuses> AvailableStatuses { get => _availableStatuses; set { _availableStatuses = value; OnPropertyChanged(); } }
+    
     private bool _isChosenEdu; public bool IsChosenEdu { get => _isChosenEdu; set { _isChosenEdu = value; OnPropertyChanged(); } }
     private bool _isChosenClass; public bool IsChosenClass { get => _isChosenClass; set { _isChosenClass = value; OnPropertyChanged(); } }
 
     private ModelsEducationalInstitutions _chosenEdu; public ModelsEducationalInstitutions ChosenEdu { get => _chosenEdu; set { _chosenEdu = value; OnPropertyChanged(); OnEduChoise(value); UpdateState(); ChosenClass = _nothingClass; ChosenUser = _nothingUser; } }
     private ModelsClasses _chosenClass; public ModelsClasses ChosenClass { get => _chosenClass; set { _chosenClass = value; OnPropertyChanged(); OnClassChoise(value); UpdateState(); ChosenUser = _nothingUser; } }
-    private ModelsUserExtended _chosenUser; public ModelsUserExtended ChosenUser { get => _chosenUser; set { _chosenUser = value; OnPropertyChanged(); OnStudentChoise(value); UpdateState(); } }
+    private ModelsUserExtended _chosenUser; public ModelsUserExtended ChosenUser { get => _chosenUser; set { _chosenUser = value; OnPropertyChanged(); UpdateState(); } }
     private ModelsSubjectsExtended _chosenSubject; public ModelsSubjectsExtended ChosenSubject { get => _chosenSubject; set { _chosenSubject = value; OnPropertyChanged(); OnPropertyChanged(nameof(IsTeacherComboEnabled)); } }
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -66,12 +68,12 @@ public partial class ViewModelsManagement : INotifyPropertyChanged
             await _servicesManagement.Load();
             IsEditing0 = false; IsEditing1 = false;
 
-            InsertIntoEdu(); InsertIntoClasses(); InsertIntoUsers();
+            InsertIntoEdu(); InsertIntoClasses(); InsertIntoUsers(); await OnStatuses();
         }
         catch (Exception e) { MessageBox.Show($"Load data failed: {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
 
-    private void HardReset()
+    public void HardReset()
     {
         _isChosenEdu = false; _isChosenClass = false;
         ChosenEdu = _nothingEdu; ChosenClass = _nothingClass; ChosenUser = _nothingUser;
@@ -87,7 +89,7 @@ public partial class ViewModelsManagement : INotifyPropertyChanged
 
     public void InsertIntoEdu()
     {
-        var edu = _servicesManagement.AvailableEdu.ToList();
+        var edu = _servicesManagement.AvailableEdu;
         edu.Insert(0, _addNewEdu);
         edu.Insert(0, _nothingEdu);
         AvailableEdu = edu;
@@ -95,7 +97,7 @@ public partial class ViewModelsManagement : INotifyPropertyChanged
 
     public void InsertIntoClasses()
     {
-        var classes = _servicesManagement.AvailableClasses.ToList();
+        var classes = _servicesManagement.AvailableClasses;
         classes.Insert(0, _addNewClass);
         classes.Insert(0, _nothingClass);
         AvailableClasses = classes;
@@ -103,7 +105,7 @@ public partial class ViewModelsManagement : INotifyPropertyChanged
 
     public void InsertIntoUsers()
     {
-        var users = _servicesManagement.AvailableUsers.ToList();
+        var users = _servicesManagement.AvailableUsers;
         users.Insert(0, _addNewUser);
         users.Insert(0, _nothingUser);
         AvailableUsers = users;
@@ -144,11 +146,6 @@ public partial class ViewModelsManagement : INotifyPropertyChanged
         catch (Exception E) { MessageBox.Show($"OnClassChoise failed: {E.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
 
-    private void OnStudentChoise(ModelsUserExtended Student)
-    {
-
-    }
-
     public async Task OnSubjects(int ClassId)
     {
         ModelsEducationalInstitutions edu = ChosenEdu; ModelsClasses cl = ChosenClass;
@@ -165,6 +162,12 @@ public partial class ViewModelsManagement : INotifyPropertyChanged
         if (cl != _nothingClass && cl != _addNewClass && ChosenClass?.Id != cl.Id) { ChosenClass = cl; }
     }
 
+    public async Task OnStatuses()
+    {
+        await _servicesManagement.GetAllStatuses();
+        AvailableStatuses = _servicesManagement.AvailableStatuses;
+    }
+
     public async Task Add<TModel>(TModel Model)
         where TModel : BaseModel, InterfacesModelsWithId, new()
     {
@@ -175,6 +178,12 @@ public partial class ViewModelsManagement : INotifyPropertyChanged
     public async Task AddSubject(ModelsSubjects Model)
     {
         try { await _servicesManagement.Add(Model); }
+        catch (Exception E) { MessageBox.Show($"Adding failed: {E.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+    }
+
+    public async Task AddUser(ModelsUser User, string Password)
+    {
+        try { await _servicesManagement.AddUser(User, Password, ChosenClass.Id); }
         catch (Exception E) { MessageBox.Show($"Adding failed: {E.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
 
@@ -203,6 +212,16 @@ public partial class ViewModelsManagement : INotifyPropertyChanged
         await OperationsWithEdu(EduName);
         await Task.Delay(100);
         if (ClassName != null) { ChosenClass = AvailableClasses.FirstOrDefault(classesProvider => classesProvider.Name == ClassName); }
+    }
+
+    public async Task OperationsWithUsers(string? EduName = null, string? ClassName = null, string? UserName = null)
+    {
+        await OperationsWithClasses(EduName, ClassName);
+        
+        await _servicesManagement.GetAllUsersByClassId(ChosenClass.Id);
+        InsertIntoUsers();
+
+        if (UserName != null) { ChosenUser = AvailableUsers.FirstOrDefault(usersProvider => usersProvider.FullName == UserName); }
     }
 
     private void OnPropertyChanged([CallerMemberName] string? PropertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));

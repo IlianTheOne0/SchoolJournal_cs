@@ -1,14 +1,14 @@
 ﻿namespace Database.Repositories.Supabase;
 
 using Database.Repositories.Supabase.Extensions;
-using Models.Supports.SupabaseCommands;
-
 using global::Supabase.Postgrest.Models;
-using static global::Supabase.Postgrest.Constants;
+using Models.Supports.SupabaseCommands;
+using Models.Tables.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using static global::Supabase.Postgrest.Constants;
 
 public partial class RepositoriesSupabase
 {
@@ -82,6 +82,17 @@ public partial class RepositoriesSupabase
             return result.Models.ToList();
         }
         catch (Exception E) { throw new Exception($"Failed FilterWithInnerJoinAsync: {E.Message}", E); }
+    }
+
+    public async Task AddUser(ModelsUser User, string Password)
+    {
+        try
+        {
+            var session = await SupabaseConnection!.SupabaseClient.Auth.SignUp(User.Email, Password);
+            User.ProfileId = session?.User?.Id!;
+            await Insert(User);
+        }
+        catch (Exception E) { throw new Exception($"Failed AddUser: {E.Message}", E); }
     }
 
     public async Task Insert<TModel>(TModel Item, string? Schema = null)

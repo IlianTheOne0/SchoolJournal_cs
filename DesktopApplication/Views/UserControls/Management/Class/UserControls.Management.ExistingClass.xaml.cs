@@ -12,11 +12,11 @@ public partial class UserControlsManagementExistingClass : UserControl
 {
     public UserControlsManagementExistingClass() => InitializeComponent();
 
-    public void EditClass_Click(object Sender, EventArgs E)
+    private void EditClass_Click(object Sender, EventArgs E)
     {
         if (DataContext is ViewModelsManagement vm) { vm.IsEditing0 = true; }
     }
-    public async void DeleteClass_Click(object Sender, EventArgs E)
+    private async void DeleteClass_Click(object Sender, EventArgs E)
     {
         try
         {
@@ -30,7 +30,7 @@ public partial class UserControlsManagementExistingClass : UserControl
         }
         catch (Exception Ex) { MessageBox.Show($"Deleting of the class failed: {Ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
-    public async void SaveClass_Click(object Sender, EventArgs E)
+    private async void SaveClass_Click(object Sender, EventArgs E)
     {
         try
         {
@@ -42,7 +42,7 @@ public partial class UserControlsManagementExistingClass : UserControl
         }
         catch (Exception Ex) { MessageBox.Show($"Saving the new name of the educational institution failed: {Ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
-    public void ResetClass_Click(object Sender, EventArgs E)
+    private void ResetClass_Click(object Sender, EventArgs E)
     {
         if (DataContext is ViewModelsManagement vm) { NewClassNameTextBox.Text = vm.ChosenClass.Name; NewClassYearTextBox.Text = vm.ChosenClass.Year.ToString(); vm.IsEditing0 = false; }
     }

@@ -32,6 +32,7 @@ public interface InterfacesRepositoriesSupabase
 
     Task Login(string Username, string Password);
     Task Logout();
+    Task AddUser(ModelsUser User, string Password);
 
     Task<ModelsUser?> GetUserById(int UserId);
     Task UpdateUser(ModelsUser User);

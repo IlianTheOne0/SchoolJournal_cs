@@ -11,6 +11,7 @@ using Models.Tables.Statuses;
 using Models.Tables.Subjects;
 using Models.Tables.Users;
 using System;
+using System.Reflection;
 using System.Security.Cryptography;
 using static global::Supabase.Postgrest.Constants;
 
@@ -113,10 +114,25 @@ public class RepositoriesManagement : InterfacesRepositoriesManagement
         catch (Exception E) { throw new Exception($"Failed to get all teachers by educational institution id: {E.Message}", E); }
     }
 
+    public async Task<List<ModelsStatuses>> GetAllStatuses()
+    {
+        try { return await _repositorySupabase.GetAllAsync<ModelsStatuses>(); }
+        catch (Exception E) { throw new Exception($"Failed to get all statuses: {E.Message}", E); }
+    }
+
     public async Task Add<TModel>(TModel Model)
         where TModel : BaseModel, InterfacesModelsWithId, new()
     {
         try { Model.Id = RandomNumberGenerator.GetInt32(1234567890); await _repositorySupabase.Insert(Model); }
+        catch (Exception E) { throw new Exception($"Failed to add: {E.Message}", E); }
+    }
+
+    public async Task AddUser(ModelsUser User, string Password, int ClassId)
+    {
+        try {
+            await _repositorySupabase.AddUser(User, Password);
+            if (User.StatusId == 3) { await _repositorySupabase.Insert(new ModelsEnrollments { UserId = User.Id, ClassId = ClassId }); }
+        }
         catch (Exception E) { throw new Exception($"Failed to add: {E.Message}", E); }
     }
 
