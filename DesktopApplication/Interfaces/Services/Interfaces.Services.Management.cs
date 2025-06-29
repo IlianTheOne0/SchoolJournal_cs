@@ -4,18 +4,23 @@ using global::Supabase.Postgrest.Models;
 using Models.Supports.SupabaseCommands;
 using Models.Tables.Classes;
 using Models.Tables.EducationalInstitutions;
+using Models.Tables.Subjects;
 using Models.Tables.Users;
 
 public interface InterfacesServicesManagement
 {
-    public List<ModelsEducationalInstitutions> AvailableEdu { get; }
-    public List<ModelsClasses> AvailableClasses { get; }
-    public List<ModelsUserExtended> AvailableUsers { get; }
+    List<ModelsEducationalInstitutions> AvailableEdu { get; }
+    List<ModelsClasses> AvailableClasses { get; }
+    List<ModelsUserExtended> AvailableUsers { get; }
+    List<ModelsSubjectsExtended> AvailableSubjects { get; }
+    List<ModelsUserExtended> AvailableTeachers { get; }
 
     Task Load();
 
     Task<List<ModelsClasses>> GetAllClassesByEduId(int EduId);
     Task<List<ModelsUserExtended>> GetAllUsersByClassId(int ClassId);
+    Task<List<ModelsSubjectsExtended>> GetAllSubjectsByClassId(int ClassId);
+    Task<List<ModelsUserExtended>> GetAllTeachersByEduId(int EduId);
 
     Task Add<TModel>(TModel Model)
         where TModel : BaseModel, InterfacesModelsWithId, new();

@@ -12,6 +12,7 @@ public class ServicesManagementStateTemplateSelector : DataTemplateSelector, Int
     public DataTemplate? ExistingEduTemplate { get; set; }
     public DataTemplate? AddNewClassTemplate { get; set; }
     public DataTemplate? ExistingClassTemplate { get; set; }
+    public DataTemplate? AddNewUserTemplate { get; set; }
 
     public override DataTemplate? SelectTemplate(object Item, DependencyObject Container)
     {
@@ -24,6 +25,7 @@ public class ServicesManagementStateTemplateSelector : DataTemplateSelector, Int
             ManagementState.ExistingEdu => ExistingEduTemplate,
             ManagementState.AddNewClass => AddNewClassTemplate,
             ManagementState.ExistingClass => ExistingClassTemplate,
+            ManagementState.AddNewUser => AddNewUserTemplate,
             _ => NoneSelectedTemplate
         };
     }

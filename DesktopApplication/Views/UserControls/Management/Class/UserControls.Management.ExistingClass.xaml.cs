@@ -3,7 +3,8 @@
 using DesktopApplication.ViewModels.Management;
 using Microsoft.IdentityModel.Tokens;
 using Models.Tables.Classes;
-using Models.Tables.EducationalInstitutions;
+using Models.Tables.Subjects;
+using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -44,5 +45,58 @@ public partial class UserControlsManagementExistingClass : UserControl
     public void ResetClass_Click(object Sender, EventArgs E)
     {
         if (DataContext is ViewModelsManagement vm) { NewClassNameTextBox.Text = vm.ChosenClass.Name; NewClassYearTextBox.Text = vm.ChosenClass.Year.ToString(); vm.IsEditing0 = false; }
+    }
+
+    private void EditSubject_Click(object Sender, RoutedEventArgs E)
+    {
+        if (DataContext is ViewModelsManagement vm)
+        {
+            var defaultTeacher = vm.AvailableTeachers.FirstOrDefault();
+            vm.ChosenSubject = new ModelsSubjectsExtended
+            {
+                Id = 0,
+                Name = "",
+                ClassId = vm.ChosenClass.Id,
+                TeacherId = defaultTeacher?.Id ?? -1,
+                TeacherName = defaultTeacher?.FullName ?? "Select Teacher"
+            };
+
+            vm.IsEditing1 = true;
+        }
+    }
+
+    private async void AddSubject_Click(object Sender, RoutedEventArgs E)
+    {
+        if (DataContext is ViewModelsManagement vm && vm.ChosenSubject != null)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(vm.ChosenSubject.Name)) { MessageBox.Show("Please enter a subject name", "Error", MessageBoxButton.OK, MessageBoxImage.Error); return; }
+                if (vm.ChosenSubject.TeacherId <= 0) { MessageBox.Show("Please select a teacher", "Error", MessageBoxButton.OK, MessageBoxImage.Error); return; }
+
+                await vm.Add(vm.ChosenSubject.ToBase());
+
+                await vm.OnSubjects(vm.ChosenClass.Id);
+                vm.IsEditing1 = false;
+            }
+            catch (Exception Ex) { MessageBox.Show($"Error adding subject: {Ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+        }
+    }
+
+    private void CancelSubject_Click(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is ViewModelsManagement vm) { vm.IsEditing1 = false; vm.ChosenSubject = null; }
+    }
+
+    private async void DeleteSubject_Click(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is ViewModelsManagement vm && vm.ChosenSubject != null)
+        {
+            if (MessageBox.Show("Are you sure you want to delete this subject?", "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+            {
+                try { await vm.Delete(vm.ChosenSubject.ToBase()); await vm.OnSubjects(vm.ChosenClass.Id); }
+                catch (Exception Ex) { MessageBox.Show($"Error deleting subject: {Ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+            }
+        }
     }
 }

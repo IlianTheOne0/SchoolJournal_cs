@@ -1,4 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using Models.Tables.Subjects;
+using System.Windows;
 using System.Windows.Input;
 
 namespace DesktopApplication.ViewModels.Management;

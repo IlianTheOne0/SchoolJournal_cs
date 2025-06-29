@@ -9,6 +9,7 @@ using global::Supabase.Postgrest.Models;
 using Models.Supports.SupabaseCommands;
 using Models.Tables.Classes;
 using Models.Tables.EducationalInstitutions;
+using Models.Tables.Subjects;
 using Models.Tables.Users;
 using System;
 
@@ -20,6 +21,8 @@ public class ServicesManagement : InterfacesServicesManagement
     public List<ModelsEducationalInstitutions> AvailableEdu { get; private set; } = new();
     public List<ModelsClasses> AvailableClasses { get; private set; } = new();
     public List<ModelsUserExtended> AvailableUsers { get; private set; } = new();
+    public List<ModelsSubjectsExtended> AvailableSubjects { get; private set; } = new();
+    public List<ModelsUserExtended> AvailableTeachers { get; private set; } = new();
 
     public ServicesManagement(InterfacesServicesSupabase ServiceSupabase, InterfacesServicesUser ServiceUser)
     {
@@ -45,6 +48,18 @@ public class ServicesManagement : InterfacesServicesManagement
         catch (Exception E) { throw new Exception($"Getting users by class id failed: {E.Message}", E); }
     }
 
+    public async Task<List<ModelsSubjectsExtended>> GetAllSubjectsByClassId(int ClassId)
+    {
+        try { AvailableSubjects = await _repositoryManagement.GetAllSubjectsByClassId(ClassId); return AvailableSubjects; }
+        catch (Exception E) { throw new Exception($"Getting subjects by class id failed: {E.Message}", E); }
+    }
+
+    public async Task<List<ModelsUserExtended>> GetAllTeachersByEduId(int EduId)
+    {
+        try { AvailableTeachers = await _repositoryManagement.GetAllTeachersByEduId(EduId); return AvailableTeachers; }
+        catch (Exception E) { throw new Exception($"Getting subjects by class id failed: {E.Message}", E); }
+    }
+
     public async Task Add<TModel>(TModel Model)
         where TModel : BaseModel, InterfacesModelsWithId, new()
     {
@@ -60,7 +75,7 @@ public class ServicesManagement : InterfacesServicesManagement
     }
 
     public async Task Delete<TModel>(TModel Model)
-    where TModel : BaseModel, InterfacesModelsWithId, new()
+        where TModel : BaseModel, InterfacesModelsWithId, new()
     {
         try { await _repositoryManagement.Delete(Model); }
         catch (Exception E) { throw new Exception($"Deleting the educational institution failed: {E.Message}", E); }

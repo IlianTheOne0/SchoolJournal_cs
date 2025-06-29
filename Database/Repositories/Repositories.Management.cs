@@ -8,6 +8,7 @@ using Models.Tables.Classes;
 using Models.Tables.EducationalInstitutions;
 using Models.Tables.Enrollments;
 using Models.Tables.Statuses;
+using Models.Tables.Subjects;
 using Models.Tables.Users;
 using System;
 using System.Security.Cryptography;
@@ -22,13 +23,13 @@ public class RepositoriesManagement : InterfacesRepositoriesManagement
     public async Task<List<ModelsEducationalInstitutions>> GetAllEdu()
     {
         try { return await _repositorySupabase.GetAllAsync<ModelsEducationalInstitutions>(); }
-        catch (Exception E) { throw new Exception($"Failed to get all classe by educational institution id: {E.Message}", E); }
+        catch (Exception E) { throw new Exception($"Failed to get all educational institutions: {E.Message}", E); }
     }
 
     public async Task<List<ModelsClasses>> GetAllClassesByEduId(int EduId)
     {
         try { return await _repositorySupabase.FilterAsync<ModelsClasses>("EducationalInstitutionId", Operator.Equals, EduId); }
-        catch (Exception E) { throw new Exception($"Failed to get all classe by educational institution id: {E.Message}", E); }
+        catch (Exception E) { throw new Exception($"Failed to get all classes by educational institution id: {E.Message}", E); }
     }
 
     public async Task<List<ModelsUserExtended>> GetAllUsersByClassId(int ClassId)
@@ -56,6 +57,60 @@ public class RepositoriesManagement : InterfacesRepositoriesManagement
             return result;
         }
         catch (Exception E) { throw new Exception($"Failed to get users by class ID: {E.Message}", E); }
+    }
+
+    public async Task<List<ModelsSubjectsExtended>> GetAllSubjectsByClassId(int ClassId)
+    {
+        try
+        {
+            var subjects = await _repositorySupabase.FilterAsync<ModelsSubjects>("ClassId", Operator.Equals, ClassId);
+            if (subjects.Count == 0) { return new(); }
+
+            var teacherIds = subjects.Select(subjectsProvider => subjectsProvider.TeacherId).Distinct().ToList();
+
+            var teachers = await _repositorySupabase.FilterAsync<ModelsUser>(
+                teacherIds.Select(id => ("Id", Operator.Equals, (object)id))
+            );
+
+            var result = new List<ModelsSubjectsExtended>();
+            foreach (var subject in subjects)
+            {
+                var teacher = teachers.FirstOrDefault(teachersProvider => teachersProvider.Id == subject.TeacherId);
+                var teacherName = teacher != null ? teacher.FullName : "Unknown";
+
+                result.Add(new ModelsSubjectsExtended(subject, teacherName));
+            }
+
+            return result;
+        }
+        catch (Exception E) { throw new Exception($"Failed to get all subjects by class id: {E.Message}", E); }
+    }
+
+    public async Task<List<ModelsUserExtended>> GetAllTeachersByEduId(int EduId)
+    {
+        try
+        {
+            var users = await _repositorySupabase.FilterAsync<ModelsUser>("EducationalInstitutionId", Operator.Equals, EduId);
+            if (users.Count == 0) { return new(); }
+
+            var teachersIds = users.Select(teachersProvider => teachersProvider.StatusId = 2).Distinct().ToList();
+            var allStatuses = await _repositorySupabase.GetAllAsync<ModelsStatuses>();
+            var allInstitutions = await _repositorySupabase.GetAllAsync<ModelsEducationalInstitutions>();
+
+            var students = await _repositorySupabase.FilterAsync<ModelsUser>("Id", Operator.In, teachersIds);
+
+            var result = students.Select(
+                userProvider =>
+                {
+                    var status = allStatuses.FirstOrDefault(statusProvider => statusProvider.Id == userProvider.StatusId)?.Status ?? "Unknown";
+                    var institution = allInstitutions.FirstOrDefault(eduProvider => eduProvider.Id == userProvider.EducationalInstitutionId)?.Name ?? "Unknown";
+                    return new ModelsUserExtended(userProvider, status, institution);
+                }
+            ).ToList();
+
+            return result;
+        }
+        catch (Exception E) { throw new Exception($"Failed to get all teachers by educational institution id: {E.Message}", E); }
     }
 
     public async Task Add<TModel>(TModel Model)

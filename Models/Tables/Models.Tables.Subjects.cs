@@ -1,16 +1,17 @@
 ﻿namespace Models.Tables.Subjects;
 
-using Supabase.Postgrest.Models;
+using Models.Supports.SupabaseCommands;
 using Supabase.Postgrest.Attributes;
+using Supabase.Postgrest.Models;
 
 [Table("Subjects")]
-public class ModelsSubjects : BaseModel
+public class ModelsSubjects : BaseModel, InterfacesModelsWithId
 {
     [PrimaryKey("Id")]
     public int Id { get; set; }
 
     [Column("Name")]
-    public string Name { get; set; }
+    public virtual string Name { get; set; }
 
     [Column("TeacherId")]
     public int TeacherId { get; set; }

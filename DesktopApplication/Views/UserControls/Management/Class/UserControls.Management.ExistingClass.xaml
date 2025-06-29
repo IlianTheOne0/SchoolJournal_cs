@@ -11,7 +11,7 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Column="0" Margin="0,0,35,25">
+        <StackPanel Grid.Column="0" Margin="0,0,0,25">
             <StackPanel>
                 <TextBlock
                     Text="Class Name"
@@ -63,7 +63,7 @@
                 </StackPanel>
             </StackPanel>
 
-            <Grid Width="500" Grid.Row="2">
+            <Grid Width="420" Grid.Row="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
@@ -74,8 +74,8 @@
                 <Button
                     Grid.Column="1"
                     Content="Edit"
-                    Width="200" Height="45"
-                    FontSize="20"  FontFamily="{StaticResource Roboto}"
+                    Width="175" Height="45"
+                    FontSize="20" FontFamily="{StaticResource Roboto}"
                     Visibility="{Binding IsEditing0, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Style="{StaticResource MaterialDesignRaisedButton}"
                     Click="EditClass_Click"
                     HorizontalAlignment="Left"
@@ -83,7 +83,7 @@
                 <Button
                     Grid.Column="2"
                     Content="Delete"
-                    Width="200" Height="45"
+                    Width="175" Height="45"
                     FontSize="20" FontFamily="{StaticResource Roboto}"
                     Visibility="{Binding IsEditing0, Converter={StaticResource InverseBooleanToVisibilityConverter}}" Style="{StaticResource MaterialDesignRaisedButton}"
                     HorizontalAlignment="Right"
@@ -93,7 +93,7 @@
                 <Button
                     Grid.Column="1"
                     Content="Save changes"
-                    Width="200" Height="45"
+                    Width="175" Height="45"
                     FontSize="20" FontFamily="{StaticResource Roboto}"
                     Visibility="{Binding IsEditing0, Converter={StaticResource BooleanToVisibilityConverter}}" Style="{StaticResource MaterialDesignRaisedButton}"
                     HorizontalAlignment="Left"
@@ -102,7 +102,7 @@
                 <Button
                     Grid.Column="2"
                     Content="Reset changes"
-                    Width="200" Height="45"
+                    Width="175" Height="45"
                     FontSize="20" FontFamily="{StaticResource Roboto}"
                     Visibility="{Binding IsEditing0, Converter={StaticResource BooleanToVisibilityConverter}}" Style="{StaticResource MaterialDesignRaisedButton}"
                     HorizontalAlignment="Right"
@@ -111,64 +111,88 @@
             </Grid>
         </StackPanel>
 
-        <Grid Grid.Column="1" Margin="25,0,0,0">
-            <Grid Grid.Column="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-
-                <DataGrid 
-                    ItemsSource="{Binding AvailableSubjects}" 
+        <Grid Grid.Column="1" Margin="15,0,0,0">
+            <StackPanel>
+                <DataGrid
+                    x:Name="SubjectsDataGrid"
+                    MinHeight="356" MaxWidth="365"
+                    ItemsSource="{Binding AvailableSubjects}"
                     SelectedItem="{Binding ChosenSubject, Mode=TwoWay}" 
-                    AutoGenerateColumns="False"
-                    CanUserAddRows="False" 
-                    CanUserDeleteRows="False"
-                    IsReadOnly="{Binding IsEditingSubject, Converter={StaticResource InverseBooleanConverter}}"
-                    Width="200"
-                    FontSize="18"
-                    Margin="0,0,0,75">
+                    AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
+                    IsReadOnly="True"
+                    FontSize="18" FontFamily="{StaticResource Roboto}"
+                    Margin="0,0,0,25">
                     <DataGrid.Columns>
                         <DataGridTextColumn 
-                        Header="Subject Name" 
-                        Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" 
-                        Width="*"/>
+                            Header="Subject Name" 
+                            Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" 
+                            FontSize="16" FontFamily="{StaticResource Roboto}"
+                            Width="*"/>
+                        <DataGridTextColumn 
+                            Header="Teacher Name" 
+                            Binding="{Binding TeacherName, UpdateSourceTrigger=PropertyChanged}" 
+                            Width="*"/>
                     </DataGrid.Columns>
                 </DataGrid>
 
-                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                <StackPanel
+                    Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,15,0,0"
+                    Visibility="{Binding IsEditing1, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                     <Button
                         Content="Edit"
-                        Width="120" Height="45"
-                        FontSize="16" FontFamily="{StaticResource Roboto}"
-                        Style="{StaticResource MaterialDesignRaisedButton}"
-                        IsEnabled="{Binding ChosenClass.Id, Converter={StaticResource NotAddNewOrNoneConverter}}"/>
+                        Width="150" Height="45"
+                        Margin="0,0,30,0"
+                        FontSize="20" FontFamily="{StaticResource Roboto}"
+                        Click="EditSubject_Click" Style="{StaticResource MaterialDesignRaisedButton}"/>
                     <Button
                         Content="Delete"
-                        Width="120" Height="45"
-                        FontSize="16" FontFamily="{StaticResource Roboto}"
-                        Style="{StaticResource MaterialDesignRaisedButton}"
-                        IsEnabled="{Binding ChosenClass.Id, Converter={StaticResource NotAddNewOrNoneConverter}}"/>
+                        Width="150" Height="45"
+                        Margin="30,0,0,0"
+                        FontSize="20" FontFamily="{StaticResource Roboto}"
+                        Click="DeleteSubject_Click" Style="{StaticResource MaterialDesignRaisedButton}"/>
+                </StackPanel>
+
+                <StackPanel
+                    Orientation="Horizontal"
+                    Margin="0,15,0,0"
+                    Visibility="{Binding IsEditing1, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <TextBlock FontSize="16" FontFamily="{StaticResource Roboto}" Text="Subject Name:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                    <TextBox FontSize="16" FontFamily="{StaticResource Roboto}" Text="{Binding ChosenSubject.Name, UpdateSourceTrigger=PropertyChanged}" Width="250" Margin="0,0,0,0"/>
+                </StackPanel>
+
+                <StackPanel
+                    Orientation="Horizontal"
+                    Margin="0,15,0,0"
+                    Visibility="{Binding IsEditing1, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <TextBlock FontSize="16" FontFamily="{StaticResource Roboto}" Text="Assign Teacher:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                    <ComboBox
+                        Width="250"
+                        ItemsSource="{Binding AvailableTeachers}"
+                        DisplayMemberPath="FullName"
+                        SelectedValuePath="Id"
+                        SelectedValue="{Binding ChosenSubject.TeacherId}"
+                        FontSize="16" FontFamily="{StaticResource Roboto}"/>
+                </StackPanel>
+
+                <StackPanel
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Margin="0,15,0,0"
+                    Visibility="{Binding IsEditing1, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <Button
                         Content="Add"
-                        Width="120" Height="45"
-                        FontSize="16" FontFamily="{StaticResource Roboto}"
-                        Style="{StaticResource MaterialDesignRaisedButton}"
-                        IsEnabled="{Binding IsEditing1, Converter={StaticResource InverseBooleanConverter}}"/>
-                    <Button
-                        Content="Save"
-                        Width="120" Height="45"
-                        FontSize="16" FontFamily="{StaticResource Roboto}"
-                        Style="{StaticResource MaterialDesignRaisedButton}"
-                        IsEnabled="{Binding IsEditing1}"/>
+                        Width="150" Height="45"
+                        Margin="0,0,30,0"
+                        FontSize="20" FontFamily="{StaticResource Roboto}"
+                        Click="AddSubject_Click" Style="{StaticResource MaterialDesignRaisedButton}"/>
                     <Button
                         Content="Cancel"
-                        Width="120" Height="45"
-                        FontSize="16" FontFamily="{StaticResource Roboto}"
-                        Style="{StaticResource MaterialDesignRaisedButton}"
-                        IsEnabled="{Binding IsEditing1}"/>
+                        Width="150" Height="45"
+                        Margin="30,0,0,0"
+                        FontSize="20" FontFamily="{StaticResource Roboto}"
+                        Click="CancelSubject_Click" Style="{StaticResource MaterialDesignRaisedButton}"/>
                 </StackPanel>
-            </Grid>
+            </StackPanel>
         </Grid>
     </Grid>
 </UserControl>

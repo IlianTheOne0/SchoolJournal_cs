@@ -30,12 +30,17 @@
             <ucontrols:UserControlsManagementExistingClass DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext}"/>
         </DataTemplate>
 
+        <DataTemplate x:Key="TemplateAddNewUser">
+            <ucontrols:UserControlsManagementAddNewUser DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext}"/>
+        </DataTemplate>
+
         <services:ServicesManagementStateTemplateSelector x:Key="ManagementStateTemplateSelector"
             NoneSelectedTemplate="{StaticResource TemplateNoneSelected}"
             AddNewEduTemplate="{StaticResource TemplateAddNewEdu}"
             ExistingEduTemplate="{StaticResource TemplateExistingEdu}"
             AddNewClassTemplate="{StaticResource TemplateAddNewClass}"
-            ExistingClassTemplate="{StaticResource TemplateExistingClass}"/>
+            ExistingClassTemplate="{StaticResource TemplateExistingClass}"
+            AddNewUserTemplate="{StaticResource TemplateAddNewUser}"/>
     </UserControl.Resources>
 
     <Grid>
