@@ -5,7 +5,8 @@ public enum ManagementState
     NoneSelected,
     AddNewEdu,
     ExistingEdu,
-    AddNewClass
+    AddNewClass,
+    ExistingClass
 }
 
 public record ManagementRule(

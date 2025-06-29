@@ -18,7 +18,7 @@ public partial class UserControlsManagementAddNewClass : UserControl
             if (NewClassNameTextBox.Text.IsNullOrEmpty() || NewClassNameTextBox.Text.Trim().Length > 12) { throw new Exception("The name cannot be empty or longer than 12 characters"); }
             if (!int.TryParse(NewClassYearTextBox.Text, out int year)) { throw new Exception("The year of study must be a number"); }
 
-            if (DataContext is ViewModelsManagement vm) { await vm.Add(new ModelsClasses { Name = NewClassNameTextBox.Text, Year = year, EducationalInstitutionId = vm.ChosenEdu.Id }); await vm.OperationsWithClasses(NewClassNameTextBox.Text); }
+            if (DataContext is ViewModelsManagement vm) { await vm.Add(new ModelsClasses { Name = NewClassNameTextBox.Text, Year = year, EducationalInstitutionId = vm.ChosenEdu.Id }); await vm.OperationsWithClasses(vm.ChosenEdu.Name, NewClassNameTextBox.Text); }
             MessageBox.Show($"Saving of new class successful!", "Successful", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception Ex) { MessageBox.Show($"Failed to save the new class: {Ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }

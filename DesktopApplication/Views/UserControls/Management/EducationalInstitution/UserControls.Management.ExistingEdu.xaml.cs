@@ -20,10 +20,10 @@ public partial class UserControlsManagementExistingEdu : UserControl
         {
             if (
                 MessageBox.Show($"Are you sure you want to delete the educational institution? Changes cannot be reverted", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning)
-                == MessageBoxResult.No
+                    == MessageBoxResult.No
             ) { return; }
 
-            if (DataContext is ViewModelsManagement vm) { await vm.Delete(new ModelsEducationalInstitutions { Id = vm.ChosenEdu.Id }); await vm.OperationsWithEdu(NewEduNameTextBox.Text); vm.IsEditing0 = false; }
+            if (DataContext is ViewModelsManagement vm) { await vm.Delete(new ModelsEducationalInstitutions { Id = vm.ChosenEdu.Id }); await vm.OperationsWithEdu(); vm.IsEditing0 = false; }
             MessageBox.Show($"Deleting of the educational institution successful!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception Ex) { MessageBox.Show($"Deleting of the educational institution failed: {Ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
@@ -41,6 +41,6 @@ public partial class UserControlsManagementExistingEdu : UserControl
     }
     public void ResetEdu_Click(object Sender, EventArgs E)
     {
-        if (DataContext is ViewModelsManagement vm) { NewEduNameTextBox.Text = vm.ChosenEdu.Name; vm.IsEditing0 = false; }
+        if (DataContext is ViewModelsManagement vm) { vm.IsEditing0 = false; NewEduNameTextBox.Text = vm.ChosenEdu.Name; }
     }
 }

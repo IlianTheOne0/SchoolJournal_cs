@@ -46,7 +46,8 @@ public partial class ViewModelsManagement : INotifyPropertyChanged
         new((edu, cls, usr) => edu == -1 && cls == -1 && usr == -1,     ManagementState.NoneSelected),
         new((edu, cls, usr) => edu == -2 && cls == -1 && usr == -1,     ManagementState.AddNewEdu),
         new((edu, cls, usr) => edu > 0   && cls == -1 && usr == -1,     ManagementState.ExistingEdu),
-        new((edu, cls, usr) => edu > 0   && cls == -2 && usr == -1,     ManagementState.AddNewClass)
+        new((edu, cls, usr) => edu > 0   && cls == -2 && usr == -1,     ManagementState.AddNewClass),
+        new((edu, cls, usr) => edu > 0   && cls > 0   && usr == -1,     ManagementState.ExistingClass)
     };
 
     public ViewModelsManagement(InterfacesServicesManagement ServiceGrades) { _servicesManagement = ServiceGrades; HardReset(); CommandInitialize(); }
@@ -157,10 +158,10 @@ public partial class ViewModelsManagement : INotifyPropertyChanged
         
         if (EduName != null) { ChosenEdu = AvailableEdu.FirstOrDefault(eduProvider => eduProvider.Name == EduName); }
     }
-    public async Task OperationsWithClasses(string? ClassName = null)
+    public async Task OperationsWithClasses(string? EduName = null, string? ClassName = null)
     {
-        await LoadData();
-        
+        await OperationsWithEdu(EduName);
+        await Task.Delay(100);
         if (ClassName != null) { ChosenClass = AvailableClasses.FirstOrDefault(classesProvider => classesProvider.Name == ClassName); }
     }
 

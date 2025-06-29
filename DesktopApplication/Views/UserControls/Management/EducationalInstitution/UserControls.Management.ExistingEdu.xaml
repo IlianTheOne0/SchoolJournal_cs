@@ -32,7 +32,7 @@
             <TextBox
                 x:Name="NewEduNameTextBox"
                 FontSize="32" FontWeight="Medium" FontFamily="{StaticResource Roboto}"
-                Text="{Binding ChosenEdu.Name,  FallbackValue='No data available', TargetNullValue='No data available'}"
+                Text="{Binding ChosenEdu.Name, Mode=OneWay, FallbackValue='No data available', TargetNullValue='No data available'}"
                 Visibility="{Binding IsEditing0, Converter={StaticResource BooleanToVisibilityConverter}}"
                 TextAlignment="Center"/>
         </StackPanel>
