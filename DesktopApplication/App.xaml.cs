@@ -126,6 +126,7 @@ public partial class App : Application
                 ServiceUser: provider.GetRequiredService<InterfacesServicesUser>(),
                 ViewModelProvider: provider.GetRequiredService<ViewModelsProfile>(),
                 ViewModelGradesViewer: provider.GetRequiredService<ViewModelsGradesViewer>(),
+                ViewModelGradesAssigner: provider.GetRequiredService<ViewModelsGradesAssigner>(),
                 ViewModelManagement: provider.GetRequiredService<ViewModelsManagement>()
             )
         );

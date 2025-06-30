@@ -3,6 +3,7 @@
 using DesktopApplication.Interfaces.Services.Auth;
 using DesktopApplication.Interfaces.Services.Navigation;
 using DesktopApplication.Interfaces.Services.User;
+using DesktopApplication.ViewModels.GradesAssigner;
 using DesktopApplication.ViewModels.GradesViewer;
 using DesktopApplication.ViewModels.Management;
 using DesktopApplication.ViewModels.Profile;
@@ -21,6 +22,7 @@ public partial class ViewModelsSidebarMenu : INotifyPropertyChanged
     private readonly InterfacesServicesUser _serviceUser;
     private readonly ViewModelsProfile _viewModelProfile;
     private readonly ViewModelsGradesViewer _viewModelGradesViewer;
+    private readonly ViewModelsGradesAssigner _viewModelGradesAssigner;
     private readonly ViewModelsManagement _viewModelManagement;
     private Type _currentPageType; public Type CurrentPageType { get => _currentPageType; set { if (_currentPageType != value) { _currentPageType = value; OnPropertyChanged(); UpdateCanGoToHome(); } } }
 
@@ -34,11 +36,11 @@ public partial class ViewModelsSidebarMenu : INotifyPropertyChanged
 
     public ViewModelsSidebarMenu(
         InterfacesServicesAuth ServiceAuth, InterfacesServicesNavigation ServiceNavigation, InterfacesServicesUser ServiceUser,
-        ViewModelsProfile ViewModelProvider, ViewModelsGradesViewer ViewModelGradesViewer, ViewModelsManagement ViewModelManagement
+        ViewModelsProfile ViewModelProvider, ViewModelsGradesViewer ViewModelGradesViewer, ViewModelsGradesAssigner ViewModelGradesAssigner, ViewModelsManagement ViewModelManagement
     )
     {
         _serviceAuth = ServiceAuth; _serviceNavigation = ServiceNavigation; _serviceUser = ServiceUser;
-        _viewModelProfile = ViewModelProvider; _viewModelGradesViewer = ViewModelGradesViewer; _viewModelManagement = ViewModelManagement;
+        _viewModelProfile = ViewModelProvider; _viewModelGradesViewer = ViewModelGradesViewer; _viewModelGradesAssigner = ViewModelGradesAssigner; _viewModelManagement = ViewModelManagement;
 
         _serviceNavigation.OnPageChanged += pageType => { CurrentPageType = pageType; };
         InitializeComamnds();

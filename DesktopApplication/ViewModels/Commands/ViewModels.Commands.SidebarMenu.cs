@@ -27,7 +27,7 @@ public partial class ViewModelsSidebarMenu
     }
 
     private void OnProfile() { LoadData(); _serviceNavigation.NavigateTo<PagesProfile, ViewModelsProfile>(); }
-    private void OnAssignGrades() { LoadData(); _serviceNavigation.NavigateTo<PagesGradesAssigner, ViewModelsGradesAssigner>(); }
+    private void OnAssignGrades() { LoadData(); _viewModelGradesAssigner.Load(); _serviceNavigation.NavigateTo<PagesGradesAssigner, ViewModelsGradesAssigner>(); }
     private void OnViewGrades() { LoadData(); _viewModelGradesViewer.Reset(); _serviceNavigation.NavigateTo<PagesGradesViewer, ViewModelsGradesViewer>(); }
     private async void OnManage() { LoadData(); await _viewModelManagement.LoadData(); _viewModelManagement.HardReset(); _serviceNavigation.NavigateTo<PagesManagement>(); }
     private void OnGoToHome() { LoadData(); _viewModelProfile.ResetEditingState(); _serviceNavigation.NavigateTo<PagesHome>(); }
