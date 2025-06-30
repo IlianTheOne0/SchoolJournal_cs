@@ -158,12 +158,6 @@ public partial class App : Application
                 ViewModel: provider.GetRequiredService<ViewModelsManagement>()
             )
         );
-        Services.AddTransient<UserControlsManagementNoneSelected>();
-        Services.AddTransient<UserControlsManagementAddNewEdu>();
-        Services.AddTransient<UserControlsManagementExistingEdu>();
-        Services.AddTransient<UserControlsManagementAddNewClass>();
-        Services.AddTransient<UserControlsManagementExistingClass>();
-        Services.AddTransient<UserControlsManagementAddNewUser>();
     }
 
     private void LoadPages(IServiceCollection Services)

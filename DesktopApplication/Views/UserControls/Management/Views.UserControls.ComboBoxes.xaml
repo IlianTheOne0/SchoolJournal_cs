@@ -56,8 +56,8 @@
                 <ComboBox
                     Width="165"
                     FontSize="18" FontWeight="Normal" FontFamily="{StaticResource Roboto}"
-                    DisplayMemberPath="FullName" SelectedItem="{Binding ChosenUser}" ItemsSource="{Binding AvailableUsers}"
-                    IsEnabled="{Binding IsChosenClass}"
+                    DisplayMemberPath="FullName" SelectedItem="{Binding ChosenUser}" ItemsSource="{Binding AvailableUsersWithNone}"
+                    IsEnabled="{Binding IsChosenEdu}"
                     Margin="5"/>
             </StackPanel>
         </StackPanel>

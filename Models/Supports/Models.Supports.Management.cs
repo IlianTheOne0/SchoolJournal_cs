@@ -7,7 +7,8 @@ public enum ManagementState
     ExistingEdu,
     AddNewClass,
     ExistingClass,
-    AddNewUser
+    AddNewUser,
+    ExistingUser
 }
 
 public record ManagementRule(

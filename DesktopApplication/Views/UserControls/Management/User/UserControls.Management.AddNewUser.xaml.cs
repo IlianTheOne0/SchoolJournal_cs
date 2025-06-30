@@ -16,15 +16,15 @@ public partial class UserControlsManagementAddNewUser : UserControl
         {
             if (DataContext is not ViewModelsManagement vm) { return; }
 
-            string username = NewUserUserNameTextBox.Text.Trim();
-            string fullName = NewUserFullNameTextBox.Text.Trim();
+            string username = NewUserUserNameTextBox.Text;
+            string fullName = NewUserFullNameTextBox.Text;
             string email = NewUserEmailTextBox.Text.Trim();
             string phoneNumber = NewUserPhoneNumberTextBox.Text.Trim();
             string password = NewUserPasswordTextBox.Password;
             bool.TryParse(NewUserSexComboBox.SelectedValue?.ToString(), out bool sex);
             DateTime? dob = NewUserDateOfBirthDatePicker.SelectedDate;
             int statusId = NewUserStatusCombobox.SelectedIndex + 1;
-            long institutionId = vm.ChosenEdu?.Id ?? 0;
+            int institutionId = vm.ChosenEdu?.Id ?? 0;
 
             if (string.IsNullOrWhiteSpace(username)) { throw new ArgumentException("Username is required."); }
             if (string.IsNullOrWhiteSpace(fullName)) { throw new ArgumentException("Full name is required."); }
@@ -44,9 +44,9 @@ public partial class UserControlsManagementAddNewUser : UserControl
                 Email = email,
                 PhoneNumber = phoneNumber,
                 Sex = sex,
-                DateOfBirth = dob.Value,
+                DateOfBirth = dob.Value.AddDays(1),
                 CreatedAt = DateTime.Now,
-                DateOfTheLastUpdate = DateTime.Now,
+                DateOfTheLastUpdate = DateTime.Now.AddDays(1),
                 DateOfTheLastVisitToTheJournal = DateTime.Now,
                 AvatarUrl = null,
                 StatusId = statusId,

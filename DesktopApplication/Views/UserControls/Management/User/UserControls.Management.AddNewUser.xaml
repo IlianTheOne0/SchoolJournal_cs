@@ -90,7 +90,7 @@
             Click="AddNewUser_Click"
             Width="300" Height="35" FontFamily="{StaticResource Roboto}"
             Style="{StaticResource MaterialDesignRaisedButton}"
-            Margin="0,20,0,0"
+            Margin="0,35,0,0"
             Grid.ColumnSpan="2" Grid.Row="2"/>
     </Grid>
 </UserControl>

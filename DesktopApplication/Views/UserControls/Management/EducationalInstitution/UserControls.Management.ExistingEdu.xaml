@@ -92,27 +92,25 @@
         </Grid>
 
         <Grid Grid.Column="1" Margin="15,0,0,0">
-            <StackPanel>
-                <DataGrid
-                    MinHeight="356" MaxWidth="365"
-                    AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
-                    IsReadOnly="True"
-                    ItemsSource="{Binding AvailableUsers}"
-                    FontSize="18" FontFamily="{StaticResource Roboto}"
-                    Margin="0,0,0,25">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn 
-                            Header="User Full Name" 
-                            Binding="{Binding FullName, UpdateSourceTrigger=PropertyChanged}" 
-                            FontSize="16" FontFamily="{StaticResource Roboto}"
-                            Width="*"/>
-                        <DataGridTextColumn 
-                            Header="Status" 
-                            Binding="{Binding StatusName, UpdateSourceTrigger=PropertyChanged}" 
-                            Width="*"/>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </StackPanel>
+            <DataGrid
+                MinHeight="356" MaxWidth="365"
+                AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
+                IsReadOnly="True"
+                ItemsSource="{Binding AvailableUsers}"
+                FontSize="18" FontFamily="{StaticResource Roboto}"
+                Margin="0,0,0,25">
+                <DataGrid.Columns>
+                    <DataGridTextColumn 
+                        Header="User Full Name" 
+                        Binding="{Binding FullName, UpdateSourceTrigger=PropertyChanged}" 
+                        FontSize="16" FontFamily="{StaticResource Roboto}"
+                        Width="*"/>
+                    <DataGridTextColumn 
+                        Header="Status" 
+                        Binding="{Binding StatusName, UpdateSourceTrigger=PropertyChanged}" 
+                        Width="*"/>
+                </DataGrid.Columns>
+            </DataGrid>
         </Grid>
     </Grid>
 </UserControl>

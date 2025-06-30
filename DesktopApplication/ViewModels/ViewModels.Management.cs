@@ -32,12 +32,12 @@ public partial class ViewModelsManagement : INotifyPropertyChanged
     private List<ModelsEducationalInstitutions> _availableEdu = new(); public List<ModelsEducationalInstitutions> AvailableEdu { get => _availableEdu; private set { _availableEdu = value; OnPropertyChanged(); } }
     private List<ModelsClasses> _availableClasses = new(); public List<ModelsClasses> AvailableClasses { get => _availableClasses; private set { _availableClasses = value; OnPropertyChanged(); } }
     private List<ModelsUserExtended> _availableUsers = new(); public List<ModelsUserExtended> AvailableUsers { get => _availableUsers; private set { _availableUsers = value; OnPropertyChanged(); } }
+    private List<ModelsUserExtended> _availableUsersWithNone = new(); public List<ModelsUserExtended> AvailableUsersWithNone { get => _availableUsersWithNone; private set { _availableUsersWithNone = value; OnPropertyChanged(); } }
     private List<ModelsUserExtended> _availableTeachers = new(); public List<ModelsUserExtended> AvailableTeachers { get => _availableTeachers; set { _availableTeachers = value; OnPropertyChanged(); } }
     private List<ModelsSubjectsExtended> _availableSubjects = new(); public List<ModelsSubjectsExtended> AvailableSubjects { get => _availableSubjects; set { _availableSubjects = value; OnPropertyChanged(); } }
     private List<ModelsStatuses> _availableStatuses = new(); public List<ModelsStatuses> AvailableStatuses { get => _availableStatuses; set { _availableStatuses = value; OnPropertyChanged(); } }
 
     private bool _isChosenEdu; public bool IsChosenEdu { get => _isChosenEdu; set { _isChosenEdu = value; OnPropertyChanged(); } }
-    private bool _isChosenClass; public bool IsChosenClass { get => _isChosenClass; set { _isChosenClass = value; OnPropertyChanged(); } }
 
     private ModelsEducationalInstitutions _chosenEdu; public ModelsEducationalInstitutions ChosenEdu { get => _chosenEdu; set { _chosenEdu = value; OnPropertyChanged(); OnEduChoise(value); UpdateState(); ChosenClass = _nothingClass; ChosenUser = _nothingUser; } }
     private ModelsClasses _chosenClass; public ModelsClasses ChosenClass { get => _chosenClass; set { _chosenClass = value; OnPropertyChanged(); OnClassChoise(value); UpdateState(); ChosenUser = _nothingUser; } }
@@ -56,10 +56,11 @@ public partial class ViewModelsManagement : INotifyPropertyChanged
         new((edu, cls, usr) => edu > 0   && cls == -1 && usr == -1,     ManagementState.ExistingEdu),
         new((edu, cls, usr) => edu > 0   && cls == -2 && usr == -1,     ManagementState.AddNewClass),
         new((edu, cls, usr) => edu > 0   && cls > 0   && usr == -1,     ManagementState.ExistingClass),
-        new((edu, cls, usr) => edu > 0   && cls > 0   && usr == -2,     ManagementState.AddNewUser)
+        new((edu, cls, usr) => edu > 0   && cls > 0   && usr == -2,     ManagementState.AddNewUser),
+        new((edu, cls, usr) => edu > 0   && cls == -1 && usr > 0  ,     ManagementState.ExistingUser),
+        new((edu, cls, usr) => edu > 0   && cls > 0   && usr > 0  ,     ManagementState.ExistingUser)
     };
     public bool IsTeacherComboEnabled => ChosenSubject != null && IsEditing1;
-    private bool _isDataLoaded = false;
 
     public ViewModelsManagement(InterfacesServicesManagement ServiceGrades) { _servicesManagement = ServiceGrades; HardReset(); CommandInitialize(); }
 
@@ -78,7 +79,7 @@ public partial class ViewModelsManagement : INotifyPropertyChanged
 
     public void HardReset()
     {
-        _isChosenEdu = false; _isChosenClass = false;
+        _isChosenEdu = false;
         ChosenEdu = _nothingEdu; ChosenClass = _nothingClass; ChosenUser = _nothingUser;
     }
 
@@ -126,8 +127,8 @@ public partial class ViewModelsManagement : INotifyPropertyChanged
         {
             IsChosenEdu = false;
             if (ModelEdu == null || ModelEdu.Id <= 0) { return; }
-
             IsChosenEdu = true;
+
             await _servicesManagement.GetAllClassesByEduId(ModelEdu.Id); InsertIntoClasses();
             await LoadUsersByEduId();
         }
@@ -138,14 +139,15 @@ public partial class ViewModelsManagement : INotifyPropertyChanged
     {
         try
         {
-            IsChosenClass = false;
             if (ModelClass == null || ModelClass.Id <= 0) { return; }
 
-            IsChosenClass = true;
             await LoadTeachers();
-            await _servicesManagement.GetAllUsersByClassId(ModelClass.Id);
-            InsertIntoUsers();
             await OnSubjects(ModelClass.Id);
+            await _servicesManagement.GetAllUsersByClassId(ModelClass.Id);
+            var users = _servicesManagement.AvailableUsers;
+            users.Insert(0, _addNewUser);
+            users.Insert(0, _nothingUser);
+            AvailableUsersWithNone = users;
         }
         catch (Exception E) { MessageBox.Show($"OnClassChoise failed: {E.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
@@ -176,7 +178,7 @@ public partial class ViewModelsManagement : INotifyPropertyChanged
     {
         try
         {
-            if (ChosenEdu == null || ChosenEdu.Id <= 0) { AvailableUsers = new List<ModelsUserExtended>(); return; }
+            if (ChosenEdu == null || ChosenEdu.Id <= 0) { AvailableUsers = new(); AvailableUsersWithNone = new() { _nothingUser }; return; }
 
             await _servicesManagement.GetAllUsersByEduId(ChosenEdu.Id);
 
@@ -186,9 +188,14 @@ public partial class ViewModelsManagement : INotifyPropertyChanged
                 .ToList();
 
             AvailableUsers = users;
+
+            var usersWithNone = new List<ModelsUserExtended> { _nothingUser };
+            usersWithNone.AddRange(users);
+            AvailableUsersWithNone = usersWithNone;
         }
         catch (Exception E) { MessageBox.Show($"Failed to load users by Edu ID: {E.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
+
 
     public async Task Add<TModel>(TModel Model)
         where TModel : BaseModel, InterfacesModelsWithId, new()

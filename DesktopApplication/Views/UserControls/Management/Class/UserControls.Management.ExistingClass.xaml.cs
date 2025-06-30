@@ -26,7 +26,7 @@ public partial class UserControlsManagementExistingClass : UserControl
             ) { return; }
 
             if (DataContext is ViewModelsManagement vm) { await vm.Delete(new ModelsClasses { Id = vm.ChosenClass.Id }); await vm.OperationsWithClasses(); vm.IsEditing0 = false; }
-            MessageBox.Show($"Deleting of the class successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show($"Deleting of the class successful!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception Ex) { MessageBox.Show($"Deleting of the class failed: {Ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
@@ -38,7 +38,7 @@ public partial class UserControlsManagementExistingClass : UserControl
             if (!int.TryParse(NewClassYearTextBox.Text, out int year)) { throw new Exception("The year of study must be a number"); }
 
             if (DataContext is ViewModelsManagement vm) { await vm.Edit(new ModelsClasses { Id = vm.ChosenClass.Id, Name = NewClassNameTextBox.Text, Year = year, EducationalInstitutionId = vm.ChosenClass.EducationalInstitutionId }, new string[] { "Id" }); await vm.OperationsWithClasses(vm.ChosenEdu.Name, NewClassNameTextBox.Text); vm.IsEditing0 = false; }
-            MessageBox.Show($"Saving the new name of the class successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show($"Saving the new name of the class successful!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception Ex) { MessageBox.Show($"Saving the new name of the educational institution failed: {Ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }

@@ -37,7 +37,7 @@ public partial class UserControlsManagementExistingEdu : UserControl
             if (NewEduNameTextBox.Text.IsNullOrEmpty() || NewEduNameTextBox.Text.Trim().Length > 32) { throw new Exception("The name cannot be empty or longer than 32 characters"); }
 
             if (DataContext is ViewModelsManagement vm) { await vm.Edit(new ModelsEducationalInstitutions { Id = vm.ChosenEdu.Id, Name = NewEduNameTextBox.Text }, new string[] { "Id" }); await vm.OperationsWithEdu(NewEduNameTextBox.Text); vm.IsEditing0 = false; }
-            MessageBox.Show($"Saving the new name of the educational institution successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show($"Saving the new name of the educational institution successful!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception Ex) { MessageBox.Show($"Saving the new name of the educational institution failed: {Ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }

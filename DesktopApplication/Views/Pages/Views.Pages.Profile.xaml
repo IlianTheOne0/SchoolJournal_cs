@@ -119,10 +119,10 @@
                                                 <Setter.Value>
                                                     <ControlTemplate TargetType="TextBox">
                                                         <TextBlock 
-                                                                Text="{TemplateBinding Text}"
-                                                                FontSize="{TemplateBinding FontSize}" FontWeight="{TemplateBinding FontWeight}" FontFamily="{TemplateBinding FontFamily}"
-                                                                Margin="{TemplateBinding Padding}"
-                                                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+                                                            Text="{TemplateBinding Text}"
+                                                            FontSize="{TemplateBinding FontSize}" FontWeight="{TemplateBinding FontWeight}" FontFamily="{TemplateBinding FontFamily}"
+                                                            Margin="{TemplateBinding Padding}"
+                                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
                                                     </ControlTemplate>
                                                 </Setter.Value>
                                             </Setter>
