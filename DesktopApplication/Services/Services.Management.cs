@@ -68,6 +68,12 @@ public class ServicesManagement : InterfacesServicesManagement
         catch (Exception E) { throw new Exception($"Getting subjects by class id failed: {E.Message}", E); }
     }
 
+    public async Task<List<ModelsUserExtended>> GetAllUsersByEduId(int EduId)
+    {
+        try { AvailableUsers = await _repositoryManagement.GetAllUsersByEduId(EduId); return AvailableUsers; }
+        catch (Exception E) { throw new Exception($"Getting subjects by class id failed: {E.Message}", E); }
+    }
+
     public async Task Add<TModel>(TModel Model)
         where TModel : BaseModel, InterfacesModelsWithId, new()
     {

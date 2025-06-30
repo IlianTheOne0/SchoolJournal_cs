@@ -16,6 +16,7 @@ public interface InterfacesRepositoriesManagement
     Task<List<ModelsSubjectsExtended>> GetAllSubjectsByClassId(int ClassId);
     Task<List<ModelsUserExtended>> GetAllTeachersByEduId(int EduId);
     Task<List<ModelsStatuses>> GetAllStatuses();
+    Task<List<ModelsUserExtended>> GetAllUsersByEduId(int EduId);
 
     Task Add<TModel>(TModel Model)
         where TModel : BaseModel, InterfacesModelsWithId, new();

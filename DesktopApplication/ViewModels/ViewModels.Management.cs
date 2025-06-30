@@ -14,6 +14,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Data;
 
 public partial class ViewModelsManagement : INotifyPropertyChanged
 {
@@ -28,13 +29,13 @@ public partial class ViewModelsManagement : INotifyPropertyChanged
     private readonly ModelsUserExtended _nothingUser = new ModelsUserExtended { Id = -1, FullName = "None" };
     private readonly ModelsUserExtended _addNewUser = new ModelsUserExtended { Id = -2, FullName = "Add New" };
 
-    private List<ModelsEducationalInstitutions> _availableEdu= new(); public List<ModelsEducationalInstitutions> AvailableEdu { get => _availableEdu; private set { _availableEdu = value; OnPropertyChanged(); } }
+    private List<ModelsEducationalInstitutions> _availableEdu = new(); public List<ModelsEducationalInstitutions> AvailableEdu { get => _availableEdu; private set { _availableEdu = value; OnPropertyChanged(); } }
     private List<ModelsClasses> _availableClasses = new(); public List<ModelsClasses> AvailableClasses { get => _availableClasses; private set { _availableClasses = value; OnPropertyChanged(); } }
     private List<ModelsUserExtended> _availableUsers = new(); public List<ModelsUserExtended> AvailableUsers { get => _availableUsers; private set { _availableUsers = value; OnPropertyChanged(); } }
     private List<ModelsUserExtended> _availableTeachers = new(); public List<ModelsUserExtended> AvailableTeachers { get => _availableTeachers; set { _availableTeachers = value; OnPropertyChanged(); } }
     private List<ModelsSubjectsExtended> _availableSubjects = new(); public List<ModelsSubjectsExtended> AvailableSubjects { get => _availableSubjects; set { _availableSubjects = value; OnPropertyChanged(); } }
     private List<ModelsStatuses> _availableStatuses = new(); public List<ModelsStatuses> AvailableStatuses { get => _availableStatuses; set { _availableStatuses = value; OnPropertyChanged(); } }
-    
+
     private bool _isChosenEdu; public bool IsChosenEdu { get => _isChosenEdu; set { _isChosenEdu = value; OnPropertyChanged(); } }
     private bool _isChosenClass; public bool IsChosenClass { get => _isChosenClass; set { _isChosenClass = value; OnPropertyChanged(); } }
 
@@ -58,6 +59,7 @@ public partial class ViewModelsManagement : INotifyPropertyChanged
         new((edu, cls, usr) => edu > 0   && cls > 0   && usr == -2,     ManagementState.AddNewUser)
     };
     public bool IsTeacherComboEnabled => ChosenSubject != null && IsEditing1;
+    private bool _isDataLoaded = false;
 
     public ViewModelsManagement(InterfacesServicesManagement ServiceGrades) { _servicesManagement = ServiceGrades; HardReset(); CommandInitialize(); }
 
@@ -68,7 +70,8 @@ public partial class ViewModelsManagement : INotifyPropertyChanged
             await _servicesManagement.Load();
             IsEditing0 = false; IsEditing1 = false;
 
-            InsertIntoEdu(); InsertIntoClasses(); InsertIntoUsers(); await OnStatuses();
+            InsertIntoEdu(); InsertIntoClasses(); InsertIntoUsers();
+            await OnStatuses();
         }
         catch (Exception e) { MessageBox.Show($"Load data failed: {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
@@ -126,6 +129,7 @@ public partial class ViewModelsManagement : INotifyPropertyChanged
 
             IsChosenEdu = true;
             await _servicesManagement.GetAllClassesByEduId(ModelEdu.Id); InsertIntoClasses();
+            await LoadUsersByEduId();
         }
         catch (Exception E) { MessageBox.Show($"OnEduChoise failed: {E.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
@@ -166,6 +170,24 @@ public partial class ViewModelsManagement : INotifyPropertyChanged
     {
         await _servicesManagement.GetAllStatuses();
         AvailableStatuses = _servicesManagement.AvailableStatuses;
+    }
+
+    private async Task LoadUsersByEduId()
+    {
+        try
+        {
+            if (ChosenEdu == null || ChosenEdu.Id <= 0) { AvailableUsers = new List<ModelsUserExtended>(); return; }
+
+            await _servicesManagement.GetAllUsersByEduId(ChosenEdu.Id);
+
+            var users = _servicesManagement.AvailableUsers
+                .Where(usersProvider => usersProvider.StatusId == 1 || usersProvider.StatusId == 2)
+                .OrderBy(usersProvider => usersProvider.FullName)
+                .ToList();
+
+            AvailableUsers = users;
+        }
+        catch (Exception E) { MessageBox.Show($"Failed to load users by Edu ID: {E.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
 
     public async Task Add<TModel>(TModel Model)

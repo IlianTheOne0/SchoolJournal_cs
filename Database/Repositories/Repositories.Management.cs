@@ -94,7 +94,7 @@ public class RepositoriesManagement : InterfacesRepositoriesManagement
             var users = await _repositorySupabase.FilterAsync<ModelsUser>("EducationalInstitutionId", Operator.Equals, EduId);
             if (users.Count == 0) { return new(); }
 
-            var teachersIds = users.Select(teachersProvider => teachersProvider.StatusId = 2).Distinct().ToList();
+            List<int> teachersIds = new List<int>(); foreach (var user in users) { if (user.StatusId == 2) { teachersIds.Add(user.Id); } }
             var allStatuses = await _repositorySupabase.GetAllAsync<ModelsStatuses>();
             var allInstitutions = await _repositorySupabase.GetAllAsync<ModelsEducationalInstitutions>();
 
@@ -118,6 +118,30 @@ public class RepositoriesManagement : InterfacesRepositoriesManagement
     {
         try { return await _repositorySupabase.GetAllAsync<ModelsStatuses>(); }
         catch (Exception E) { throw new Exception($"Failed to get all statuses: {E.Message}", E); }
+    }
+
+    public async Task<List<ModelsUserExtended>> GetAllUsersByEduId(int EduId)
+    {
+        try
+        {
+            var users = await _repositorySupabase.FilterAsync<ModelsUser>("EducationalInstitutionId", Operator.Equals, EduId);
+            if (users.Count == 0) { return new(); }
+
+            var allStatuses = await _repositorySupabase.GetAllAsync<ModelsStatuses>();
+            var allInstitutions = await _repositorySupabase.GetAllAsync<ModelsEducationalInstitutions>();
+
+            var result = users.Select(
+                userProvider =>
+                {
+                    var status = allStatuses.FirstOrDefault(statusProvider => statusProvider.Id == userProvider.StatusId)?.Status ?? "Unknown";
+                    var institution = allInstitutions.FirstOrDefault(eduProvider => eduProvider.Id == userProvider.EducationalInstitutionId)?.Name ?? "Unknown";
+                    return new ModelsUserExtended(userProvider, status, institution);
+                }
+            ).ToList();
+
+            return result;
+        }
+        catch (Exception E) { throw new Exception($"Failed to get all users by educational institution id: {E.Message}", E); }
     }
 
     public async Task Add<TModel>(TModel Model)

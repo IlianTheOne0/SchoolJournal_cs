@@ -3,12 +3,14 @@
 using DesktopApplication.ViewModels.Management;
 using Microsoft.IdentityModel.Tokens;
 using Models.Tables.EducationalInstitutions;
+using Models.Tables.Users;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 
 public partial class UserControlsManagementExistingEdu : UserControl
 {
-    public UserControlsManagementExistingEdu() => InitializeComponent();
+    public UserControlsManagementExistingEdu() { InitializeComponent(); }
 
     private void EditEdu_Click(object Sender, EventArgs E)
     {
