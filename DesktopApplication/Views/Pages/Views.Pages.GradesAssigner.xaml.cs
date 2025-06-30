@@ -14,7 +14,7 @@ using System.Windows.Media;
 
 public partial class PagesGradesAssigner : UserControl
 {
-    private ViewModelsGradesAssigner _viewModel;
+    private readonly ViewModelsGradesAssigner _viewModel;
     private StudentGradeAssignment _currentStudent;
     private DateTime _currentDate;
     private int _pendingGrade = 0;

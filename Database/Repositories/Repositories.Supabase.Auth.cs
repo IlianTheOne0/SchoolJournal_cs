@@ -1,10 +1,10 @@
 ﻿namespace Database.Repositories.Supabase;
 
+using global::Supabase.Postgrest;
 using Models.Tables.Classes;
+using Models.Tables.EducationalInstitutions;
 using Models.Tables.Statuses;
 using Models.Tables.Users;
-
-using global::Supabase.Postgrest;
 using System;
 using System.Threading.Tasks;
 

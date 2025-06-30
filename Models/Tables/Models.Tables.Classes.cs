@@ -1,10 +1,11 @@
 ﻿namespace Models.Tables.Classes;
 
-using Supabase.Postgrest.Models;
+using Models.Supports.SupabaseCommands;
 using Supabase.Postgrest.Attributes;
+using Supabase.Postgrest.Models;
 
 [Table("Classes")]
-public class ModelsClasses : BaseModel
+public class ModelsClasses : BaseModel, InterfacesModelsWithId
 {
     [PrimaryKey("Id")]
     public int Id { get; set; }

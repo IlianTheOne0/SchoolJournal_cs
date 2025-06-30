@@ -58,14 +58,14 @@ public partial class ViewModelsGradesViewer : INotifyPropertyChanged
             AvailableClasses = _serviceGrades.AvailableClasses;
             AvailableStudents = _serviceGrades.AvailableStudents;
 
-            var currentSelectedSubject = ChosenSubject;
+            var currentChosenSubject = ChosenSubject;
             var subjects = _serviceGrades.AvailableSubjects.ToList();
             subjects.Insert(0, _allSubjectsOption); subjects.Insert(1, _absenceOption);
             AvailableSubjects = subjects;
 
-            if (currentSelectedSubject != null)
+            if (currentChosenSubject != null)
             {
-                var matchingSubject = AvailableSubjects.FirstOrDefault(subjectsProvider => subjectsProvider.Id == currentSelectedSubject.Id);
+                var matchingSubject = AvailableSubjects.FirstOrDefault(subjectsProvider => subjectsProvider.Id == currentChosenSubject.Id);
                 if (matchingSubject != null) { ChosenSubject = matchingSubject; }
                 else { ChosenSubject = _allSubjectsOption; }
             }

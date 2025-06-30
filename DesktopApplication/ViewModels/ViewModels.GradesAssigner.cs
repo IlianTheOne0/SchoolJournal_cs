@@ -52,6 +52,31 @@ public partial class ViewModelsGradesAssigner : INotifyPropertyChanged
         catch (Exception E) { MessageBox.Show($"Initialization failed: {E.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
 
+    public async void Load()
+    {
+        try
+        {
+            AvailableClasses = await _serviceGrades.GetAvailableClasses();
+
+            if (AvailableClasses.Any())
+            {
+                ChosenClass = AvailableClasses.FirstOrDefault(c => c.Id == _chosenClass?.Id) ?? AvailableClasses.First();
+
+                LoadSubjects();
+
+                if (string.IsNullOrEmpty(ChosenMonth)) { ChosenMonth = DateTime.Now.ToString("MMMM", CultureInfo.GetCultureInfo("en-US")); }
+                if (ChosenYear == 0) { ChosenYear = DateTime.Now.Year; }
+            }
+            else
+            {
+                ChosenClass = null;
+                AvailableSubjects = new List<ModelsSubjects>();
+                ChosenSubject = null;
+            }
+        }
+        catch (Exception E) { MessageBox.Show($"Reloading data failed: {E.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+    }
+
     private async void LoadSubjects()
     {
         if (ChosenClass == null) { return; }

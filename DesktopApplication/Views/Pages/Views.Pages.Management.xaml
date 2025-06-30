@@ -1,0 +1,86 @@
+﻿<UserControl x:Class="DesktopApplication.Views.Pages.PagesManagement"
+         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+         xmlns:local="clr-namespace:DesktopApplication.Views.Pages"
+         xmlns:ucontrols="clr-namespace:DesktopApplication.Views.UserControls"
+         xmlns:services="clr-namespace:DesktopApplication.Services.Management"
+         xmlns:converters="clr-namespace:DesktopApplication.Services.Converters"
+         mc:Ignorable="d" 
+         MinHeight="450" MinWidth="800">
+    <UserControl.Resources>
+        <DataTemplate x:Key="TemplateNoneSelected">
+            <ucontrols:UserControlsManagementNoneSelected/>
+        </DataTemplate>
+        
+        <DataTemplate x:Key="TemplateAddNewEdu">
+            <ucontrols:UserControlsManagementAddNewEdu DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext}"/>
+        </DataTemplate>
+
+        <DataTemplate x:Key="TemplateExistingEdu">
+            <ucontrols:UserControlsManagementExistingEdu DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext}"/>
+        </DataTemplate>
+
+        <DataTemplate x:Key="TemplateAddNewClass">
+            <ucontrols:UserControlsManagementAddNewClass DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext}"/>
+        </DataTemplate>
+
+        <DataTemplate x:Key="TemplateExistingClass">
+            <ucontrols:UserControlsManagementExistingClass DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext}"/>
+        </DataTemplate>
+
+        <DataTemplate x:Key="TemplateAddNewUser">
+            <ucontrols:UserControlsManagementAddNewUser DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext}"/>
+        </DataTemplate>
+
+        <DataTemplate x:Key="TemplateExistingUser">
+            <ucontrols:UserControlsManagementExistingUser DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext}"/>
+        </DataTemplate>
+
+        <services:ServicesManagementStateTemplateSelector x:Key="ManagementStateTemplateSelector"
+            NoneSelectedTemplate="{StaticResource TemplateNoneSelected}"
+            AddNewEduTemplate="{StaticResource TemplateAddNewEdu}"
+            ExistingEduTemplate="{StaticResource TemplateExistingEdu}"
+            AddNewClassTemplate="{StaticResource TemplateAddNewClass}"
+            ExistingClassTemplate="{StaticResource TemplateExistingClass}"
+            AddNewUserTemplate="{StaticResource TemplateAddNewUser}"
+            ExistingUserTemplate="{StaticResource TemplateExistingUser}"/>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <ContentControl x:Name="SidebarHost" Grid.Column="0"/>
+
+        <Grid Grid.Column="1" Background="{StaticResource MaterialDesignDarkSeparatorBackground}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <ContentControl x:Name="ManagementComboboxesHost" Grid.Row="0"/>
+
+            <ContentControl
+                 Content="{Binding CurrentState}"
+                 ContentTemplateSelector="{StaticResource ManagementStateTemplateSelector}"
+                 Grid.Row="2"
+                 HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+            <Button
+                Content="Reset"
+                Width="200" Height="45"
+                FontSize="20" FontFamily="{StaticResource Roboto}"
+                Command="{Binding CommandReset}" Style="{StaticResource MaterialDesignRaisedButton}"
+                HorizontalAlignment="Center"
+                Grid.Row="4"
+                Margin="0,0,0,50"/>
+        </Grid>
+    </Grid>
+</UserControl>

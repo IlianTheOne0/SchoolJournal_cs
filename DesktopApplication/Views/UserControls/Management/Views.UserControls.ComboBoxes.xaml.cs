@@ -1,15 +1,14 @@
 ﻿namespace DesktopApplication.Views.UserControls;
 
-using DesktopApplication.ViewModels.SidebarMenu;
-
+using DesktopApplication.ViewModels.Management;
 using System.Windows;
 using System.Windows.Controls;
 
-public partial class UserControlsSidebarMenu : UserControl
+public partial class UserControlsManagementComboBoxes : UserControl
 {
-    private readonly ViewModelsSidebarMenu _viewModel;
+    private readonly ViewModelsManagement _viewModel;
 
-    public UserControlsSidebarMenu(ViewModelsSidebarMenu ViewModel)
+    public UserControlsManagementComboBoxes(ViewModelsManagement ViewModel)
     {
         try
         {

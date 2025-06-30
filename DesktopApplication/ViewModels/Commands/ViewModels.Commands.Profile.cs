@@ -29,12 +29,6 @@ public partial class ViewModelsProfile
         if (ModelUser == null) { MessageBox.Show("No user data to save", "Error", MessageBoxButton.OK, MessageBoxImage.Error); return; }
         try
         {
-            if (!string.IsNullOrEmpty(NewAvatarPath))
-            {
-                await _serviceUser.UpdateAvatar(ModelUser.Id, NewAvatarPath);
-                NewAvatarPath = null;
-            }
-
             var userToUpdate = new ModelsUser
             {
                 Id = ModelUser.Id,
@@ -46,7 +40,6 @@ public partial class ViewModelsProfile
                 DateOfBirth = ModelUser.DateOfBirth.AddDays(1),
                 CreatedAt = ModelUser.CreatedAt,
                 DateOfTheLastVisitToTheJournal = ModelUser.DateOfTheLastVisitToTheJournal,
-                AvatarUrl = ModelUser.AvatarUrl,
                 StatusId = ModelUser.StatusId,
                 EducationalInstitutionId = ModelUser.EducationalInstitutionId,
                 ProfileId = ModelUser.ProfileId,
@@ -59,6 +52,12 @@ public partial class ViewModelsProfile
             _originalModelUser = CloneUser(ModelUser);
             await LoadDataAsync();
             IsEditing = false;
+
+            if (!string.IsNullOrEmpty(NewAvatarPath))
+            {
+                await _serviceUser.UpdateAvatar(ModelUser.Id, NewAvatarPath);
+                NewAvatarPath = null;
+            }
 
             MessageBox.Show("Profile updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }

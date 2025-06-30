@@ -4,6 +4,7 @@ using Database.Interfaces.Repositories.Grades;
 using Database.Interfaces.Repositories.Supabase;
 using Models.Tables.Attending;
 using Models.Tables.Classes;
+using Models.Tables.EducationalInstitutions;
 using Models.Tables.Enrollments;
 using Models.Tables.Grades;
 using Models.Tables.Statuses;

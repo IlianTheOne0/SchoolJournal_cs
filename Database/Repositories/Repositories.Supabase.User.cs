@@ -100,12 +100,10 @@ public partial class RepositoriesSupabase
                 }
             );
 
-            var url = bucket.GetPublicUrl(fileName);
-
             await SupabaseConnection?.SupabaseClient
                 .From<ModelsUser>()
                 .Where(user => user.Id == UserId)
-                .Set(user => user.AvatarUrl!, url)
+                .Set(user => user.AvatarUrl!, bucket.GetPublicUrl(fileName))
                 .Update()!;
         }
         catch (Exception e) { throw new Exception($"Update avatar failed: {e.Message}", e); }

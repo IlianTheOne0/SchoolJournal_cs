@@ -8,7 +8,7 @@ using System.Windows.Controls;
 
 public partial class PagesProfile : UserControl
 {
-    public ViewModelsProfile _viewModel;
+    private readonly ViewModelsProfile _viewModel;
 
     public PagesProfile(ViewModelsProfile ViewModel, UserControlsSidebarMenu Sidebar)
     {

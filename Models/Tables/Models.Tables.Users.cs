@@ -1,10 +1,11 @@
 ﻿namespace Models.Tables.Users;
 
-using Supabase.Postgrest.Models;
+using Models.Supports.SupabaseCommands;
 using Supabase.Postgrest.Attributes;
+using Supabase.Postgrest.Models;
 
 [Table("Users")]
-public class ModelsUser : BaseModel
+public class ModelsUser : BaseModel, InterfacesModelsWithId
 {
     [PrimaryKey("Id")]
     public int Id { get; set; }
