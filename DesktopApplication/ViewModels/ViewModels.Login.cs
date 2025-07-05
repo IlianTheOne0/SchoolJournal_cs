@@ -1,0 +1,28 @@
+﻿namespace DesktopApplication.ViewModels.Login;
+
+using DesktopApplication.Interfaces.Services.Auth;
+
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+
+public partial class ViewModelsLogin
+{
+    private readonly InterfacesServicesAuth _serviceAuth;
+    
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    private string _username; public string Username { get => _username; set { _username = value; OnPropertyChanged(); } }
+    private string _password; public string Password { get => _password; set { _password = value; OnPropertyChanged(); } }
+
+    public ViewModelsLogin(InterfacesServicesAuth ServiceAuth)
+    {
+        _username = string.Empty;
+        _password = string.Empty;
+
+        _serviceAuth = ServiceAuth;
+
+        InitializeComamnds();
+    }
+
+    private void OnPropertyChanged([CallerMemberName] string? PropertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
+}
